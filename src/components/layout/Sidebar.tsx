@@ -137,7 +137,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   PROJECT KINGDOM
                 </span>
                 <span className="text-[10px] font-mono text-[#6ee7ff] tracking-wider">
-                  SOVEREIGN COMMAND
+                  UNIFIED PLATFORM
                 </span>
               </div>
             </div>

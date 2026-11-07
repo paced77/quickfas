@@ -125,7 +125,7 @@ export const QuickfasNexus: React.FC = () => {
     {repo && <>
       <div className="flex flex-col gap-2 rounded-xl border border-cyan-300/20 bg-slate-900/60 p-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="min-w-0">
-          <a href={repo.html_url} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 font-semibold text-cyan-200 hover:text-cyan-100">{repo.full_name}<ExternalLink className="h-3.5 w-3.5" /></a>
+          <a href={repo.html_url} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 font-semibold text-cyan-200 hover:text-cyan-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-200">{repo.full_name}<ExternalLink aria-hidden="true" className="h-3.5 w-3.5" /></a>
           <p className="mt-1 text-sm text-slate-400">{repo.description || 'No repository description provided.'}</p>
         </div>
         <div className="shrink-0 text-[11px] text-slate-500">{repo.language || 'Language not specified'} · default branch: {repo.default_branch}</div>
@@ -184,7 +184,7 @@ export const QuickfasNexus: React.FC = () => {
         <div className="rounded-xl border border-slate-800 bg-slate-900/50 p-4">
           <h2 className="mb-3 flex items-center gap-2 text-sm font-semibold text-slate-100"><Users aria-hidden="true" className="h-4 w-4 text-cyan-300" /> Leading contributors</h2>
           <div className="space-y-3">
-            {contributors.slice(0, 7).map((person) => <a key={person.login} href={person.html_url} target="_blank" rel="noreferrer" className="flex items-center justify-between gap-3 rounded-lg px-2 py-1.5 hover:bg-white/5">
+            {contributors.slice(0, 7).map((person) => <a key={person.login} href={person.html_url} target="_blank" rel="noreferrer" className="flex items-center justify-between gap-3 rounded-lg px-2 py-1.5 hover:bg-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-200">
               <span className="flex min-w-0 items-center gap-2"><img src={person.avatar_url} alt="" width={28} height={28} loading="lazy" className="h-7 w-7 rounded-full" /><span className="truncate text-sm text-slate-200">{person.login}</span></span>
               <span className="shrink-0 text-xs tabular-nums text-cyan-200">{person.contributions.toLocaleString()} contributions</span>
             </a>)}
@@ -197,7 +197,7 @@ export const QuickfasNexus: React.FC = () => {
         <div className="mb-3 flex items-center justify-between"><h2 className="flex items-center gap-2 text-sm font-semibold text-slate-100"><Activity aria-hidden="true" className="h-4 w-4 text-cyan-300" /> Recent project activity</h2><span className="text-[10px] text-slate-500">Most recent 30 commits</span></div>
         <div className="divide-y divide-slate-800">
           {commits.slice(0, 8).map((commit) => <div key={commit.sha} className="flex flex-col gap-1 py-3 sm:flex-row sm:items-center sm:justify-between">
-            <a href={commit.html_url} target="_blank" rel="noreferrer" className="min-w-0 truncate text-sm text-slate-200 hover:text-cyan-200">{commit.commit.message.split('\n')[0]}</a>
+            <a href={commit.html_url} target="_blank" rel="noreferrer" className="min-w-0 truncate text-sm text-slate-200 hover:text-cyan-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-200">{commit.commit.message.split('\n')[0]}</a>
             <span className="shrink-0 text-[11px] text-slate-500">{commit.author?.login || commit.commit.author?.name || 'Unknown'} · {commit.commit.author?.date ? formatDate(commit.commit.author.date) : 'Date unavailable'}</span>
           </div>)}
           {commits.length === 0 && <p className="py-3 text-sm text-slate-500">No recent commits returned.</p>}

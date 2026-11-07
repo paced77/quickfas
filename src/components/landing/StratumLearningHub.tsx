@@ -167,25 +167,19 @@ export const StratumLearningHub: React.FC = () => {
   }, [search, category]);
 
   const toggleSaved = (id: string) => {
+    if (!savedIds.has(id)) void trackAnalyticsEvent('resource_saved');
     setSavedIds((current) => {
       const next = new Set(current);
       if (next.has(id)) next.delete(id);
-      else {
-        next.add(id);
-        void trackAnalyticsEvent('resource_saved');
-      }
+      else next.add(id);
       return next;
     });
   };
 
   const markCompleted = (id: string) => {
-    setCompletedIds((current) => {
-      if (current.has(id)) return current;
-      const next = new Set(current);
-      next.add(id);
-      void trackAnalyticsEvent('article_completed');
-      return next;
-    });
+    if (completedIds.has(id)) return;
+    void trackAnalyticsEvent('article_completed');
+    setCompletedIds((current) => new Set(current).add(id));
   };
 
   return (

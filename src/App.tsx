@@ -18,6 +18,7 @@ import { ExecutiveBriefingData } from './types/kingdom.ts';
 import { audioEngine } from './services/audioEngine.ts';
 import { CheckCircle2, ShieldAlert } from 'lucide-react';
 import { ConsentBanner } from './components/privacy/ConsentBanner.tsx';
+import { StorageAuditPanel } from './components/privacy/StorageAuditPanel.tsx';
 import { trackAnalyticsEvent } from './platform/analytics/analyticsEvents.ts';
 
 const INITIAL_BRIEFING: ExecutiveBriefingData = {
@@ -282,6 +283,7 @@ export default function App() {
               {activeTab === 'governance' && (
                 <div>
                   <DigitalTwin />
+                  <StorageAuditPanel />
                 </div>
               )}
             </>

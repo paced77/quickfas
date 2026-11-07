@@ -43,3 +43,5 @@ Synthetic telemetry is disabled by default. To intentionally enable the legacy i
 The API now applies baseline security headers, disables Express's `X-Powered-By` header, and limits JSON request bodies. These controls are a foundation, not a substitute for a full security review, durable audit storage, deployment configuration review, or penetration testing.
 
 Run `npm test` for the privacy and analytics contract tests, `npm run lint` for TypeScript checking, and `npm run build` for the production frontend build. These commands must pass in CI before the pull request is considered release-ready.
+
+The Stratum learning hub now provides a searchable, category-filtered set of ten plain-language topics. Visitors can save topics and mark them read for the current browser session; only generic allow-listed event names are eligible for analytics. The existing Governance workspace also includes a local-storage audit with JSON and RFC4180 CSV export. It reports registered key names and presence only, never stored values.

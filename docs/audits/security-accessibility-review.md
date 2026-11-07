@@ -75,7 +75,7 @@ The rate-limit migration files are tracked in this branch under `supabase/migrat
 - The browser client also supports the existing `NEXT_PUBLIC_SUPABASE_*` variable names. Existing integration-managed variables were not overwritten.
 - Supabase Auth provider enablement, Site URL, redirect allowlist, email confirmation behavior, and end-to-end signup/login/logout have not yet been verified with dedicated test users.
 - Production remains SSO-restricted. Do not disable SSO or treat a preview deployment as public production access.
-- Okteto has been removed from the PR branch; the old workflow and manifest remain on `main` until PR #4 is merged.
+- Cleanup PR #6 is merged; `.github/workflows/okteto.yml` and `okteto.yml` are deleted from `main`, and the repository tree contains no Okteto paths.
 - The last successful Vercel preview is READY at `https://quickfas-no9xdiuhs-quickfas.vercel.app` for code revision `86f8313ffe0b88d85bd98f38d1124493ea6077ca`. The later code head `fffe1cc278dd9b5a2d85bddba2c6b13841228a38` includes a small TypeScript enum compatibility correction; Vercel rate-limited its deployment (`retry in 24 hours`). The preview is protected by Vercel SSO, so browser smoke testing remains outstanding.
 
 ## Remaining security work

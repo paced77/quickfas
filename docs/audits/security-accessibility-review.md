@@ -76,7 +76,7 @@ The rate-limit migration files are tracked in this branch under `supabase/migrat
 - Supabase Auth provider enablement, Site URL, redirect allowlist, email confirmation behavior, and end-to-end signup/login/logout have not yet been verified with dedicated test users.
 - Production remains SSO-restricted. Do not disable SSO or treat a preview deployment as public production access.
 - Okteto has been removed from the PR branch; the old workflow and manifest remain on `main` until PR #4 is merged.
-- A Vercel preview for the current review head `86f8313ffe0b88d85bd98f38d1124493ea6077ca` is READY at `https://quickfas-no9xdiuhs-quickfas.vercel.app`. It is protected by Vercel SSO; browser smoke testing remains outstanding because this session cannot complete the protected sign-in flow.
+- A Vercel preview for the code revision `86f8313ffe0b88d85bd98f38d1124493ea6077ca` (the subsequent review-head update is documentation-only) is READY at `https://quickfas-no9xdiuhs-quickfas.vercel.app`. It is protected by Vercel SSO; browser smoke testing remains outstanding because this session cannot complete the protected sign-in flow.
 
 ## Remaining security work
 

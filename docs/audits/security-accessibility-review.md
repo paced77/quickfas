@@ -76,7 +76,7 @@ The rate-limit migration files are tracked in this branch under `supabase/migrat
 - Supabase Auth provider enablement, Site URL, redirect allowlist, email confirmation behavior, and end-to-end signup/login/logout have not yet been verified with dedicated test users.
 - Production remains SSO-restricted. Do not disable SSO or treat a preview deployment as public production access.
 - Okteto has been removed from the PR branch; the old workflow and manifest remain on `main` until PR #4 is merged.
-- The last observed Vercel check was rate-limited by Vercel. This is a deployment-provider constraint, not a failed application build. A new Vercel preview must be confirmed before any deployment decision.
+- A Vercel preview for the current review head `86f8313ffe0b88d85bd98f38d1124493ea6077ca` is READY at `https://quickfas-no9xdiuhs-quickfas.vercel.app`. It is protected by Vercel SSO; browser smoke testing remains outstanding because this session cannot complete the protected sign-in flow.
 
 ## Remaining security work
 
@@ -117,7 +117,7 @@ No WCAG 2.2 AA conformance claim should be made until manual and automated evide
 | Supabase security advisor | Clear after latest migrations |
 | Auth provider, Site URL, redirects, real role-account tests | Pending |
 | TypeScript, tests, production build, CodeQL | Previous branch head passed; rerun after latest changes |
-| Vercel preview for latest head | Pending; previous check was rate-limited |
+| Vercel preview for latest head | READY for current head; protected by SSO; browser smoke test pending |
 | Complete CSP and runtime validation | Pending |
 | Synthetic-content and clinical telemetry boundary | Clinical/FHIR event ingestion disabled; all telemetry requires explicit synthetic_demo marker; key dashboards and investor model carry illustrative disclosures; final visual review pending |
 | Automated accessibility scan | Pending |

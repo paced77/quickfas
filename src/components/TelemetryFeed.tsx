@@ -344,11 +344,6 @@ RiskEventSchema: category, probability [0..1], impactRating [1..10], mitigationS
 
                 {/* Event Summary rendering */}
                 <div className="text-slate-300 font-mono text-[11px] leading-relaxed">
-                  {evt.eventType === 'ops.capacity_update' && (
-                    <span>
-                      Sample workstream: <span className="text-cyan-300">{(evt as any).payload.subsystem}</span> · Capacity: {(evt as any).payload.capacityPct}% · Active tasks: {(evt as any).payload.activeTasks}
-                    </span>
-                  )}
                   {evt.eventType === 'system.health' && (
                     <span>
                       Latency: <span className="text-cyan-300">{(evt as any).payload.latencyMs}ms</span> · CPU: {(evt as any).payload.cpuUtilization}% · Memory: {(evt as any).payload.memoryUtilization}% · Availability: {(evt as any).payload.availabilityPct}%
@@ -359,7 +354,7 @@ RiskEventSchema: category, probability [0..1], impactRating [1..10], mitigationS
                       Study: <span className="text-cyan-300">{(evt as any).payload.studyName}</span> · Enrolled: {(evt as any).payload.currentEnrollment} / {(evt as any).payload.targetEnrollment} · Velocity: {(evt as any).payload.velocityPpm} pts/mo · Ingestion: {(evt as any).payload.fhirTransactionsPerSec} tx/s
                     </span>
                   )}
-                  {evt.eventType === 'Fictional sample — not connected to live data' && (
+                  {evt.eventType === 'clinical.fhir_tx' && (
                     <span>
                       FHIR Gateway: Ingesting <span className="text-cyan-300">{(evt as any).payload.fhirTransactionsPerSec} tx/s</span> for {(evt as any).payload.studyName}
                     </span>
@@ -381,7 +376,7 @@ RiskEventSchema: category, probability [0..1], impactRating [1..10], mitigationS
                   )}
                   {evt.eventType === 'ops.capacity_update' && (
                     <span>
-                      Subsystem: {(evt as any).payload.subsystem} · Utilization: {(evt as any).payload.utilizationPct}% · Throughput: {(evt as any).payload.throughputPerHr}/hr
+                      Sample workstream: <span className="text-cyan-300">{(evt as any).payload.subsystem}</span> · Capacity: {(evt as any).payload.capacityPct}% · Active tasks: {(evt as any).payload.activeTasks}
                     </span>
                   )}
                 </div>

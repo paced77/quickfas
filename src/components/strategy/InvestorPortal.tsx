@@ -181,7 +181,7 @@ export const InvestorPortal: React.FC<InvestorPortalProps> = ({ onNotify }) => {
               <div className="text-right font-mono text-xs text-slate-400 shrink-0">
                 <div>Seed Round: <span className="text-white font-semibold">$1.0M</span></div>
                 <div>Pre-Money Cap: <span className="text-cyan-400 font-semibold">$4.0M</span></div>
-                <div>Target SOM: <span className="text-emerald-400 font-semibold">$100M ARR</span></div>
+                <div>Illustrative SOM scenario: <span className="text-emerald-400 font-semibold">$100M ARR</span></div>
               </div>
             </div>
 
@@ -192,8 +192,8 @@ export const InvestorPortal: React.FC<InvestorPortalProps> = ({ onNotify }) => {
                 1. Executive Summary & Thesis
               </h2>
               <p className="text-sm sm:text-base text-slate-300">
-                Modern leaders operate across fragmented, siloed platforms: projects live in Jira or Asana, data is stranded in Snowflake or Datadog, communications drown in Slack, and critical strategic decisions happen in unrecorded meetings. 
-                <strong> Project Kingdom</strong> is the first sovereign command platform that sits above this fragmentation—unifying real-time intelligence, active missions, strategic analytics, workflow automation, and AI guidance into a single sovereign interface.
+                Illustrative problem statement: modern leaders may work across fragmented project, analytics, and communication tools. Validate the target-market problem with customer research before external use. 
+                <strong> Project Kingdom</strong> is the first sovereign command platform that sits above this fragmentation—bringing connected intelligence (when configured), planning workspaces, analytics examples, workflow concepts, and on-demand AI guidance into a single sovereign interface.
               </p>
             </section>
 
@@ -278,7 +278,7 @@ export const InvestorPortal: React.FC<InvestorPortalProps> = ({ onNotify }) => {
                 </div>
                 <div className="bg-slate-900/70 border border-emerald-500/40 p-4 rounded-lg bg-emerald-950/10">
                   <div className="text-xs font-mono text-emerald-400 uppercase">Serviceable Obtainable Market</div>
-                  <div className="text-2xl font-bold text-emerald-300 mt-1 tabular-nums">$100M ARR</div>
+                  <div className="text-2xl font-bold text-emerald-300 mt-1 tabular-nums">$100M ARR · Scenario</div>
                   <p className="text-xs text-slate-300 mt-2">
                     Initial 5-year focus on high-velocity technology teams, health/clinical networks, and institutional program offices.
                   </p>
@@ -387,7 +387,7 @@ export const InvestorPortal: React.FC<InvestorPortalProps> = ({ onNotify }) => {
                   Tagline: "See Everything. Direct Everything. Improve Everything."
                 </div>
                 <p>
-                  Modern leaders are overwhelmed by fragmented tooling: project status in one app, analytics in a second, communication in a third, and real-time operations scattered across disparate dashboards. Project Kingdom consolidates intelligence, active missions, automated workflows, and multi-agent AI guidance into one single operating system.
+                  Illustrative positioning hypothesis: Project Kingdom aims to bring project visibility, analytics, workflow coordination, and on-demand AI guidance into one workspace. Validate the problem and differentiation with customer research.
                 </p>
               </div>
             </section>
@@ -442,7 +442,7 @@ export const InvestorPortal: React.FC<InvestorPortalProps> = ({ onNotify }) => {
                       <li>AI Sovereign Executive Briefings (Spoken + Audio)</li>
                       <li>Progressive Analytics (Area, Line, Segmented)</li>
                       <li>Adaptive User Roles (5 personas)</li>
-                      <li>Live Event Feed & Priority Alerts</li>
+                      <li>Event Feed & Priority Alerts (when connected)</li>
                     </ul>
                   </div>
                   <div className="p-4 bg-rose-950/20 border border-rose-500/30 rounded-lg">
@@ -610,7 +610,7 @@ export const InvestorPortal: React.FC<InvestorPortalProps> = ({ onNotify }) => {
                   <ul className="space-y-1.5 text-slate-300">
                     <li>• W5: Mission creation & status workflow</li>
                     <li>• W6: Deadlines, priorities, owner assignments</li>
-                    <li>• W7: Activity feed & real-time notifications</li>
+                    <li>• W7: Activity feed and notifications (when configured)</li>
                     <li>• W8: Analytics charts & performance reporting</li>
                   </ul>
                 </div>
@@ -820,7 +820,7 @@ const SHORT_INVESTOR_MARKDOWN = `# PROJECT KINGDOM: ILLUSTRATIVE INVESTOR SCENAR
 ---
 
 ### 1. Executive Summary & Thesis
-Project Kingdom is the first **Strategic Operating System** designed for modern leadership. Modern enterprises and high-growth organizations suffer from severe operational fragmentation: projects live in Jira/Asana, analytics in Datadog/Snowflake, communications in Slack, and strategic decisions in unrecorded meetings. Project Kingdom unifies real-time intelligence, active missions, strategic analytics, workflow automation, and multi-agent AI guidance into one sovereign command center.
+Project Kingdom is designed as a unified strategic operating workspace for modern leadership. Modern enterprises and high-growth organizations suffer from severe operational fragmentation: projects live in Jira/Asana, analytics in Datadog/Snowflake, communications in Slack, and strategic decisions in unrecorded meetings. Project Kingdom unifies real-time intelligence, active missions, strategic analytics, workflow automation, and multi-agent AI guidance into one sovereign command center.
 
 ### 2. Market Opportunity (TAM / SAM / SOM)
 - **TAM ($150B+)**: Work Management ($24B) + Business Intelligence ($33B) + Observability ($22B) + Enterprise AI Assistants ($70B+).

@@ -19,7 +19,7 @@ This is an engineering review, not a penetration-test report, compliance certifi
 - The public health response has been reduced to `{ status: "ok" }`.
 - Express sets `X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`, `Permissions-Policy`, HSTS in production, disables `X-Powered-By`, and limits JSON request bodies to 256 KB.
 - Product analytics requires a verified Supabase session and accepts only strict allow-listed event names. It does not retain account IDs, event properties, IP addresses, route strings, health details, or form contents.
-- Synthetic telemetry is disabled unless `KINGDOM_DEMO_TELEMETRY=true`. Stratum Clinical Edge is an educational experience and has no EHR integration.
+- Every telemetry event must explicitly declare `metadata.dataClassification = 'synthetic_demo'`; unclassified events are rejected. The schema rejects clinical-domain and FHIR event types, and the clinical risk category is disabled. Stratum Clinical Edge is an educational experience and has no EHR integration.
 - Vercel SSO remains enabled for the restricted production deployment. Okteto workflow and manifest are removed from PR #4; Vercel is the only configured deployment platform.
 
 ## API authorization matrix
@@ -82,7 +82,7 @@ The rate-limit migration files are tracked in this branch under `supabase/migrat
 
 1. Run real integration tests with dedicated `viewer`, `analyst`, `operator`, `executive`, and `admin` accounts. Cover missing, malformed, expired, and revoked tokens; missing profiles; profile-query failures; self-role escalation attempts; and every route's expected 401/403/2xx behavior.
 2. Verify that the new rate-limit RPC behaves correctly under authenticated concurrency and that a caller cannot reset or delete their own counter. The SQL grants, RLS, function security mode, trigger, and advisor findings have been inspected; an authenticated end-to-end exercise is still outstanding.
-3. Complete a repository-wide audit of every API route, static chart/map, AI response schema, and future generated content. Keep fictional figures visibly labelled illustrative and never present them as live clinical, financial, regulatory, or operational results.
+3. Complete a repository-wide audit of every API route, static chart/map, AI response schema, and future generated content. Primary dashboard, mission, map, telemetry, and investor-model displays now carry explicit illustrative/sample disclosures; keep all figures visibly labelled and never present them as live clinical, financial, regulatory, or operational results.
 4. Complete logging review to confirm tokens, prompts, user content, and provider responses cannot leak through runtime logs.
 5. Review whether the event-only analytics aggregate needs durable storage; it is currently process-local and should not be presented as a durable or cross-instance metric.
 6. Complete a full Content Security Policy based on the actual Vite, Supabase, Gemini, asset, font, and media requirements. The current policy only sets `frame-ancestors 'none'`; do not apply a stricter policy without browser regression testing.
@@ -119,7 +119,7 @@ No WCAG 2.2 AA conformance claim should be made until manual and automated evide
 | TypeScript, tests, production build, CodeQL | Previous branch head passed; rerun after latest changes |
 | Vercel preview for latest head | Pending; previous check was rate-limited |
 | Complete CSP and runtime validation | Pending |
-| Repository-wide synthetic-content review | Primary fabricated claims corrected; complete sweep pending |
+| Synthetic-content and clinical telemetry boundary | Clinical/FHIR event ingestion disabled; all telemetry requires explicit synthetic_demo marker; key dashboards and investor model carry illustrative disclosures; final visual review pending |
 | Automated accessibility scan | Pending |
 | Keyboard and screen-reader review | Pending |
 | WCAG 2.2 AA assessment | Pending |

@@ -5,6 +5,7 @@ import {
   createConsentRecord,
   parseConsentRecord,
   consentFromRecord,
+  migrateConsentStorage,
 } from '../src/platform/consent/consentModel.ts';
 import { validateKingdomTelemetry } from '../src/schemas/events.ts';
 import { buildStorageAudit, storageAuditToCsv } from '../src/platform/storage/storageRegistry.ts';
@@ -95,4 +96,56 @@ test('speech retry policy applies bounded exponential backoff with jitter', () =
   assert.equal(getSpeechRetryDelayMs(1, 0.5), 550);
   assert.equal(getSpeechRetryDelayMs(99, 0.999), 2099);
   assert.equal(getSpeechRetryDelayMs(-4, 0), 250);
+});
+
+
+test('legacy consent migrates atomically and removes old keys only after verification', () => {
+  const values = new Map<string, string>([
+    ['analytics-consent', 'true'],
+    ['consent:version', '1'],
+  ]);
+  const storage = {
+    get length() { return values.size; },
+    key: (index: number) => Array.from(values.keys())[index] ?? null,
+    getItem: (key: string) => values.get(key) ?? null,
+    setItem: (key: string, value: string) => { values.set(key, value); },
+    removeItem: (key: string) => { values.delete(key); },
+  };
+  const migrated = migrateConsentStorage(storage);
+  assert.equal(migrated?.analytics, 'granted');
+  assert.equal(migrated?.version, 2);
+  assert.equal(values.has('analytics-consent'), false);
+  assert.equal(values.has('consent:version'), false);
+  assert.equal(values.has('stratum:consent:v2'), true);
+});
+
+test('future consent versions fail closed without overwriting or migrating legacy state', () => {
+  const future = JSON.stringify({ version: 3, analytics: 'granted', updatedAt: new Date().toISOString() });
+  const values = new Map<string, string>([
+    ['stratum:consent:v2', future],
+    ['analytics-consent', 'true'],
+  ]);
+  const storage = {
+    getItem: (key: string) => values.get(key) ?? null,
+    setItem: (key: string, value: string) => { values.set(key, value); },
+    removeItem: (key: string) => { values.delete(key); },
+  };
+  assert.equal(migrateConsentStorage(storage), null);
+  assert.equal(values.get('stratum:consent:v2'), future);
+  assert.equal(values.get('analytics-consent'), 'true');
+});
+
+test('failed consent migration rolls back and preserves the legacy choice', () => {
+  const values = new Map<string, string>([['analytics-consent', 'denied']]);
+  const storage = {
+    getItem: (key: string) => values.get(key) ?? null,
+    setItem: (key: string, value: string) => {
+      if (key === 'stratum:consent:v2') throw new Error('storage quota');
+      values.set(key, value);
+    },
+    removeItem: (key: string) => { values.delete(key); },
+  };
+  assert.equal(migrateConsentStorage(storage), null);
+  assert.equal(values.get('analytics-consent'), 'denied');
+  assert.equal(values.has('stratum:consent:v2'), false);
 });

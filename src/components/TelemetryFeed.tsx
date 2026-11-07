@@ -106,7 +106,7 @@ export const TelemetryFeed: React.FC = () => {
       source: 'faulty-probe',
       correlationId: `corr-${Date.now()}`,
       timestamp: new Date().toISOString(),
-      metadata: { testHarness: 'TEL-003-Invalid-Injection' },
+      metadata: { dataClassification: 'synthetic_demo', testHarness: 'TEL-003-Invalid-Injection' },
       payload: {
         status: 'optimal',
         uptimeSeconds: 100,

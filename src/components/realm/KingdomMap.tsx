@@ -78,19 +78,19 @@ export const KingdomMap: React.FC = () => {
             <div className="flex items-center gap-2 mb-1">
               <Compass className="w-4 h-4 text-cyan-400" />
               <span className="text-xs font-mono font-bold tracking-wider text-slate-200 uppercase">
-                Interactive Kingdom Map // Realm Topology
+                Illustrative Kingdom Map // Example Topology
               </span>
             </div>
             <h3 className="text-base font-bold text-white tracking-tight">
               Visualize Systems, Teams, Projects, and Cross-Sector Dependencies
             </h3>
             <p className="text-xs text-slate-400 mt-0.5">
-              5 Sovereign Sectors · 30 Active Initiatives · 100% Invariant Telemetry Interconnect
+              5 sample sectors · illustrative initiatives · no live telemetry connection
             </p>
           </div>
 
           <span className="text-xs font-mono text-emerald-400 bg-emerald-950/40 border border-emerald-800/40 px-2.5 py-1 rounded">
-            All Sectors Synchronized
+            Sample Map Data
           </span>
         </div>
 

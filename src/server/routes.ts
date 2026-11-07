@@ -91,8 +91,6 @@ function seedInitialTelemetry() {
     },
   ];
 
-  for (const raw of sampleEvents)  ];
-
   for (const raw of sampleEvents) {
     validationStats.totalReceived++;
     const val = validateKingdomTelemetry(raw);
@@ -135,8 +133,6 @@ setInterval(() => {
       payload: { category: 'operations', headline: 'Example review item', probability: 0.15, impactRating: 2, riskScore: 12, mitigationStrategy: 'Validate this example against an approved source before acting', ownerAgent: 'Sample Risk Reviewer' },
     },
   ];
-
-  const pick =  ];
 
   const pick = sources[Math.floor(Math.random() * sources.length)];
   const rawEvent = {
@@ -364,8 +360,6 @@ function generateFallbackDeliberation(agendaTopic: string) {
   };
 }
 
-// 4. AI Council Deliberation Chamber}
-
 // 4. AI Council Deliberation Chamber
 const handleCouncilDeliberation = async (req: Request, res: Response) => {
   const { agendaTopic, contextData } = req.body;
@@ -399,7 +393,7 @@ Return pure JSON.`;
 ${promptAgenda}
 
 TELEMETRY CONTEXT:
-System Health: 98.4%, 34 Active Agents, 2 Strategic Risks, Latency 83ms, Forecast Accuracy 95.8%.
+No verified telemetry source is connected. Treat all scenario data as illustrative.
 Context: ${JSON.stringify(contextData || {})}`;
 
     const apiCall = ai.models.generateContent({
@@ -505,8 +499,6 @@ const handleExecutiveBriefing = async (req: Request, res: Response) => {
     ],
   };
 
-  if (!apiKey)  };
-
   if (!apiKey) {
     return res.json(fallbackBriefing);
   }
@@ -595,8 +587,6 @@ const handleSimulation = async (req: Request, res: Response) => {
       { action: 'Assign a qualified reviewer', targetNode: 'Sample Workstream B', costToDeploy: 'Not estimated', riskReductionPct: 0 },
     ],
   };
-
-  if (!apiKey)  };
 
   if (!apiKey) {
     return res.json(fallbackSimulation);

@@ -9,9 +9,9 @@ interface CommandGridProps {
 
 export const initialSubsystems: SubsystemTelemetry[] = [
   {
-    id: 'Fictional sample — not connected to live data',
-    name: 'Fictional sample — not connected to live data',
-    domain: 'clinical',
+    id: 'sub-sample-workstream',
+    name: 'Sample Workstream A',
+    domain: 'operations',
     purpose: 'Fictional sample — not connected to live data',
     currentState: 'Sample state — not connected',
     healthPct: 98.4,
@@ -42,7 +42,7 @@ export const initialSubsystems: SubsystemTelemetry[] = [
     id: 'sub-operations',
     name: 'Operations Command Grid',
     domain: 'operations',
-    purpose: 'Real-time workflow orchestration, lab capacity balancing, and reagent supply chain routing',
+    purpose: 'Illustrative workflow example; no lab, logistics, or supply-chain system is connected',
     currentState: 'Sample state — not connected',
     healthPct: 96.2,
     latencyMs: 64,
@@ -64,7 +64,7 @@ export const initialSubsystems: SubsystemTelemetry[] = [
     dependencies: ['Hardware HSM Cluster', 'Audit Ledger Proofs', 'mTLS Gateway Fabric'],
     output: 'Illustrative sample output; no audit was performed',
     forecast: 'Fictional sample — not connected to live data',
-    confidence: 'Guaranteed',
+    confidence: 'Sample only',
     velocityMetric: 'Sample classification only',
     impactSentiment: 'positive',
   },
@@ -92,7 +92,7 @@ export const initialSubsystems: SubsystemTelemetry[] = [
     healthPct: 97.8,
     latencyMs: 112,
     dependencies: ['Configured AI provider', 'Autonomous Agent Bus', 'Executive Policy Store'],
-    output: '34 Autonomous Agents Synchronized',
+    output: 'Example advisory roles; no agents are running autonomously',
     forecast: 'Illustrative council scenario; no autonomous agents are synchronized',
     confidence: 'High',
     velocityMetric: 'Illustrative sample value',
@@ -196,7 +196,7 @@ export const CommandGrid: React.FC<CommandGridProps> = ({ onSelectSubsystem }) =
 
                   <div className="bg-white/[0.02] rounded p-2 mt-2 border border-white/5 text-[11px]">
                     <span className="text-[10px] font-mono text-slate-500 block uppercase">
-                      Forecast Trajectory
+                      Illustrative Scenario
                     </span>
                     <span className="text-slate-300 leading-tight block mt-0.5">
                       {sub.forecast}
@@ -229,7 +229,7 @@ export const CommandGrid: React.FC<CommandGridProps> = ({ onSelectSubsystem }) =
                   className="flex items-center gap-1 text-[11px] font-medium text-slate-300 hover:text-cyan-300 transition-colors"
                 >
                   <RefreshCw className={`w-3 h-3 ${isProbing ? 'animate-spin text-cyan-400' : ''}`} />
-                  <span>{isProbing ? 'Running Probe...' : 'Subsystem Probe'}</span>
+                  <span>{isProbing ? 'Simulating Sample...' : 'Simulate Sample Probe'}</span>
                 </button>
                 <span className="text-[10px] font-mono text-emerald-400/80 flex items-center gap-1">
                   <CheckCircle2 className="w-2.5 h-2.5" />

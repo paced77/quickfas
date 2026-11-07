@@ -43,6 +43,8 @@ const demoTelemetryEnabled = process.env.KINGDOM_DEMO_TELEMETRY === 'true';
 const analyticsEventCounts: Partial<Record<AnalyticsEventName, number>> = {};
 let analyticsWindowStartedAt = Date.now();
 let analyticsEventsInWindow = 0;
+let telemetryWindowStartedAt = Date.now();
+let telemetryEventsInWindow = 0;
 let validationStats = {
   totalReceived: 0,
   validCount: 0,
@@ -393,12 +395,23 @@ router.get('/api/telemetry/events', handleTelemetryEvents);
 
 // 3. Telemetry Injector
 const handleTelemetryInject = (req: Request, res: Response) => {
+  const now = Date.now();
+  if (now - telemetryWindowStartedAt >= 60_000) {
+    telemetryWindowStartedAt = now;
+    telemetryEventsInWindow = 0;
+  }
+  if (telemetryEventsInWindow >= 120) {
+    return res.status(429).json({ error: 'Telemetry ingestion rate limit reached.' });
+  }
+  telemetryEventsInWindow += 1;
+
   const incoming = req.body;
   validationStats.totalReceived++;
 
   const val = validateKingdomTelemetry(incoming);
   if (val.success && val.event) {
     eventHistory.unshift(val.event);
+    if (eventHistory.length > MAX_STORED_EVENTS) eventHistory.pop();
     validationStats.validCount++;
     res.json({
       status: 'accepted',

@@ -224,6 +224,8 @@ The following items are implemented in code on the current branch:
 - Telemetry contracts restrict metadata to scalar values and reject common direct identifiers, contact details, credentials, and obvious health-data fields before accepting events.
 - Telemetry ingestion is rate-limited and the in-memory event history is bounded; synthetic fixtures and random pulses are opt-in only.
 - A central browser-storage registry and governance audit report registered namespaced keys and presence without reading or exporting values. JSON and RFC4180 CSV export are available.
+- Browser-native read-aloud controls on learning topics, with idle/loading/playing/retrying/cancelled/error states, cancellation, accessible status announcements, and bounded exponential retry with jitter. The text is synthesized locally by the browser and is not sent to an audio service.
+
 - Baseline API security headers, disabled Express technology disclosure, and a bounded JSON request body.
 - Synthetic telemetry seeding and random pulse generation are disabled by default. They can be enabled only with the explicit `KINGDOM_DEMO_TELEMETRY=true` environment setting. The interface labels those events as illustrative.
 - A persistent dashboard disclosure that the existing hardcoded charts, map, briefing and AI fallback scenarios are not connected to live clinical, financial, or operational systems.

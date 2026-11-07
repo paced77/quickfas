@@ -61,16 +61,35 @@ test('API router mounts Supabase authentication before protected route registrat
   assert.match(viteConfig, /envPrefix: \['VITE_', 'NEXT_PUBLIC_'\]/);
 });
 
-test('known AI routes remain authenticated pending an approved role matrix', () => {
+test('AI routes enforce role-specific capabilities and distributed rate limits', () => {
   const routes = source('../src/server/routes.ts');
   const authMount = routes.indexOf('router.use(requireAuthenticatedUser)');
-  for (const route of [
-    "router.post('/gemini/council-deliberation'",
-    "router.post('/gemini/executive-briefing'",
-    "router.post('/gemini/simulation'",
-    "router.post('/gemini/voice-query'",
-  ]) {
+  const expected = [
+    ["router.post('/gemini/council-deliberation'", "requireRole('admin', 'executive', 'analyst')", "ai-council"],
+    ["router.post('/gemini/executive-briefing'", "requireRole('admin', 'executive')", "ai-briefing"],
+    ["router.post('/gemini/simulation'", "requireRole('admin', 'executive', 'analyst', 'operator')", "ai-simulation"],
+    ["router.post('/gemini/voice-query'", "requireRole('admin', 'executive', 'analyst', 'operator')", "ai-voice"],
+  ] as const;
+  for (const [route, roleGuard, bucket] of expected) {
     const routeIndex = routes.indexOf(route);
     assert.ok(routeIndex > authMount, `${route} must remain behind authentication`);
+    const registration = routes.slice(routeIndex, routes.indexOf(';', routeIndex));
+    assert.ok(registration.includes(roleGuard), `${route} must enforce its capability matrix`);
+    assert.ok(registration.includes(`requireDistributedRateLimit('${bucket}')`), `${route} must use a distributed per-user limit`);
   }
+  assert.match(routes, /CouncilRequestSchema\.safeParse\(req\.body\)/);
+  assert.match(routes, /BriefingRequestSchema\.safeParse\(req\.body\)/);
+  assert.match(routes, /SimulationRequestSchema\.safeParse\(req\.body\)/);
+  assert.match(routes, /VoiceRequestSchema\.safeParse\(req\.body\)/);
+  assert.match(routes, /authClient\.rpc\('consume_quickfas_api_rate_limit'/);
+});
+
+test('rate-limit migration keeps counters private and non-bypassable by callers', () => {
+  const migration = source('../supabase/migrations/20261107194735_quickfas_rate_limits_invoker_hardening.sql');
+  assert.match(migration, /security invoker/i);
+  assert.match(migration, /private\.enforce_quickfas_api_rate_limit_counter/);
+  assert.match(migration, /request_count := old\.request_count \+ 1/i);
+  assert.match(migration, /with check \(\(select auth\.uid\(\)\) = user_id\)/);
+  assert.match(migration, /revoke delete, truncate, references, trigger/i);
+  assert.doesNotMatch(migration, /security definer/i);
 });

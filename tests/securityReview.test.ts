@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
+import { CouncilRequestSchema, BriefingRequestSchema, SimulationRequestSchema, VoiceRequestSchema } from '../src/server/requestSchemas.ts';
 
 const source = (relativePath: string) =>
   readFileSync(new URL(relativePath, import.meta.url), 'utf8');
@@ -91,6 +92,19 @@ test('authentication UI distinguishes guest preview from least-privileged accoun
   assert.match(gate, /read-only viewer access/i);
   assert.match(gate, /Access: \{profileRole/);
   assert.match(gate, /profileError \? 'unavailable' : data\?\.role \?\? 'missing'/);
+});
+
+test('API request schemas reject oversized, malformed, and unexpected input', () => {
+  assert.equal(CouncilRequestSchema.safeParse({ agendaTopic: 'Review priorities', contextData: { sourceStatus: 'not_connected' } }).success, true);
+  assert.equal(CouncilRequestSchema.safeParse({ agendaTopic: 'x', unexpected: true }).success, false);
+  assert.equal(CouncilRequestSchema.safeParse({ contextData: { note: 'x'.repeat(16_500) } }).success, false);
+  assert.equal(BriefingRequestSchema.safeParse({ timeOfDay: 'Good morning', focusDomain: 'operations' }).success, true);
+  assert.equal(BriefingRequestSchema.safeParse({ focusDomain: 'x'.repeat(81) }).success, false);
+  assert.equal(SimulationRequestSchema.safeParse({ magnitudePct: 0 }).success, true);
+  assert.equal(SimulationRequestSchema.safeParse({ magnitudePct: 101 }).success, false);
+  assert.equal(VoiceRequestSchema.safeParse({ query: 'Show strategic risks' }).success, true);
+  assert.equal(VoiceRequestSchema.safeParse({ query: ' ' }).success, false);
+  assert.equal(VoiceRequestSchema.safeParse({ query: 'x'.repeat(1001) }).success, false);
 });
 
 test('rate-limit migration keeps counters private and non-bypassable by callers', () => {

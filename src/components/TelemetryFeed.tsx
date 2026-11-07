@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Activity, ShieldCheck, ShieldAlert, Pause, Play, Filter, RefreshCw, Code, CheckCircle, AlertTriangle, Layers } from 'lucide-react';
-import { AnyKingdomEvent } from 'Fictional sample — not connected to live data';
+import { AnyKingdomEvent } from '../schemas/events.ts';
 import { audioEngine } from '../services/audioEngine.ts';
 
 interface TelemetryStats {

@@ -278,14 +278,14 @@ BaseKingdomEvent = z.object({
   timestamp: z.string().datetime(),
   source: z.string().min(1),
   correlationId: z.string().min(1),
-  domain: z.enum(['clinical', 'operations', 'finance', 'infrastructure', 'ai']),
+  domain: z.enum(['operations', 'finance', 'infrastructure', 'ai']),
   severity: z.enum(['info', 'nominal', 'warning', 'critical']),
   metadata: z.record(z.string(), z.unknown()),
 })
 
 // Sub-schemas:
 HealthEventSchema: status, uptime, latencyMs >= 0, errorsPerMin, cpu, memory, availability
-ClinicalEventSchema: studyId, studyName, siteId, currentEnrollment, targetEnrollment, velocityPpm
+Clinical and FHIR event ingestion is disabled; no EHR or patient-data connection is available
 RiskEventSchema: category, probability [0..1], impactRating [1..10], mitigationStrategy`}
           </pre>
         </div>
@@ -296,7 +296,7 @@ RiskEventSchema: category, probability [0..1], impactRating [1..10], mitigationS
         <span className="text-slate-500 font-mono text-[11px] mr-2 flex items-center gap-1">
           <Filter className="w-3 h-3" /> Filter:
         </span>
-        {['all', 'clinical', 'finance', 'operations', 'infrastructure', 'ai'].map((dom) => (
+        {['all', 'finance', 'operations', 'infrastructure', 'ai'].map((dom) => (
           <button
             key={dom}
             onClick={() => {
@@ -314,7 +314,8 @@ RiskEventSchema: category, probability [0..1], impactRating [1..10], mitigationS
         ))}
       </div>
 
-      {/* Live Events Table */}
+      {/* Authenticated in-memory event feed; no EHR or patient data ingestion is supported. */}
+      <aside role="note" className="mb-3 rounded-lg border border-amber-400/30 bg-amber-950/20 px-3 py-2 text-[11px] leading-5 text-amber-100">Only synthetic, non-sensitive operational examples belong here. Clinical and FHIR ingestion is disabled; never submit patient, health, or EHR data.</aside>
       <div className="space-y-2 max-h-[380px] overflow-y-auto pr-1">
         {events.length > 0 ? (
           events.map((evt) => {
@@ -347,16 +348,6 @@ RiskEventSchema: category, probability [0..1], impactRating [1..10], mitigationS
                   {evt.eventType === 'system.health' && (
                     <span>
                       Latency: <span className="text-cyan-300">{(evt as any).payload.latencyMs}ms</span> · CPU: {(evt as any).payload.cpuUtilization}% · Memory: {(evt as any).payload.memoryUtilization}% · Availability: {(evt as any).payload.availabilityPct}%
-                    </span>
-                  )}
-                  {evt.eventType === 'clinical.enrollment' && (
-                    <span>
-                      Study: <span className="text-cyan-300">{(evt as any).payload.studyName}</span> · Enrolled: {(evt as any).payload.currentEnrollment} / {(evt as any).payload.targetEnrollment} · Velocity: {(evt as any).payload.velocityPpm} pts/mo · Ingestion: {(evt as any).payload.fhirTransactionsPerSec} tx/s
-                    </span>
-                  )}
-                  {evt.eventType === 'clinical.fhir_tx' && (
-                    <span>
-                      FHIR Gateway: Ingesting <span className="text-cyan-300">{(evt as any).payload.fhirTransactionsPerSec} tx/s</span> for {(evt as any).payload.studyName}
                     </span>
                   )}
                   {evt.eventType === 'finance.forecast_update' && (

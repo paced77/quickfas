@@ -33,3 +33,13 @@ Configure the required environment variables in your deployment environment. Nev
 ## Safety and privacy
 
 Use synthetic fixtures only in demos and tests. Never place real patient data, protected health information, credentials, or secrets in sample data, logs, analytics, or screenshots. Production deployment must be gated on the test, privacy, security, accessibility, and migration checks described in the architecture plan.
+
+## Privacy, analytics, and telemetry safeguards
+
+The current branch includes a versioned local analytics-consent preference with cross-tab synchronization, an accessible consent control, an allow-listed event contract, and authenticated analytics intake that accepts event names only. Event totals are aggregate and process-local; they reset when the API process restarts. No route, topic title, account identifier, age band, health information, form content, or credentials are sent in analytics events.
+
+Synthetic telemetry is disabled by default. To intentionally enable the legacy illustrative stream in a non-production demonstration environment, set `KINGDOM_DEMO_TELEMETRY=true`. The interface identifies this mode as synthetic. Without that setting, the telemetry feed waits for authenticated event ingestion and reports that the current in-memory feed is not a durable audit log.
+
+The API now applies baseline security headers, disables Express's `X-Powered-By` header, and limits JSON request bodies. These controls are a foundation, not a substitute for a full security review, durable audit storage, deployment configuration review, or penetration testing.
+
+Run `npm test` for the privacy and analytics contract tests, `npm run lint` for TypeScript checking, and `npm run build` for the production frontend build. These commands must pass in CI before the pull request is considered release-ready.

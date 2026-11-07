@@ -44,14 +44,18 @@ export function AuthGate({ children }: AuthGateProps) {
     }
     let active = true;
     setProfileRole('checking');
-    supabase.from('profiles').select('role').eq('id', session.user.id).maybeSingle()
-      .then(({ data, error: profileError }) => {
-        if (!active) return;
-        setProfileRole(profileError ? 'unavailable' : data?.role ?? 'missing');
-      })
-      .catch(() => {
+    void (async () => {
+      try {
+        const { data, error: profileError } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('id', session.user.id)
+          .maybeSingle();
+        if (active) setProfileRole(profileError ? 'unavailable' : data?.role ?? 'missing');
+      } catch {
         if (active) setProfileRole('unavailable');
-      });
+      }
+    })();
     return () => { active = false; };
   }, [session?.user.id]);
 

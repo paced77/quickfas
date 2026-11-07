@@ -17,6 +17,7 @@ import { InvestorPortal } from './components/strategy/InvestorPortal.tsx';
 import { ExecutiveBriefingData } from './types/kingdom.ts';
 import { audioEngine } from './services/audioEngine.ts';
 import { CheckCircle2, ShieldAlert } from 'lucide-react';
+import { ConsentBanner } from './components/privacy/ConsentBanner.tsx';
 
 const INITIAL_BRIEFING: ExecutiveBriefingData = {
   headline: 'All Kingdom Systems Nominal · Clinical Endpoint Acceleration Approved',
@@ -170,6 +171,15 @@ export default function App() {
 
         {/* Main Content Area */}
         <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <aside
+            role="note"
+            aria-label="Sample data disclosure"
+            className="mb-5 rounded-lg border border-amber-400/30 bg-amber-950/30 px-4 py-3 text-xs leading-5 text-amber-100"
+          >
+            <strong>Illustrative workspace:</strong> some dashboard metrics, maps, charts, and AI fallback responses use
+            sample scenarios. They are not connected to live clinical, financial, or operational systems and must not be
+            used to make real-world decisions. No patient records are loaded.
+          </aside>
           {/* Toast Notification */}
           {notification && (
             <div className="fixed bottom-6 right-6 z-50 bg-[#0f172a] border border-[#6ee7ff]/40 text-cyan-200 text-xs px-4 py-2.5 rounded-lg shadow-[0_0_24px_rgba(110,231,255,0.3)] flex items-center gap-2 animate-in slide-in-from-bottom duration-200">
@@ -299,6 +309,7 @@ export default function App() {
           </div>
         </footer>
       </div>
+      <ConsentBanner />
     </div>
   );
 }

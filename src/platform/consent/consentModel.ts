@@ -79,6 +79,11 @@ export function migrateConsentStorage(storage: ConsentStorageLike): ConsentRecor
   const currentValue = storage.getItem(CONSENT_STORAGE_KEY);
   if (currentValue !== null) return parseConsentRecord(currentValue);
 
+  const versionMarker = storage.getItem('consent:version');
+  if (versionMarker && Number.isFinite(Number(versionMarker)) && Number(versionMarker) > CONSENT_SCHEMA_VERSION) {
+    return null;
+  }
+
   let legacyRecord: ConsentRecord | null = null;
   const legacySnapshot = new Map<string, string>();
   for (const key of LEGACY_CONSENT_KEYS) {

@@ -233,3 +233,5 @@ The current telemetry event store and analytics aggregates are process-local and
 ### Verification gate
 
 The source changes have been committed to this branch, but the complete TypeScript check, test suite, production build, accessibility audit, and deployment workflow still need to run against the current head commit. Keep the pull request in draft until those checks pass and the Okteto preview credential dependency is resolved or the preview workflow is intentionally changed.
+
+The Stratum learning hub has expanded to ten searchable, category-filtered health-literacy topics. Save and reading-progress state is session-only and is not sent to analytics; only the generic event name is sent when analytics consent is granted. The existing Governance workspace now contains a browser-storage registry audit with JSON and RFC4180 CSV export. The audit enumerates namespaced keys and presence only; it never reads or exports stored values.

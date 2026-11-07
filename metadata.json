@@ -1,0 +1,6 @@
+{
+  "name": "Project Kingdom: Sovereign Command Center",
+  "description": "2027+ Sovereign Intelligence Operating System for real-time autonomous enterprise decision-making, telemetry fabric, AI Council deliberation, and mission control.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

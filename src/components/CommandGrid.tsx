@@ -1,0 +1,245 @@
+import React, { useState } from 'react';
+import { Activity, Cpu, Database, ShieldCheck, Zap, ArrowRight, Gauge, CheckCircle2, RefreshCw } from 'lucide-react';
+import { SubsystemTelemetry } from '../types/kingdom.ts';
+import { audioEngine } from '../services/audioEngine.ts';
+
+interface CommandGridProps {
+  onSelectSubsystem?: (subsystem: SubsystemTelemetry) => void;
+}
+
+export const initialSubsystems: SubsystemTelemetry[] = [
+  {
+    id: 'sub-clinical',
+    name: 'Clinical Intelligence Engine',
+    domain: 'clinical',
+    purpose: 'Continuous ingestion of FHIR EHR feeds, multi-center oncology trial velocity & cohort stability',
+    currentState: 'Active Multi-Center Ingestion',
+    healthPct: 98.4,
+    latencyMs: 83,
+    dependencies: ['Zurich Biostorage API', 'Mayo Clinical Node', 'Charite Genomics Mesh'],
+    output: '142.8 FHIR tx/sec · 28.5 pts/month',
+    forecast: 'Target enrollment (+720 patients) reached 14 days ahead of Q3 protocol milestone',
+    confidence: 'High',
+    velocityMetric: 'Enrollment Velocity: High (+24%)',
+    impactSentiment: 'positive',
+  },
+  {
+    id: 'sub-finance',
+    name: 'Finance Oracle Engine',
+    domain: 'finance',
+    purpose: 'Autonomous capital allocation, dynamic runway modeling, and commercial revenue trajectory',
+    currentState: 'Predictive Cash Flow Optimization',
+    healthPct: 99.1,
+    latencyMs: 42,
+    dependencies: ['Treasury Wire Gateway', 'ERP Ledger Sync', 'Contract Milestone Index'],
+    output: '$14.2M MRR · 38.5 Months Runway',
+    forecast: 'Forecast Accuracy: 96.2% · Gross Margin expansion to 78.4%',
+    confidence: 'Very High',
+    velocityMetric: 'Runway Burn: Optimal ($2.1M/mo)',
+    impactSentiment: 'positive',
+  },
+  {
+    id: 'sub-operations',
+    name: 'Operations Command Grid',
+    domain: 'operations',
+    purpose: 'Real-time workflow orchestration, lab capacity balancing, and reagent supply chain routing',
+    currentState: 'High-Throughput Balanced',
+    healthPct: 96.2,
+    latencyMs: 64,
+    dependencies: ['Core Lab Assays', 'Courier Dispatch API', 'Global Cold-Chain Telemetry'],
+    output: '1,840 assays/hour · 74% Capacity Utilization',
+    forecast: 'Zero critical bottlenecks through Day +60; Buffer capacity: 26%',
+    confidence: 'High',
+    velocityMetric: 'Throughput: Nominal',
+    impactSentiment: 'nominal',
+  },
+  {
+    id: 'sub-security',
+    name: 'Zero-Trust Security Sentinel',
+    domain: 'security',
+    purpose: 'Continuous cryptographic provenance, automated FHIR ingress sanitization, and invariant audits',
+    currentState: 'Zero-Trust Guard Enforcing',
+    healthPct: 99.9,
+    latencyMs: 14,
+    dependencies: ['Hardware HSM Cluster', 'Audit Ledger Proofs', 'mTLS Gateway Fabric'],
+    output: '0 Integrity Invariant Breaches · 14.8M tx audited',
+    forecast: '100% compliance audit readiness for FDA Title 21 CFR Part 11 and EU AI Act',
+    confidence: 'Guaranteed',
+    velocityMetric: 'Threat Level: Baseline Low',
+    impactSentiment: 'positive',
+  },
+  {
+    id: 'sub-telemetry',
+    name: 'Kingdom Telemetry Fabric',
+    domain: 'infrastructure',
+    purpose: 'Microsecond distributed event bus with runtime Zod schema contract validation (TEL-001/005)',
+    currentState: 'Contract Validation 100% Invariant',
+    healthPct: 99.7,
+    latencyMs: 28,
+    dependencies: ['Event Streaming Mesh', 'Zod Schema Invariant Bus', 'Tracing Collector'],
+    output: '4,280 events/min · 0 Unhandled Exceptions',
+    forecast: 'Cluster auto-scaling headroom at 4.2x baseline traffic spike',
+    confidence: 'Very High',
+    velocityMetric: 'Zod Validation: 100% Strict',
+    impactSentiment: 'positive',
+  },
+  {
+    id: 'sub-ai-council',
+    name: 'Sovereign AI Council Bus',
+    domain: 'infrastructure',
+    purpose: 'Multi-agent deliberation orchestrator, strategic recommendation consensus, and executive guidance',
+    currentState: 'Deliberation Standby (34 Agents Active)',
+    healthPct: 97.8,
+    latencyMs: 112,
+    dependencies: ['Gemini 3.8 Flash Engine', 'Autonomous Agent Bus', 'Executive Policy Store'],
+    output: '34 Autonomous Agents Synchronized',
+    forecast: 'Consensus latency under 1.2s across all 7 Permanent Sovereign Leaders',
+    confidence: 'High',
+    velocityMetric: 'Decision Tempo: Sub-second',
+    impactSentiment: 'positive',
+  },
+];
+
+export const CommandGrid: React.FC<CommandGridProps> = ({ onSelectSubsystem }) => {
+  const [subsystems, setSubsystems] = useState<SubsystemTelemetry[]>(initialSubsystems);
+  const [probingId, setProbingId] = useState<string | null>(null);
+
+  const handleProbe = (sub: SubsystemTelemetry) => {
+    audioEngine.playPositiveSignal();
+    setProbingId(sub.id);
+    setTimeout(() => {
+      setSubsystems((prev) =>
+        prev.map((item) =>
+          item.id === sub.id
+            ? {
+                ...item,
+                latencyMs: Math.max(12, Math.floor(item.latencyMs * (0.9 + Math.random() * 0.2))),
+                healthPct: Math.min(100, +(item.healthPct + (Math.random() * 0.4 - 0.2)).toFixed(1)),
+              }
+            : item
+        )
+      );
+      setProbingId(null);
+      audioEngine.playCompletionSignal();
+    }, 750);
+  };
+
+  return (
+    <div className="mb-6">
+      <div className="flex items-center justify-between mb-4">
+        <div>
+          <h3 className="text-sm font-bold text-white tracking-wide uppercase font-mono">
+            Subsystem Live Performance Visibility
+          </h3>
+          <p className="text-xs text-slate-400 mt-0.5">
+            2027 Sovereign Architecture: Continuous live verification across health, latency, dependencies, and forecast confidence.
+          </p>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {subsystems.map((sub) => {
+          const isProbing = probingId === sub.id;
+          return (
+            <div
+              key={sub.id}
+              className="glass-panel rounded-xl p-4 flex flex-col justify-between hover:border-cyan-500/30 transition-all duration-200"
+            >
+              <div>
+                {/* Header */}
+                <div className="flex items-start justify-between gap-2 pb-2.5 border-b border-white/5">
+                  <div>
+                    <h4 className="text-sm font-semibold text-white tracking-tight">
+                      {sub.name}
+                    </h4>
+                    <p className="text-[11px] text-slate-400 leading-tight mt-1 line-clamp-2">
+                      {sub.purpose}
+                    </p>
+                  </div>
+                  <span className="text-[10px] font-mono text-cyan-400 px-1.5 py-0.5 rounded bg-cyan-950/40 border border-cyan-800/40 shrink-0">
+                    {sub.domain.toUpperCase()}
+                  </span>
+                </div>
+
+                {/* Subsystem Telemetry Core Spec */}
+                <div className="grid grid-cols-2 gap-2 my-3 text-xs">
+                  <div className="bg-[#050811]/60 rounded p-2 border border-white/5">
+                    <span className="text-[10px] font-mono text-slate-500 block">HEALTH</span>
+                    <span className="text-sm font-bold font-mono text-emerald-400 tabular-nums">
+                      {sub.healthPct}%
+                    </span>
+                  </div>
+
+                  <div className="bg-[#050811]/60 rounded p-2 border border-white/5">
+                    <span className="text-[10px] font-mono text-slate-500 block">LATENCY</span>
+                    <span className="text-sm font-bold font-mono text-cyan-300 tabular-nums">
+                      {sub.latencyMs}ms
+                    </span>
+                  </div>
+                </div>
+
+                {/* Performance Metrics */}
+                <div className="space-y-1.5 text-xs">
+                  <div className="flex items-center justify-between text-slate-300">
+                    <span className="text-[11px] text-slate-500">Current Output:</span>
+                    <span className="font-mono text-slate-200 font-medium text-right text-[11px]">
+                      {sub.output}
+                    </span>
+                  </div>
+
+                  <div className="flex items-center justify-between text-slate-300">
+                    <span className="text-[11px] text-slate-500">Confidence:</span>
+                    <span className="font-mono text-cyan-300 font-semibold text-[11px]">
+                      {sub.confidence}
+                    </span>
+                  </div>
+
+                  <div className="bg-white/[0.02] rounded p-2 mt-2 border border-white/5 text-[11px]">
+                    <span className="text-[10px] font-mono text-slate-500 block uppercase">
+                      Forecast Trajectory
+                    </span>
+                    <span className="text-slate-300 leading-tight block mt-0.5">
+                      {sub.forecast}
+                    </span>
+                  </div>
+
+                  <div className="pt-2">
+                    <span className="text-[10px] font-mono text-slate-500 block uppercase mb-1">
+                      Live Dependencies ({sub.dependencies.length})
+                    </span>
+                    <div className="flex flex-wrap gap-1">
+                      {sub.dependencies.map((dep, dIdx) => (
+                        <span
+                          key={dIdx}
+                          className="text-[10px] font-mono text-slate-400 bg-white/5 px-1.5 py-0.5 rounded border border-white/5"
+                        >
+                          {dep}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Subsystem Actions */}
+              <div className="mt-4 pt-3 border-t border-white/5 flex items-center justify-between">
+                <button
+                  onClick={() => handleProbe(sub)}
+                  disabled={isProbing}
+                  className="flex items-center gap-1 text-[11px] font-medium text-slate-300 hover:text-cyan-300 transition-colors"
+                >
+                  <RefreshCw className={`w-3 h-3 ${isProbing ? 'animate-spin text-cyan-400' : ''}`} />
+                  <span>{isProbing ? 'Running Probe...' : 'Subsystem Probe'}</span>
+                </button>
+                <span className="text-[10px] font-mono text-emerald-400/80 flex items-center gap-1">
+                  <CheckCircle2 className="w-2.5 h-2.5" />
+                  <span>NOMINAL</span>
+                </span>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+};

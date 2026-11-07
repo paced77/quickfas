@@ -261,7 +261,7 @@ const handleHealth = (req: Request, res: Response) => {
 router.get('/health', handleHealth);
 router.get('/api/health', handleHealth);
 
-// All application APIs below this point require a verified Supabase user.
+// All router-mounted APIs below this point require a verified Supabase user. Public event-only analytics routes are registered on app separately.
 router.use(requireAuthenticatedUser);
 
 // Privacy-safe product analytics: allow-listed event names only; no event properties,
@@ -286,7 +286,7 @@ const handleAnalyticsEvent = (req: Request, res: Response) => {
   analyticsEventCounts[eventName] = (analyticsEventCounts[eventName] ?? 0) + 1;
   return res.status(202).json({ accepted: true });
 };
-// Public anonymous endpoint: the payload contains only an approved event name and no identity.
+// Public anonymous endpoint: strict allow-listed event name only; no identity or event properties are retained.
 app.post('/analytics/event', handleAnalyticsEvent);
 app.post('/api/analytics/event', handleAnalyticsEvent);
 

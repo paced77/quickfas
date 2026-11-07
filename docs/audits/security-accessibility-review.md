@@ -18,7 +18,7 @@ This is an engineering review, not a penetration-test report, compliance certifi
 - AI and telemetry-write API routes now enforce a role matrix, strict bounded Zod request schemas, and a distributed per-user rolling one-minute limit. A failed rate-limit database check fails closed with HTTP 503.
 - The public health response has been reduced to `{ status: "ok" }`.
 - Express sets `X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`, `Permissions-Policy`, HSTS in production, disables `X-Powered-By`, and limits JSON request bodies to 256 KB.
-- Product analytics accepts only strict allow-listed event names. It does not retain account IDs, event properties, IP addresses, route strings, health details, or form contents.
+- Product analytics requires a verified Supabase session and accepts only strict allow-listed event names. It does not retain account IDs, event properties, IP addresses, route strings, health details, or form contents.
 - Synthetic telemetry is disabled unless `KINGDOM_DEMO_TELEMETRY=true`. Stratum Clinical Edge is an educational experience and has no EHR integration.
 - Vercel SSO remains enabled for the restricted production deployment. Okteto workflow and manifest are removed from PR #4; Vercel is the only configured deployment platform.
 
@@ -27,10 +27,11 @@ This is an engineering review, not a penetration-test report, compliance certifi
 | Capability / endpoint | Allowed roles |
 |---|---|
 | Health check | Public; returns status only |
-| Analytics event | Public; strict event-name-only schema |
+| Analytics event | Any authenticated profile role; strict event-name-only schema and distributed quota |
 | Telemetry events (read) | Any authenticated profile role |
 | Analytics summary | `admin`, `executive` |
 | Telemetry injection | `admin`, `operator` |
+| Analytics event submission | Any authenticated profile role |
 | AI council deliberation | `admin`, `executive`, `analyst` |
 | Executive briefing | `admin`, `executive` |
 | Digital-twin simulation | `admin`, `executive`, `analyst`, `operator` |
@@ -49,10 +50,11 @@ The Supabase rate-limit RPC applies rolling one-minute quotas per authenticated 
 | Simulation | 5/minute |
 | Voice query | 15/minute |
 | Telemetry injection | 120/minute |
+| Analytics event | 120/minute |
 
 The counter table is RLS-protected. Users can only access their own counter rows; direct deletion is denied; update triggers prevent changing the counter identity or resetting its count before the window expires. The RPC uses invoker privileges. If the rate-limit service fails, the API refuses the protected operation instead of falling back to an in-memory limit.
 
-**Remaining analytics caveat:** the public event-only analytics endpoint still uses a process-local throttle (300/minute per running process). It does not provide a reliable distributed IP limit across serverless instances. Its payload is tightly constrained and it only updates in-memory aggregates, but this endpoint should receive an edge-level abuse limit before public unrestricted launch.
+Analytics event submission is no longer public. It requires a verified Supabase session and uses the distributed per-user quota. Guest Preview therefore does not submit analytics events; analytics remains non-essential and does not block the learning or command experience.
 
 ## Supabase migration history
 
@@ -81,7 +83,7 @@ The rate-limit migration files are tracked in this branch under `supabase/migrat
 2. Verify that the new rate-limit RPC behaves correctly under authenticated concurrency and that a caller cannot reset or delete their own counter. The SQL grants, RLS, function security mode, trigger, and advisor findings have been inspected; an authenticated end-to-end exercise is still outstanding.
 3. Complete a repository-wide audit of every API route, static chart/map, AI response schema, and future generated content. Keep fictional figures visibly labelled illustrative and never present them as live clinical, financial, regulatory, or operational results.
 4. Complete logging review to confirm tokens, prompts, user content, and provider responses cannot leak through runtime logs.
-5. Add distributed edge-level abuse controls for the public analytics event endpoint, or disable public analytics until such protection is configured.
+5. Review whether the event-only analytics aggregate needs durable storage; it is currently process-local and should not be presented as a durable or cross-instance metric.
 6. Complete a full Content Security Policy based on the actual Vite, Supabase, Gemini, asset, font, and media requirements. The current policy only sets `frame-ancestors 'none'`; do not apply a stricter policy without browser regression testing.
 7. Complete secret scanning, dependency advisory review, lockfile consistency, and build provenance review.
 8. Conduct input fuzzing, rate-limit concurrency tests, role-escalation tests, and an independent penetration test before public access.
@@ -110,7 +112,7 @@ No WCAG 2.2 AA conformance claim should be made until manual and automated evide
 | New-user least-privileged role | Migration and trigger verified live |
 | API role guards and bounded AI request schemas | Implemented on PR branch; fresh CI required |
 | Distributed per-user AI and telemetry quotas | Implemented and live; SQL privilege/RLS/advisor checks verified; authenticated concurrency test pending |
-| Public analytics abuse limit | Process-local only; edge-level control pending |
+| Analytics event access and quota | Authenticated-only with distributed per-user quota; live schema and advisor checks verified |
 | Supabase security advisor | Clear after latest migrations |
 | Auth provider, Site URL, redirects, real role-account tests | Pending |
 | TypeScript, tests, production build, CodeQL | Previous branch head passed; rerun after latest changes |

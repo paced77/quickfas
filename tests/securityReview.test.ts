@@ -53,7 +53,7 @@ test('API router mounts Supabase authentication before protected route registrat
   assert.match(routes, /authClient\.auth\.getUser\(token\)/);
   assert.match(routes, /\.from\('profiles'\)[\s\S]*?\.select\('role'\)/);
   assert.match(routes, /requireRole\('admin', 'executive'\), handleAnalyticsSummary/);
-  assert.match(routes, /requireRole\('admin', 'operator'\), handleTelemetryInject/);
+  assert.match(routes, /requireRole\('admin', 'operator'\), requireDistributedRateLimit\('telemetry-ingest'\), handleTelemetryInject/);
   const supabaseClient = source('../src/lib/supabase.ts');
   const viteConfig = source('../vite.config.ts');
   assert.match(supabaseClient, /VITE_SUPABASE_URL \|\| import\.meta\.env\.NEXT_PUBLIC_SUPABASE_URL/);

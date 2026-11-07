@@ -1,95 +1,94 @@
 # Security, privacy, and accessibility review
 
 **Repository:** `paced77/quickfas`  
-**Review baseline:** `main`, integration commit `6ead302899ea69761668937b40833f20653918d8`  
 **Review date:** 2026-11-07  
-**Status:** In progress — production remains SSO-restricted.
+**Status:** In progress — production remains SSO-restricted.  
+**Scope:** Existing Quickfas application, including Project Kingdom and Stratum Clinical Edge.
 
-This is an evidence-based engineering review, not a penetration-test report, compliance certification, clinical validation, or WCAG conformance statement.
+This is an engineering review, not a penetration-test report, compliance certification, clinical validation, or WCAG conformance statement.
 
-## Controls verified
+## Verified controls
 
-- Source inspection confirms that the existing API verifies Supabase bearer tokens with `auth.getUser(token)` and reads the caller's `public.profiles.role`; no second identity system was introduced.
-- The checked-in `supabase/schema.sql` defines RLS, a self-read policy, and a `viewer` default for new profiles. This is source-code evidence only; live profile-table availability and policy behavior are not yet verified.
-- API middleware applies `X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`, `Permissions-Policy`, HSTS in production, disables Express technology disclosure, and limits JSON bodies to 256 KB.
-- Analytics event schema accepts allow-listed event names and rejects additional payload properties. Client-side analytics requires explicit consent.
-- Synthetic telemetry is disabled unless `KINGDOM_DEMO_TELEMETRY=true`.
-- The Stratum learning hub uses session-only progress and browser-native speech synthesis; no EHR integration is present.
-- Vercel SSO protection is enabled for non-custom domains. Keep this setting enabled throughout review.
-- Supabase security advisor was rerun after remediation below and returned no remaining security lint findings.
+- Existing Supabase bearer-token verification uses `auth.getUser(token)`; authorization roles are read from the server-side `public.profiles` row. User-editable signup metadata is not trusted for authorization.
+- The live `seventeen-pockets` Supabase project (`babdeawtwaoorsmdnxip`, `us-east-1`) contains the profile schema, RLS, self-read policy, and new-user trigger assigning the least-privileged `viewer` role.
+- The profile table grants authenticated SELECT only; its own-row RLS policy restricts the caller to their own profile. Anonymous SELECT is not granted.
+- A Supabase-backed rate-limit counter table is enabled with RLS and caller-scoped read/insert/update policies. There is no caller DELETE privilege. A trigger makes the user/bucket identity immutable and increments or resets counters only when the minute window expires.
+- The rate-limit RPC is `SECURITY INVOKER`, restricted to authenticated users, and checks `auth.uid()`. It has a fixed bucket allowlist; callers cannot choose their own quota.
+- The Supabase security advisor returned no findings after the final rate-limit hardening migration. Verified privileges: RLS enabled; three policies present; anonymous SELECT and RPC execute denied; authenticated DELETE denied; authenticated RPC execute allowed; rate-limit function and trigger function are not SECURITY DEFINER.
+- AI and telemetry-write API routes now enforce a role matrix, strict bounded Zod request schemas, and a distributed per-user rolling one-minute limit. A failed rate-limit database check fails closed with HTTP 503.
+- The public health response has been reduced to `{ status: "ok" }`.
+- Express sets `X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`, `Permissions-Policy`, HSTS in production, disables `X-Powered-By`, and limits JSON request bodies to 256 KB.
+- Product analytics accepts only strict allow-listed event names. It does not retain account IDs, event properties, IP addresses, route strings, health details, or form contents.
+- Synthetic telemetry is disabled unless `KINGDOM_DEMO_TELEMETRY=true`. Stratum Clinical Edge is an educational experience and has no EHR integration.
+- Vercel SSO remains enabled for the restricted production deployment. Okteto workflow and manifest are removed from PR #4; Vercel is the only configured deployment platform.
 
-## Remediation completed in Supabase
+## API authorization matrix
 
-The Supabase security advisor identified `public.rls_auto_enable()` as a `SECURITY DEFINER` event-trigger function executable by `PUBLIC`, `anon`, and `authenticated`.
+| Capability / endpoint | Allowed roles |
+|---|---|
+| Health check | Public; returns status only |
+| Analytics event | Public; strict event-name-only schema |
+| Telemetry events (read) | Any authenticated profile role |
+| Analytics summary | `admin`, `executive` |
+| Telemetry injection | `admin`, `operator` |
+| AI council deliberation | `admin`, `executive`, `analyst` |
+| Executive briefing | `admin`, `executive` |
+| Digital-twin simulation | `admin`, `executive`, `analyst`, `operator` |
+| Voice query | `admin`, `executive`, `analyst`, `operator` |
 
-Inspection confirmed it is attached to the enabled `ensure_rls` event trigger and automatically enables RLS on newly created public tables. The function does not need to be callable through the Data API.
+A `viewer` is read-only and cannot call AI-generation or telemetry-write routes. All API aliases with and without the `/api` prefix use the same middleware.
 
-Executed:
+## Distributed per-user limits
 
-```sql
-REVOKE ALL ON FUNCTION public.rls_auto_enable() FROM PUBLIC, anon, authenticated;
-```
+The Supabase rate-limit RPC applies rolling one-minute quotas per authenticated user:
 
-Post-change database inspection confirmed:
-- The `ensure_rls` event trigger remains enabled.
-- Execute privileges remain for `postgres` and `service_role`.
-- `PUBLIC`, `anon`, and `authenticated` no longer have execute privileges.
-- A fresh Supabase security-advisor run returned an empty lint list.
+| Operation | Limit |
+|---|---:|
+| Council deliberation | 8/minute |
+| Executive briefing | 8/minute |
+| Simulation | 5/minute |
+| Voice query | 15/minute |
+| Telemetry injection | 120/minute |
 
-**Migration follow-up:** the live database change still needs to be captured in the repository's reviewed migration history and verified in a staging/restore workflow before it is considered fully reproducible. No table, row, profile, or user data was changed by this privilege revocation.
+The counter table is RLS-protected. Users can only access their own counter rows; direct deletion is denied; update triggers prevent changing the counter identity or resetting its count before the window expires. The RPC uses invoker privileges. If the rate-limit service fails, the API refuses the protected operation instead of falling back to an in-memory limit.
 
-## Authentication and authorization review
+**Remaining analytics caveat:** the public event-only analytics endpoint still uses a process-local throttle (300/minute per running process). It does not provide a reliable distributed IP limit across serverless instances. Its payload is tightly constrained and it only updates in-memory aggregates, but this endpoint should receive an edge-level abuse limit before public unrestricted launch.
 
-### Source-code findings
+## Supabase migration history
 
-- The browser client originally read only `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY`. The draft branch now supports the existing Vercel integration names `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` as fallbacks, and Vite is configured to expose only the explicitly public `VITE_` and `NEXT_PUBLIC_` prefixes. This resolves the variable-name mismatch in source, subject to CI verification.
-- The Vercel environment-variable name inventory contains the `NEXT_PUBLIC_SUPABASE_*` URL/publishable-key variables and server-side `SUPABASE_URL`/`SUPABASE_PUBLISHABLE_KEY` names. Values were not decrypted or copied. `AuthGate` still offers guest preview if the browser variables are absent at build time; guest preview is not an authenticated identity and must not be described as role-based access. Confirm runtime sign-in using dedicated test accounts before claiming production auth is configured.
-- The repository's `.env.example` references Supabase project ref `babdeawtwaoorsmdnxip`. Read-only inspection of that project found no tables in the `public` schema, no public RLS policies, and no recorded migrations. The checked-in `supabase/schema.sql` has not been applied there. If production's `SUPABASE_URL` points to this project, the API profile lookup cannot succeed and authenticated API requests will fail closed with a service error. The production URL value was not exposed, so the live target must be confirmed before applying schema changes.
-- The Supabase security advisor returned no current security lints for that project. The `ensure_rls` event trigger remains enabled, and `public.rls_auto_enable()` is not executable by `anon` or `authenticated`. This does not prove that the application profile schema exists.
-- API middleware verifies the bearer token with Supabase Auth, then reads the profile role using the same user-scoped client. A missing profile returns 403; a profile-query failure returns 503. Signup profile creation is defined to assign `viewer`, and the schema does not trust user-editable signup metadata for role assignment.
-- The current route policy is:
-  - Public: `GET /health` (returns operational metadata) and `POST /analytics/event` (strict event-name-only payload).
-  - Authenticated, any profile role: telemetry read; AI council, executive briefing, simulation, and voice-query endpoints.
-  - `admin` or `executive`: analytics summary.
-  - `admin` or `operator`: telemetry injection.
-- AI and simulation endpoints currently have no role-specific guard, runtime request schema, or per-user/IP abuse limit. Existing analytics and telemetry caps are process-wide, not identity-aware. These are release blockers until the intended role/capability matrix is approved and enforced.
-- The unauthenticated health response includes version, timestamp, AI-key-configured state, telemetry mode, and persistence mode. Review whether each field is operationally necessary.
-- The current Content-Security-Policy only sets `frame-ancestors 'none'`; it is not a complete CSP.
+The live project currently records these migrations:
 
-### Required role tests
+- `20261107192045_quickfas_profiles_least_privilege`
+- `20261107194716_quickfas_distributed_api_rate_limits`
+- `20261107194735_quickfas_rate_limits_invoker_hardening`
+- `20261107194802_quickfas_rate_limit_telemetry_bucket`
 
-Before enabling public access, add integration tests using the actual configured Supabase project and dedicated test users for every role (`viewer`, `analyst`, `operator`, `executive`, `admin`). Verify:
+The rate-limit migration files are tracked in this branch under `supabase/migrations/`. The initial rate-limit function is immediately hardened by the subsequent migration to an invoker function with caller-scoped RLS and a counter-enforcement trigger. The final live schema and grants were verified after application.
 
-1. Missing, malformed, expired, and revoked tokens are rejected.
-2. A valid token with no profile is rejected; a profile lookup outage fails closed.
-3. A user cannot read another user's profile or elevate their own role through signup metadata, client payloads, or direct profile updates.
-4. Each route returns the expected 401/403/2xx outcome for every role in the approved matrix.
-5. A user cannot call telemetry injection, analytics summaries, or privileged AI workflows outside their approved capabilities.
-6. Guest preview cannot access protected APIs or persist data under another identity.
-7. Rate limits, schema validation, and safe error responses behave consistently across aliases with and without the `/api` prefix.
+## Configuration and deployment
 
-Do not apply `supabase/schema.sql` or change Vercel environment variables until the production Supabase project is confirmed and a reviewed, reproducible migration plus rollback plan is ready.
+- The existing Supabase project `seventeen-pockets` is the backend. No new Supabase project was created and no existing user/business data was deleted or migrated.
+- App-specific Vercel `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` variables were created for production, preview, and development. The publishable key is safe for browser use; no service-role key is exposed.
+- The browser client also supports the existing `NEXT_PUBLIC_SUPABASE_*` variable names. Existing integration-managed variables were not overwritten.
+- Supabase Auth provider enablement, Site URL, redirect allowlist, email confirmation behavior, and end-to-end signup/login/logout have not yet been verified with dedicated test users.
+- Production remains SSO-restricted. Do not disable SSO or treat a preview deployment as public production access.
+- Okteto has been removed from the PR branch; the old workflow and manifest remain on `main` until PR #4 is merged.
+- The last observed Vercel check was rate-limited by Vercel. This is a deployment-provider constraint, not a failed application build. A new Vercel preview must be confirmed before any deployment decision.
 
-## Synthetic-content correction
+## Remaining security work
 
-The initial Project Kingdom briefing, server-side executive/council/simulation/voice fallbacks, opt-in telemetry seed events, and sample telemetry injection have been changed to generic fictional workstream examples. The dashboard, strategic radar, digital-twin, council, mission, chart, and telemetry views have also had fabricated named-institution, patient-count, FHIR, trial, and financial claims replaced with sample-only language where identified. The global illustrative-workspace disclosure remains in place.
-
-Some non-clinical numeric UI examples remain as static interface fixtures. They must remain visibly identified as illustrative and must not be represented as live measurements. A repository-wide review of every remaining static chart, map, and generated AI output is still required; generated model output must be grounded in approved source data or explicitly labelled illustrative.
-
-## Security work still required
-
-1. **API route and authorization review:** enumerate every route and verify method, authentication, role/capability, schema validation, and rate limits. In particular, add explicit input schemas and per-user/IP abuse controls for AI generation and other expensive routes.
-2. **Health endpoint disclosure:** review the unauthenticated health response and reduce operational metadata to the minimum required for uptime checks.
-3. **CSP hardening:** the current Content-Security-Policy only sets `frame-ancestors 'none'`. Define and test a complete policy (including script, style, connect, image, font, and object sources) against the actual Vite/Gemini/Supabase runtime before enforcing it.
-4. **Logging:** inspect error paths for possible token, prompt, user-content, or provider-response leakage. Keep request bodies and authorization headers out of logs.
-5. **Synthetic content:** complete a repository-wide sweep of remaining static charts, maps, mission data, and AI-generated responses. Do not invent real institutions, patients, trials, regulatory approvals, or financial/operational outcomes. Keep sample labels visible wherever fictional values remain.
-6. **Supabase authorization:** audit every exposed table, view, function, trigger, and storage bucket. Confirm RLS on all exposed tables, correct ownership predicates, and least-privilege grants. Inspect any additional security-definer functions and view security-invoker behavior.
-7. **Secrets and supply chain:** verify production environment variables, secret scanning, lockfile consistency, dependency advisories, and build provenance. Do not print or expose secret values during review.
-8. **Threat model and testing:** run authenticated/unauthenticated route tests, role escalation tests, input fuzzing, abuse/rate-limit tests, dependency scanning, and an independent penetration test before public access.
+1. Run real integration tests with dedicated `viewer`, `analyst`, `operator`, `executive`, and `admin` accounts. Cover missing, malformed, expired, and revoked tokens; missing profiles; profile-query failures; self-role escalation attempts; and every route's expected 401/403/2xx behavior.
+2. Verify that the new rate-limit RPC behaves correctly under authenticated concurrency and that a caller cannot reset or delete their own counter. The SQL grants, RLS, function security mode, trigger, and advisor findings have been inspected; an authenticated end-to-end exercise is still outstanding.
+3. Complete a repository-wide audit of every API route, static chart/map, AI response schema, and future generated content. Keep fictional figures visibly labelled illustrative and never present them as live clinical, financial, regulatory, or operational results.
+4. Complete logging review to confirm tokens, prompts, user content, and provider responses cannot leak through runtime logs.
+5. Add distributed edge-level abuse controls for the public analytics event endpoint, or disable public analytics until such protection is configured.
+6. Complete a full Content Security Policy based on the actual Vite, Supabase, Gemini, asset, font, and media requirements. The current policy only sets `frame-ancestors 'none'`; do not apply a stricter policy without browser regression testing.
+7. Complete secret scanning, dependency advisory review, lockfile consistency, and build provenance review.
+8. Conduct input fuzzing, rate-limit concurrency tests, role-escalation tests, and an independent penetration test before public access.
 
 ## Accessibility work still required
 
-The learning hub contains useful accessibility foundations (labels, live result/status regions, button pressed states, keyboard focus styles, semantic sections, and native disclosure elements). These observations are not a complete audit.
+The learning hub contains accessibility foundations such as labels, live status regions, button pressed states, keyboard focus styles, semantic sections, and native disclosure elements. These observations are not a complete audit.
 
 Complete and record:
 - Automated axe-core checks on the landing page, learning hub, and core Project Kingdom routes.
@@ -98,24 +97,26 @@ Complete and record:
 - WCAG 2.2 AA checks for contrast, text resize/reflow, target size, focus not obscured, headings/landmarks, accessible names, error identification, status messages, and reduced motion.
 - Mobile viewport testing at narrow widths and zoom/reflow testing at 200% and 400%.
 - Verify that read-aloud status and cancellation are announced without relying on color or animation.
-- Check every Project Kingdom workflow for regressions; do not limit the audit to the Stratum learning hub.
+- Check every Project Kingdom workflow for regressions; do not limit the audit to Stratum.
 
 No WCAG 2.2 AA conformance claim should be made until manual and automated evidence is recorded and all critical issues are resolved.
 
 ## Release gates
 
-| Gate | Status |
+| Gate | Current evidence / status |
 |---|---|
-| Existing Project Kingdom features retained | Verified by source inspection; regression walkthrough pending |
-| Browser Supabase configuration and live profile schema | Blocked: Vite env names absent from Vercel inventory; checked example project has no public tables |
-| Role/capability route matrix and integration tests | Pending; AI/simulation routes are currently authenticated-only |
-| Core unit/privacy/typecheck/build workflow | Passed on prior integration PR; rerun required for subsequent code changes |
-| Supabase security advisor | <span>Clear after privilege remediation</span> |
-| Supabase privilege change captured as migration | Pending |
-| API route threat review and abuse controls | Pending |
-| CSP and production header validation | Pending |
-| Primary fabricated clinical claims removed from briefing/fallback/demo fixtures | Implemented on draft branch; CI verification pending |
-| Repository-wide synthetic-content sweep | Pending |
+| Existing Project Kingdom features retained | Code remains in the same application; regression walkthrough pending |
+| Supabase profile table, RLS, own-profile policy | Verified live |
+| New-user least-privileged role | Migration and trigger verified live |
+| API role guards and bounded AI request schemas | Implemented on PR branch; fresh CI required |
+| Distributed per-user AI and telemetry quotas | Implemented and live; SQL privilege/RLS/advisor checks verified; authenticated concurrency test pending |
+| Public analytics abuse limit | Process-local only; edge-level control pending |
+| Supabase security advisor | Clear after latest migrations |
+| Auth provider, Site URL, redirects, real role-account tests | Pending |
+| TypeScript, tests, production build, CodeQL | Previous branch head passed; rerun after latest changes |
+| Vercel preview for latest head | Pending; previous check was rate-limited |
+| Complete CSP and runtime validation | Pending |
+| Repository-wide synthetic-content review | Primary fabricated claims corrected; complete sweep pending |
 | Automated accessibility scan | Pending |
 | Keyboard and screen-reader review | Pending |
 | WCAG 2.2 AA assessment | Pending |
@@ -126,4 +127,4 @@ No WCAG 2.2 AA conformance claim should be made until manual and automated evide
 
 ## Operating decision
 
-Keep the existing production deployment restricted. Do not disable Vercel SSO, change identity configuration, connect EHR/patient data, or claim public launch readiness until the outstanding gates have evidence and explicit approval.
+Keep the existing production deployment restricted. Do not disable Vercel SSO, connect EHR/patient data, or claim public launch readiness until the outstanding gates have evidence and explicit approval. The application may be prepared for a controlled, authenticated test deployment once the latest code checks and Vercel preview are confirmed; unrestricted production remains blocked.

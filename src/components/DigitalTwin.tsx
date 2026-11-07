@@ -11,9 +11,9 @@ export const initialTwinNodes: DigitalTwinNode[] = [
     healthPct: 98.6,
     monthlyCostUsd: '$340,000',
     riskLevel: 'Low',
-    outputMetric: 'Strategic Directives: 100% Invariant',
+    outputMetric: 'Illustrative sample output',
     dependencies: ['Fictional sample — not connected to live data', 'Finance Oracle', 'Operations Commander', 'Technology Fabric'],
-    forecastTrend: 'Target Horizon Alignment: 99.2%',
+    forecastTrend: 'Illustrative target value only',
     telemetryStream: [96, 97, 98, 97, 99, 98, 98.6],
   },
   {
@@ -37,7 +37,7 @@ export const initialTwinNodes: DigitalTwinNode[] = [
     riskLevel: 'Low',
     outputMetric: 'Fictional sample — not connected to live data',
     dependencies: ['Technology Fabric'],
-    forecastTrend: 'Burn efficiency +18% via automated routing',
+    forecastTrend: 'Illustrative cost scenario only',
     telemetryStream: [97, 98, 98, 99, 99, 99, 99.1],
   },
   {
@@ -49,7 +49,7 @@ export const initialTwinNodes: DigitalTwinNode[] = [
     riskLevel: 'Moderate',
     outputMetric: 'Fictional sample — not connected to live data',
     dependencies: ['Technology Fabric', 'Fictional sample — not connected to live data'],
-    forecastTrend: 'Buffer capacity 26% prevents queue bottlenecks',
+    forecastTrend: 'Illustrative operations scenario only',
     telemetryStream: [94, 95, 96, 96, 95, 96, 96.2],
   },
   {
@@ -59,9 +59,9 @@ export const initialTwinNodes: DigitalTwinNode[] = [
     healthPct: 99.7,
     monthlyCostUsd: '$410,000',
     riskLevel: 'Low',
-    outputMetric: '83ms Latency · 0 Invariant Violations',
+    outputMetric: 'Illustrative sample output; no audit performed',
     dependencies: [],
-    forecastTrend: '99.99% Availability across 3 Global Regions',
+    forecastTrend: 'Illustrative availability value; not measured',
     telemetryStream: [99, 99, 99, 99.5, 99.6, 99.7, 99.7],
   },
 ];
@@ -78,12 +78,12 @@ const PRESET_PERTURBATIONS = [
     magnitude: 20,
   },
   {
-    title: 'CapEx Reallocation ($1.2M) into Regional Edge Genotyping',
+    title: 'Sample budget reallocation scenario',
     type: 'capital_shift',
     magnitude: 25,
   },
   {
-    title: 'Global Ingress Transit Latency Surge (+120ms network congestion)',
+    title: 'Sample network congestion scenario',
     type: 'network_congestion',
     magnitude: 40,
   },
@@ -131,14 +131,14 @@ export const DigitalTwin: React.FC = () => {
           <div>
             <h3 className="text-sm font-bold text-white tracking-wide uppercase font-mono flex items-center gap-2">
               <GitBranch className="w-4 h-4 text-cyan-400" />
-              <span>Enterprise Digital Twin // Organizational Dependency Graph</span>
+              <span>Illustrative Enterprise Map // Example Dependencies</span>
             </h3>
             <p className="text-xs text-slate-400 mt-0.5">
-              Live computational replica of enterprise topology: CEO Core, Clinical, Finance, Operations, and Technology.
+              Illustrative topology and sample metrics only; no live systems or financial data are connected.
             </p>
           </div>
           <span className="text-xs font-mono text-emerald-400 bg-emerald-950/40 border border-emerald-800/40 px-2.5 py-1 rounded">
-            5 / 5 Nodes In Real-Time Sync
+            5 Example Nodes
           </span>
         </div>
 

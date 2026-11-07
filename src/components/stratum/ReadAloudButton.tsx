@@ -21,6 +21,7 @@ const statusLabels: Record<AudioStatus, string> = {
 export function ReadAloudButton({ text }: ReadAloudButtonProps) {
   const [status, setStatus] = useState<AudioStatus>('idle');
   const generationRef = useRef(0);
+  const activeRef = useRef(false);
   const retryTimerRef = useRef<number | null>(null);
   const active = status === 'loading' || status === 'playing' || status === 'retrying';
 
@@ -28,6 +29,7 @@ export function ReadAloudButton({ text }: ReadAloudButtonProps) {
     if (generation !== generationRef.current) return;
     if (typeof window === 'undefined' || !('speechSynthesis' in window)
       || typeof SpeechSynthesisUtterance === 'undefined') {
+      activeRef.current = false;
       setStatus('error');
       void trackAnalyticsEvent('audio_failed');
       return;
@@ -44,6 +46,7 @@ export function ReadAloudButton({ text }: ReadAloudButtonProps) {
 
     utterance.onend = () => {
       if (generation !== generationRef.current) return;
+      activeRef.current = false;
       setStatus('idle');
       void trackAnalyticsEvent('audio_completed');
     };
@@ -51,6 +54,7 @@ export function ReadAloudButton({ text }: ReadAloudButtonProps) {
     utterance.onerror = (event) => {
       if (generation !== generationRef.current) return;
       if (event.error === 'canceled' || event.error === 'interrupted') {
+        activeRef.current = false;
         setStatus('cancelled');
         return;
       }
@@ -65,6 +69,7 @@ export function ReadAloudButton({ text }: ReadAloudButtonProps) {
         }, getSpeechRetryDelayMs(attempt));
         return;
       }
+      activeRef.current = false;
       setStatus('error');
       void trackAnalyticsEvent('audio_failed');
     };
@@ -73,7 +78,8 @@ export function ReadAloudButton({ text }: ReadAloudButtonProps) {
   };
 
   const stop = () => {
-    const wasActive = active;
+    const wasActive = activeRef.current;
+    activeRef.current = false;
     generationRef.current += 1;
     if (retryTimerRef.current !== null) {
       window.clearTimeout(retryTimerRef.current);
@@ -91,10 +97,12 @@ export function ReadAloudButton({ text }: ReadAloudButtonProps) {
     const generation = generationRef.current;
     if (typeof window === 'undefined' || !('speechSynthesis' in window)
       || typeof SpeechSynthesisUtterance === 'undefined') {
+      activeRef.current = false;
       setStatus('error');
       void trackAnalyticsEvent('audio_failed');
       return;
     }
+    activeRef.current = true;
     window.speechSynthesis.cancel();
     void trackAnalyticsEvent('audio_started');
     speak(generation, 0);
@@ -103,7 +111,7 @@ export function ReadAloudButton({ text }: ReadAloudButtonProps) {
   useEffect(() => () => {
     generationRef.current += 1;
     if (retryTimerRef.current !== null) window.clearTimeout(retryTimerRef.current);
-    if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+    if (activeRef.current && 'speechSynthesis' in window) window.speechSynthesis.cancel();
   }, []);
 
   return (

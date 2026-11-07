@@ -18,7 +18,7 @@ See [the unified architecture, verified repository baseline, privacy/security re
 
 The existing application includes Project Kingdom dashboard, mission, AI council, analytics, map, automation, reports, strategy, governance, and voice modules. The repository also contains a Supabase profile/role schema and API-side bearer-token verification.
 
-The Stratum education experience and the complete consent-governed analytics, referral, storage audit, accessibility, migration, and reliability requirements remain planned work until implemented and verified by tests. Do not treat this README or the architecture document as evidence that those features are already live.
+An initial Stratum Clinical Edge learning hub is now integrated into the existing landing page, with four expandable health-literacy topics and clear educational boundaries. The broader consent-governed analytics, referral, storage audit, accessibility validation, migration, and reliability requirements remain staged work until implemented and verified by tests. Do not treat this README or the architecture document as evidence that those features are already live.
 
 ## Development
 

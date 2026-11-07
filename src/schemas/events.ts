@@ -8,7 +8,7 @@ import { z } from 'zod';
 export const SeveritySchema = z.enum(['info', 'nominal', 'warning', 'critical']);
 export type Severity = z.infer<typeof SeveritySchema>;
 
-export const DomainSchema = z.enum(['clinical', 'operations', 'finance', 'infrastructure', 'ai']);
+export const DomainSchema = z.enum(['operations', 'finance', 'infrastructure', 'ai']);
 export type Domain = z.infer<typeof DomainSchema>;
 
 // Base Kingdom Event
@@ -65,24 +65,7 @@ export const AgentEventSchema = BaseKingdomEventSchema.extend({
 });
 export type AgentEvent = z.infer<typeof AgentEventSchema>;
 
-// 3. Clinical Telemetry Event
-export const ClinicalEventSchema = BaseKingdomEventSchema.extend({
-  eventType: z.enum(['clinical.enrollment', 'clinical.study_milestone', 'clinical.fhir_tx']),
-  domain: z.literal('clinical'),
-  payload: z.object({
-    studyId: z.string().min(1),
-    studyName: z.string().min(1),
-    siteId: z.string().min(1),
-    currentEnrollment: z.number().int().nonnegative(),
-    targetEnrollment: z.number().int().positive(),
-    velocityPpm: z.number(), // patients per month
-    healthPct: z.number().min(0).max(100),
-    fhirTransactionsPerSec: z.number().nonnegative(),
-  }),
-});
-export type ClinicalEvent = z.infer<typeof ClinicalEventSchema>;
-
-// 4. Risk Event
+// Clinical and FHIR telemetry ingestion is intentionally not part of this product.\n// Stratum Clinical Edge is an educational experience, not an EHR integration.\n\n// 4. Risk Event
 export const RiskEventSchema = BaseKingdomEventSchema.extend({
   eventType: z.enum(['risk.detected', 'risk.mitigated', 'risk.escalated']),
   domain: DomainSchema,
@@ -132,7 +115,6 @@ export type FinanceEvent = z.infer<typeof FinanceEventSchema>;
 export const KingdomEventUnionSchema = z.discriminatedUnion('eventType', [
   HealthEventSchema,
   AgentEventSchema,
-  ClinicalEventSchema,
   RiskEventSchema,
   OperationsEventSchema,
   FinanceEventSchema,

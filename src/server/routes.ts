@@ -636,7 +636,7 @@ Return strict JSON.`;
     const userPrompt = `SCENARIO TO SIMULATE:
 Title: ${scenarioTitle || 'Fictional Workstream Capacity Scenario'}
 Perturbation: ${perturbationType || 'sample_capacity_change'}
-Magnitude: ${magnitudePct || 35}%`;
+Magnitude: ${magnitudePct ?? 35}%`;
 
     const apiCall = ai.models.generateContent({
       model: 'gemini-3.8-flash',

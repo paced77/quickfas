@@ -5,26 +5,61 @@
 :root {
   font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
   color-scheme: dark;
+  --bg: #070B14;
+  --surface: #0F172A;
+  --surface-alt: #162033;
+  --cyan: #6EE7FF;
+  --blue: #22D3EE;
+  --indigo: #818CF8;
+  --success: #10B981;
+  --warning: #F59E0B;
+  --danger: #EF4444;
+  --text: #E5E7EB;
+  --muted: #94A3B8;
 }
 
 code, kbd, samp, pre, .font-mono {
   font-family: 'JetBrains Mono', monospace;
 }
 
-/* 2027+ Sovereign Glass & Telemetry Styling */
+/* 2027+ Imperial Cyber Command Glass & Telemetry Styling */
 .glass-panel {
-  background: rgba(11, 17, 30, 0.72);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(110, 231, 255, 0.12);
+  box-shadow: 0 0 30px rgba(34, 211, 238, 0.08);
 }
 
 .glass-panel-elevated {
-  background: rgba(15, 23, 42, 0.85);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(56, 189, 248, 0.18);
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  background: rgba(15, 23, 42, 0.88);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(110, 231, 255, 0.22);
+  box-shadow: 0 8px 36px 0 rgba(0, 0, 0, 0.45), 0 0 24px rgba(34, 211, 238, 0.12);
+}
+
+.glow-btn-primary {
+  background: linear-gradient(90deg, #6EE7FF, #22D3EE);
+  color: #071018;
+  font-weight: 700;
+  box-shadow: 0 0 20px rgba(34, 211, 238, 0.35);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.glow-btn-primary:hover {
+  filter: brightness(1.1);
+  box-shadow: 0 0 28px rgba(34, 211, 238, 0.55);
+}
+
+.glow-btn-secondary {
+  background: transparent;
+  border: 1px solid rgba(110, 231, 255, 0.25);
+  color: #E5E7EB;
+  transition: all 0.2s ease;
+}
+.glow-btn-secondary:hover {
+  border-color: rgba(110, 231, 255, 0.6);
+  background: rgba(110, 231, 255, 0.08);
 }
 
 .glass-panel-amber {

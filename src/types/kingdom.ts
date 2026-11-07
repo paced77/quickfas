@@ -117,3 +117,39 @@ export interface SimulationResult {
     riskReductionPct: number;
   }>;
 }
+
+export interface MissionItem {
+  id: string;
+  codename: string;
+  title: string;
+  category: 'clinical' | 'capital' | 'infrastructure' | 'security' | 'expansion';
+  leadAgent: string;
+  readinessPct: number;
+  status: 'active' | 'planning' | 'critical' | 'completed';
+  deadline: string;
+  impactScore: number; // 1-100
+  keyOutcomes: string[];
+}
+
+export interface AutomationRule {
+  id: string;
+  name: string;
+  triggerEvent: string;
+  actionExecuted: string;
+  status: 'active' | 'paused';
+  frequency: string;
+  executionsTotal: number;
+  successRatePct: number;
+}
+
+export interface RealmSector {
+  id: string;
+  name: string;
+  code: string;
+  ruler: string;
+  readinessPct: number;
+  threatLevel: 'Low' | 'Guarded' | 'Elevated' | 'Critical';
+  activeInitiatives: number;
+  coordinates: { x: number; y: number };
+  dependencies: string[];
+}

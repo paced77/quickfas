@@ -22,7 +22,7 @@ const API = 'https://api.github.com';
 const DEFAULT_REPOSITORY = 'paced77/quickfas';
 
 function repositoryName(value: string): string {
-  const trimmed = value.trim().replace(/\\.git$/i, '');
+  const trimmed = value.trim().replace(/\.git$/i, '');
   const url = trimmed.match(/^https?:\/\/(?:www\.)?github\.com\/(.+)$/i);
   const candidate = (url ? url[1] : trimmed).replace(/^\/+|\/+$/g, '');
   if (!/^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/.test(candidate)) {

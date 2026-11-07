@@ -3,6 +3,7 @@ import {
   createConsentRecord,
   consentFromRecord,
   parseConsentRecord,
+  migrateConsentStorage,
   type AnalyticsConsent,
   type ConsentRecord,
 } from './consentModel.ts';
@@ -14,7 +15,7 @@ let listening = false;
 
 function readRecord(): ConsentRecord | null {
   try {
-    return parseConsentRecord(window.localStorage.getItem(CONSENT_STORAGE_KEY));
+    return migrateConsentStorage(window.localStorage);
   } catch {
     return null;
   }

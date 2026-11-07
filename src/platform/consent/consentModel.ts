@@ -41,7 +41,7 @@ export function consentFromRecord(record: ConsentRecord | null): AnalyticsConsen
 }
 
 
-export const LEGACY_CONSENT_KEYS = ['consent:v2', 'analytics-consent'] as const;
+export const LEGACY_CONSENT_KEYS = ['consent:v2', 'analytics-consent', 'consent:version'] as const;
 
 export interface ConsentStorageLike {
   getItem(key: string): string | null;

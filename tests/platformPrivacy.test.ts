@@ -7,6 +7,7 @@ import {
   consentFromRecord,
 } from '../src/platform/consent/consentModel.ts';
 import { validateKingdomTelemetry } from '../src/schemas/events.ts';
+import { buildStorageAudit, storageAuditToCsv } from '../src/platform/storage/storageRegistry.ts';
 import {
   AnalyticsEventNameSchema,
   AnalyticsEventPayloadSchema,
@@ -64,4 +65,25 @@ test('telemetry rejects direct identifiers and obvious personal data', () => {
     ...event,
     metadata: { operatorContact: 'operator@example.com' },
   }).success, false);
+});
+
+
+test('storage audit reports registered keys without reading stored values', () => {
+  const keys = ['stratum:consent:v2', 'stratum:unexpected'];
+  const fakeStorage = {
+    length: keys.length,
+    key: (index: number) => keys[index] ?? null,
+  };
+  const report = buildStorageAudit(fakeStorage, new Date('2026-11-07T12:00:00.000Z'));
+  assert.equal(report.valueInspection, 'none');
+  assert.equal(report.entries.find((entry) => entry.key === 'stratum:consent:v2')?.present, true);
+  assert.equal(report.entries.find((entry) => entry.key === 'stratum:unexpected')?.registered, false);
+  assert.equal(JSON.stringify(report).includes('granted'), false);
+});
+
+test('storage audit CSV uses RFC4180 quote escaping', () => {
+  const report = buildStorageAudit({ length: 0, key: () => null });
+  const csv = storageAuditToCsv(report);
+  assert.match(csv, /^"key","owner","category"/);
+  assert.match(csv, /"Stores the visitor analytics consent choice and schema version\."/);
 });

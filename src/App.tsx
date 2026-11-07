@@ -130,7 +130,7 @@ export default function App() {
   };
 
   const handleActionTriggered = (actionTitle: string) => {
-    triggerToast(`Sovereign Action Enacted: "${actionTitle}"`);
+    triggerToast(`Sample action selected: "${actionTitle}". No external workflow was executed.`);
   };
 
   return (
@@ -182,9 +182,9 @@ export default function App() {
             aria-label="Sample data disclosure"
             className="mb-5 rounded-lg border border-amber-400/30 bg-amber-950/30 px-4 py-3 text-xs leading-5 text-amber-100"
           >
-            <strong>Illustrative workspace:</strong> some dashboard metrics, maps, charts, and AI fallback responses use
-            sample scenarios. They are not connected to live clinical, financial, or operational systems and must not be
-            used to make real-world decisions. No patient records are loaded.
+            <strong>Illustrative workspace:</strong> dashboard metrics, charts, maps, missions, investor-model figures, telemetry fixtures, and AI fallback responses are
+            illustrative examples only. They are not connected to live clinical, financial, or operational systems and are
+            not validated forecasts or real work records. No patient records or EHR data are loaded.
           </aside>
           {/* Toast Notification */}
           {notification && (

@@ -21,7 +21,7 @@ The integrated Stratum learning hub currently provides:
 - Consent-gated, authenticated, allow-listed analytics events with event names only.
 - A Governance workspace storage audit that reports registered key names and presence, not stored values.
 
-The platform also includes versioned analytics-consent handling, cross-tab consent synchronization, telemetry input validation, baseline API security headers, request-body size limits, and automated privacy/contract tests.
+The platform also includes versioned analytics-consent handling, cross-tab consent synchronization, telemetry input validation, baseline API security headers, request-body size limits, and automated privacy/contract tests. Telemetry ingestion requires an explicit `dataClassification: synthetic_demo` marker; clinical/FHIR telemetry ingestion is disabled.
 
 **These safeguards are a foundation, not proof of production readiness.** Analytics aggregates and telemetry history are process-local, not durable audit records. The current product does not have an EHR connection and must not receive real patient data. Clinical-looking operational scenarios and AI fallback content are synthetic examples, not real clinical, financial, or operational measurements.
 
@@ -59,7 +59,8 @@ Do not rely on guest preview as authenticated access. Verify the Supabase Auth p
 
 ## Safety and privacy
 
-- Use synthetic fixtures only in demos and tests.
+- Telemetry ingestion accepts only events explicitly marked `synthetic_demo`; clinical/FHIR ingestion is disabled.
+- Never send patient, protected health, EHR, or real clinical operational data to the telemetry API.
 - Never place real patient data, protected health information, credentials, or secrets in sample data, logs, analytics, or screenshots.
 - Do not use illustrative scenarios for clinical, financial, regulatory, or operational decisions.
 - Preserve the existing Project Kingdom application and authentication system; changes must be additive, reviewed, and tested.

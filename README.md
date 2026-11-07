@@ -18,7 +18,7 @@ The integrated Stratum learning hub currently provides:
 - Session-only saved-topic and reading-progress state.
 - Browser-native read-aloud controls with cancellation and bounded retry states.
 - An education-not-diagnosis boundary and a plain-language data-handling disclosure.
-- Consent-gated, allow-listed analytics events with event names only.
+- Consent-gated, authenticated, allow-listed analytics events with event names only.
 - A Governance workspace storage audit that reports registered key names and presence, not stored values.
 
 The platform also includes versioned analytics-consent handling, cross-tab consent synchronization, telemetry input validation, baseline API security headers, request-body size limits, and automated privacy/contract tests.

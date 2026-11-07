@@ -18,6 +18,7 @@ import { ExecutiveBriefingData } from './types/kingdom.ts';
 import { audioEngine } from './services/audioEngine.ts';
 import { CheckCircle2, ShieldAlert } from 'lucide-react';
 import { ConsentBanner } from './components/privacy/ConsentBanner.tsx';
+import { trackAnalyticsEvent } from './platform/analytics/analyticsEvents.ts';
 
 const INITIAL_BRIEFING: ExecutiveBriefingData = {
   headline: 'All Kingdom Systems Nominal · Clinical Endpoint Acceleration Approved',
@@ -67,6 +68,10 @@ export default function App() {
   const [isMuted, setIsMuted] = useState<boolean>(false);
   const [isAmbientActive, setIsAmbientActive] = useState<boolean>(false);
   const [notification, setNotification] = useState<string | null>(null);
+
+  useEffect(() => {
+    void trackAnalyticsEvent('page_view');
+  }, []);
 
   const triggerToast = (msg: string) => {
     setNotification(msg);

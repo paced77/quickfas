@@ -36,13 +36,13 @@ Use synthetic fixtures only in demos and tests. Never place real patient data, p
 
 ## Privacy, analytics, and telemetry safeguards
 
-The current branch includes a versioned local analytics-consent preference with cross-tab synchronization, an accessible consent control, an allow-listed event contract, and anonymous analytics intake that accepts event names only. Event totals are aggregate and process-local; they reset when the API process restarts. No route, topic title, account identifier, age band, health information, form content, or credentials are sent in analytics events.
+The current branch includes a versioned local analytics-consent preference with verified legacy migration, rollback, and cross-tab synchronization, an accessible consent control, an allow-listed event contract, and anonymous analytics intake that accepts event names only. Event totals are aggregate and process-local; they reset when the API process restarts. No route, topic title, account identifier, age band, health information, form content, or credentials are sent in analytics events.
 
 Synthetic telemetry is disabled by default. To intentionally enable the legacy illustrative stream in a non-production demonstration environment, set `KINGDOM_DEMO_TELEMETRY=true`. The interface identifies this mode as synthetic. Without that setting, the telemetry feed waits for authenticated event ingestion and reports that the current in-memory feed is not a durable audit log.
 
 The API now applies baseline security headers, disables Express's `X-Powered-By` header, and limits JSON request bodies. These controls are a foundation, not a substitute for a full security review, durable audit storage, deployment configuration review, or penetration testing.
 
-Run `npm test` for the privacy and analytics contract tests, `npm run lint` for TypeScript checking, and `npm run build` for the production frontend build. These commands must pass in CI before the pull request is considered release-ready.
+Run `npm test` for the consent, telemetry privacy, storage audit, analytics contract, and audio retry tests, `npm run lint` for TypeScript checking, and `npm run build` for the production frontend build. These commands must pass in CI before the pull request is considered release-ready.
 
 The Stratum learning hub now provides a searchable, category-filtered set of ten plain-language topics. Visitors can save topics and mark them read for the current browser session; only generic allow-listed event names are eligible for analytics. The existing Governance workspace also includes a local-storage audit with JSON and RFC4180 CSV export. It reports registered key names and presence only, never stored values.
 The Stratum topic cards also include browser-native read-aloud controls with explicit idle/loading/playing/retrying/cancelled/error states, cancellation, bounded exponential retry with jitter, and accessible status announcements. Speech is synthesized in the visitor's browser; topic text is not sent to an audio service.

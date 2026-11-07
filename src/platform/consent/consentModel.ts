@@ -58,6 +58,9 @@ function parseLegacyConsentRecord(value: string | null): ConsentRecord | null {
     const parsed: unknown = JSON.parse(value);
     if (!parsed || typeof parsed !== 'object') return null;
     const record = parsed as Record<string, unknown>;
+    if (typeof record.version === 'number'
+      && record.version !== 1
+      && record.version !== CONSENT_SCHEMA_VERSION) return null;
     const choice = record.analytics ?? record.analyticsConsent;
     if (choice === true || choice === 'granted') return createConsentRecord('granted');
     if (choice === false || choice === 'denied') return createConsentRecord('denied');

@@ -34,7 +34,7 @@ export const permanentLeaders: CouncilMember[] = [
     title: 'Fictional sample — not connected to live data',
     domain: 'Fictional sample — not connected to live data',
     avatarSeed: 'Fictional sample — not connected to live data',
-    responsibilities: ['Multi-center studies', 'Fictional sample — not connected to live data', 'Fictional sample — not connected to live data'],
+    responsibilities: ['Health education content review', 'Fictional sample — not connected to live data', 'Fictional sample — not connected to live data'],
     status: 'deliberating',
     confidenceScore: 0.94,
     recentDirective: 'Fictional sample — not connected to live data',

@@ -21,7 +21,7 @@ function downloadFile(filename: string, content: string, type: string) {
   anchor.href = url;
   anchor.download = filename;
   anchor.click();
-  URL.revokeObjectURL(url);
+  window.setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
 export function StorageAuditPanel() {
@@ -68,7 +68,7 @@ export function StorageAuditPanel() {
         <>
           <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
             <p className="text-xs text-slate-300" role="status">
-              {report.entries.length} registered or unregistered namespaced keys found · values inspected: no
+              {report.entries.length} registry entries · {report.entries.filter((entry) => entry.present).length} keys present · values inspected: no
             </p>
             <div className="flex flex-wrap gap-2">
               <button type="button" onClick={exportJson} className="inline-flex items-center gap-1.5 rounded-lg border border-cyan-300/25 px-3 py-2 text-xs text-cyan-200 hover:bg-cyan-300/10">

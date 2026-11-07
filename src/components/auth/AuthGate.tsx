@@ -96,10 +96,10 @@ export function AuthGate({ children }: AuthGateProps) {
     return (
       <div className="min-h-screen bg-[#070b14] bg-grid-pattern text-slate-100 flex items-center justify-center p-6">
         <section className="w-full max-w-xl rounded-2xl border border-cyan-300/30 bg-[#0f172a]/95 p-8 shadow-[0_0_60px_rgba(34,211,238,0.12)]">
-          <p className="font-mono text-xs tracking-[0.25em] text-cyan-300">PROJECT KINGDOM // COMMAND BRIDGE</p>
+          <p className="font-mono text-xs tracking-[0.25em] text-cyan-300">STRATUM CLINICAL EDGE + PROJECT KINGDOM</p>
           <h1 className="mt-4 text-3xl font-bold tracking-tight">Project Kingdom is Online</h1>
           <p className="mt-3 text-sm leading-6 text-slate-300">
-            Welcome to the Sovereign Command Center. You can enter the live interactive dashboard now in Guest Preview Mode, or configure Supabase for persistent role-based access.
+            Welcome to the unified platform: explore Stratum Clinical Edge health education alongside Project Kingdom intelligence and operations. Enter Guest Preview Mode, or configure Supabase for persistent role-based access.
           </p>
 
           <div className="mt-6 flex flex-col sm:flex-row gap-3">
@@ -128,9 +128,9 @@ export function AuthGate({ children }: AuthGateProps) {
       <main className="min-h-screen bg-[#070b14] bg-grid-pattern text-slate-100 flex items-center justify-center p-5">
         <section className="w-full max-w-md rounded-2xl border border-cyan-300/20 bg-[#0f172a]/95 p-8 shadow-[0_0_60px_rgba(34,211,238,0.10)]">
           <div className="mb-8">
-            <p className="font-mono text-[10px] tracking-[0.28em] text-cyan-300">PROJECT KINGDOM // SECURE ACCESS</p>
+            <p className="font-mono text-[10px] tracking-[0.28em] text-cyan-300">STRATUM + PROJECT KINGDOM // SECURE ACCESS</p>
             <h1 className="mt-3 text-3xl font-semibold tracking-tight">Welcome back.</h1>
-            <p className="mt-2 text-sm text-slate-400">Authenticate to enter the Sovereign Command Center.</p>
+            <p className="mt-2 text-sm text-slate-400">Authenticate to access the unified platform.</p>
           </div>
           <div className="mb-6 grid grid-cols-2 rounded-lg border border-white/10 bg-black/20 p-1">
             <button type="button" onClick={() => { setMode('signin'); setError(''); setNotice(''); }} className={`rounded-md py-2 text-sm ${mode === 'signin' ? 'bg-cyan-300 text-slate-950 font-semibold' : 'text-slate-400 hover:text-white'}`}>Sign in</button>

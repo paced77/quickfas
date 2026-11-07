@@ -19,7 +19,10 @@ export const BaseKingdomEventSchema = z.object({
   correlationId: z.string().min(1),
   domain: DomainSchema,
   severity: SeveritySchema,
-  metadata: z.record(z.string(), z.unknown()).default({}),
+  metadata: z.record(
+    z.string().max(64),
+    z.union([z.string().max(120), z.number().finite(), z.boolean()])
+  ).default({}),
 });
 export type BaseKingdomEvent = z.infer<typeof BaseKingdomEventSchema>;
 
@@ -137,6 +140,29 @@ export const KingdomEventUnionSchema = z.discriminatedUnion('eventType', [
 
 export type AnyKingdomEvent = z.infer<typeof KingdomEventUnionSchema>;
 
+const RESTRICTED_FIELD = /(patient|patientid|patientname|personname|fullname|firstname|lastname|email|phone|address|dateofbirth|dob|mrn|ssn|password|token|secret|credential|diagnosis|medication|symptom|medicalrecord|healthrecord)/i;
+const EMAIL_VALUE = /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i;
+const US_PHONE_VALUE = /\b(?:\+?1[\s.-]?)?(?:\(\d{3}\)|\d{3})[\s.-]\d{3}[\s.-]\d{4}\b/;
+const SSN_VALUE = /\b\d{3}-\d{2}-\d{4}\b/;
+const BEARER_VALUE = /\bBearer\s+[A-Za-z0-9._~-]{12,}/i;
+const JWT_VALUE = /\beyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\b/;
+
+function containsRestrictedTelemetryContent(value: unknown, depth = 0): boolean {
+  if (depth > 8) return true;
+  if (typeof value === 'string') {
+    return EMAIL_VALUE.test(value) || US_PHONE_VALUE.test(value) || SSN_VALUE.test(value)
+      || BEARER_VALUE.test(value) || JWT_VALUE.test(value);
+  }
+  if (Array.isArray(value)) return value.some((item) => containsRestrictedTelemetryContent(item, depth + 1));
+  if (value && typeof value === 'object') {
+    return Object.entries(value as Record<string, unknown>).some(([key, nested]) => {
+      const normalizedKey = key.replace(/[_\-\s]/g, '');
+      return RESTRICTED_FIELD.test(normalizedKey) || containsRestrictedTelemetryContent(nested, depth + 1);
+    });
+  }
+  return false;
+}
+
 /**
  * TEL-002: ZOD VALIDATION STRATEGY
  * Rejects invalid schemas and provides strict error logs.
@@ -146,6 +172,9 @@ export function validateKingdomTelemetry(data: unknown): {
   event?: AnyKingdomEvent;
   error?: string;
 } {
+  if (containsRestrictedTelemetryContent(data)) {
+    return { success: false, error: 'Potentially restricted personal or health information is not accepted in telemetry.' };
+  }
   const result = KingdomEventUnionSchema.safeParse(data);
   if (result.success) {
     return { success: true, event: result.data };

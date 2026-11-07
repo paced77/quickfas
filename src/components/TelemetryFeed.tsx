@@ -19,6 +19,7 @@ export const TelemetryFeed: React.FC = () => {
     lastRejectedReason: null,
   });
   const [isPaused, setIsPaused] = useState<boolean>(false);
+  const [dataMode, setDataMode] = useState<string>('awaiting_ingestion');
   const [selectedDomain, setSelectedDomain] = useState<string>('all');
   const [showSchemaDoc, setShowSchemaDoc] = useState<boolean>(false);
   const [injectionFeedback, setInjectionFeedback] = useState<string | null>(null);
@@ -32,6 +33,7 @@ export const TelemetryFeed: React.FC = () => {
       if (res.ok) {
         const data = await res.json();
         setEvents(data.events || []);
+        setDataMode(data.dataMode || 'awaiting_ingestion');
         if (data.stats) {
           setStats(data.stats);
         }
@@ -60,14 +62,14 @@ export const TelemetryFeed: React.FC = () => {
       eventType: 'clinical.enrollment',
       domain: 'clinical',
       severity: 'nominal',
-      source: 'mayo-clinic-node-01',
+      source: 'synthetic-contract-test',
       correlationId: `corr-${Date.now()}`,
       timestamp: new Date().toISOString(),
-      metadata: { protocol: 'ONC-904', testHarness: 'TEL-003-Valid' },
+      metadata: { dataClassification: 'synthetic_demo', testHarness: 'TEL-003-Valid' },
       payload: {
-        studyId: 'STUDY-ONC-904',
-        studyName: 'Neo-Adjuvant Immunotherapy Multi-Center',
-        siteId: 'SITE-MAYO-01',
+        studyId: 'SYNTHETIC-TEST',
+        studyName: 'Synthetic contract test fixture',
+        siteId: 'SYNTHETIC-TEST',
         currentEnrollment: 692,
         targetEnrollment: 720,
         velocityPpm: 29.4,
@@ -85,7 +87,7 @@ export const TelemetryFeed: React.FC = () => {
       const data = await res.json();
       if (res.ok) {
         audioEngine.playCompletionSignal();
-        setInjectionFeedback('TEL-002 PASS: Event validated and broadcasted into Telemetry Bus.');
+        setInjectionFeedback('TEL-002 PASS: synthetic test fixture validated and added to the in-memory event feed.');
       } else {
         setInjectionFeedback(`Error: ${data.message}`);
       }
@@ -140,10 +142,10 @@ export const TelemetryFeed: React.FC = () => {
         <div>
           <h3 className="text-sm font-bold text-white tracking-wide uppercase font-mono flex items-center gap-2">
             <Activity className="w-4 h-4 text-cyan-400" />
-            <span>Telemetry Fabric // Real-Time Event Bus</span>
+            <span>Telemetry Fabric // Event Intake &amp; Validation</span>
           </h3>
           <p className="text-xs text-slate-400 mt-0.5">
-            Phase 1 Observable Foundation: Strict Zod contract validation (TEL-001/005) for all incoming events.
+            Authenticated event intake with strict Zod contract validation. Event history is process-local and resets when the server restarts.
           </p>
         </div>
 
@@ -168,6 +170,20 @@ export const TelemetryFeed: React.FC = () => {
             <span>{isPaused ? 'Resume' : 'Pause'}</span>
           </button>
         </div>
+      </div>
+
+      <div
+        role="status"
+        className={`mb-4 rounded-lg border px-3 py-2 text-xs leading-5 ${
+          dataMode === 'synthetic_demo'
+            ? 'border-amber-400/30 bg-amber-950/30 text-amber-100'
+            : 'border-cyan-400/20 bg-cyan-950/20 text-cyan-100'
+        }`}
+      >
+        {dataMode === 'synthetic_demo'
+          ? 'Synthetic demo mode is enabled. All generated events are illustrative fixtures, not live clinical or operational data.'
+          : 'No synthetic stream is running. Events appear only after an authenticated operator submits a validated event. No EHR or external clinical system is connected.'}
+        {' '}Storage: process memory only; this feed is not a durable audit log.
       </div>
 
       {/* Zod Validation Stats Banner (TEL-002) */}
@@ -206,7 +222,7 @@ export const TelemetryFeed: React.FC = () => {
           <span className="text-base font-bold font-mono text-cyan-300 tabular-nums">
             {stats.totalReceived > 0
               ? `${((stats.validCount / stats.totalReceived) * 100).toFixed(1)}%`
-              : '100.0%'}
+              : '—'}
           </span>
         </div>
       </div>
@@ -218,7 +234,7 @@ export const TelemetryFeed: React.FC = () => {
             TEL-003 Contract Testing Harness
           </span>
           <p className="text-xs text-slate-300 mt-0.5">
-            Test real-time Zod schema enforcement by injecting compliant vs malformed event payloads.
+            Test Zod contract enforcement with clearly synthetic fixtures. This does not create or simulate a real patient record.
           </p>
         </div>
         <div className="flex items-center gap-2 shrink-0">
@@ -226,7 +242,7 @@ export const TelemetryFeed: React.FC = () => {
             onClick={handleInjectValidEvent}
             className="px-3 py-1.5 rounded text-xs font-semibold text-emerald-300 bg-emerald-950/60 border border-emerald-800/60 hover:bg-emerald-900/60 transition-colors"
           >
-            Inject Compliant Event
+            Inject Synthetic Test Fixture
           </button>
           <button
             onClick={handleInjectInvalidEvent}
@@ -376,7 +392,7 @@ RiskEventSchema: category, probability [0..1], impactRating [1..10], mitigationS
           })
         ) : (
           <div className="text-center py-10 text-slate-500 text-xs font-mono">
-            Awaiting streaming events for domain: {selectedDomain}...
+            No events received for domain: {selectedDomain}. Submit a synthetic test fixture or wait for an authenticated event source.
           </div>
         )}
       </div>

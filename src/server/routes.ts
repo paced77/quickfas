@@ -2,6 +2,7 @@ import express, { Request, Response } from 'express';
 import { createClient } from '@supabase/supabase-js';
 import { GoogleGenAI, Type } from '@google/genai';
 import dotenv from 'dotenv';
+import { AnalyticsEventPayloadSchema, type AnalyticsEventName } from '../platform/analytics/analyticsEvents.ts';
 import {
   validateKingdomTelemetry,
   AnyKingdomEvent,
@@ -10,7 +11,19 @@ import {
 dotenv.config();
 
 export const app = express();
-app.use(express.json());
+app.disable('x-powered-by');
+app.use((req, res, next) => {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'DENY');
+  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+  res.setHeader('Permissions-Policy', 'camera=(), geolocation=(), payment=()');
+  res.setHeader('Content-Security-Policy', "frame-ancestors 'none'");
+  if (process.env.NODE_ENV === 'production') {
+    res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+  }
+  next();
+});
+app.use(express.json({ limit: '256kb' }));
 
 // Initialize Server-Side Google GenAI client
 const apiKey = process.env.GEMINI_API_KEY || '';
@@ -26,6 +39,12 @@ const ai = new GoogleGenAI({
 // Telemetry Event Store
 const MAX_STORED_EVENTS = 120;
 const eventHistory: AnyKingdomEvent[] = [];
+const demoTelemetryEnabled = process.env.KINGDOM_DEMO_TELEMETRY === 'true';
+const analyticsEventCounts: Partial<Record<AnalyticsEventName, number>> = {};
+let analyticsWindowStartedAt = Date.now();
+let analyticsEventsInWindow = 0;
+let telemetryWindowStartedAt = Date.now();
+let telemetryEventsInWindow = 0;
 let validationStats = {
   totalReceived: 0,
   validCount: 0,
@@ -146,9 +165,11 @@ function seedInitialTelemetry() {
   }
 }
 
-seedInitialTelemetry();
+// Synthetic fixtures are disabled unless an operator explicitly opts into demo mode.
+if (demoTelemetryEnabled) seedInitialTelemetry();
 
 // Background Telemetry Pulse Generator
+if (demoTelemetryEnabled) {
 setInterval(() => {
   const sources = [
     {
@@ -221,7 +242,7 @@ setInterval(() => {
     source: pick.source,
     correlationId: `corr-${Date.now()}`,
     timestamp: new Date().toISOString(),
-    metadata: { synthesized: true, environment: 'production-sovereign' },
+    metadata: { synthesized: true, dataClassification: 'synthetic_demo', environment: 'explicit-demo' },
     payload: pick.payload,
   };
 
@@ -238,6 +259,7 @@ setInterval(() => {
     validationStats.lastRejectedReason = val.error || 'Failed schema parse';
   }
 }, 4500);
+}
 
 // Helper router support: supports routes both with and without "/api" prefix (for Vercel rewrites)
 const router = express.Router();
@@ -302,6 +324,8 @@ const handleHealth = (req: Request, res: Response) => {
     timestamp: new Date().toISOString(),
     eventBusActive: true,
     geminiConfigured: !!apiKey,
+    telemetryMode: demoTelemetryEnabled ? 'synthetic_demo' : 'awaiting_ingestion',
+    telemetryPersistence: 'process_memory_only',
   });
 };
 router.get('/health', handleHealth);
@@ -309,6 +333,42 @@ router.get('/api/health', handleHealth);
 
 // All application APIs below this point require a verified Supabase user.
 router.use(requireAuthenticatedUser);
+
+// Privacy-safe product analytics: allow-listed event names only; no event properties,
+// account IDs, IP addresses, route strings, health details, or form contents are retained.
+const handleAnalyticsEvent = (req: Request, res: Response) => {
+  const parsed = AnalyticsEventPayloadSchema.safeParse(req.body);
+  if (!parsed.success) {
+    return res.status(422).json({ error: 'Event is not part of the approved analytics contract.' });
+  }
+
+  const now = Date.now();
+  if (now - analyticsWindowStartedAt >= 60_000) {
+    analyticsWindowStartedAt = now;
+    analyticsEventsInWindow = 0;
+  }
+  if (analyticsEventsInWindow >= 300) {
+    return res.status(429).json({ error: 'Analytics event rate limit reached.' });
+  }
+
+  analyticsEventsInWindow += 1;
+  const eventName = parsed.data.event;
+  analyticsEventCounts[eventName] = (analyticsEventCounts[eventName] ?? 0) + 1;
+  return res.status(202).json({ accepted: true });
+};
+// Public anonymous endpoint: the payload contains only an approved event name and no identity.
+app.post('/analytics/event', handleAnalyticsEvent);
+app.post('/api/analytics/event', handleAnalyticsEvent);
+
+const handleAnalyticsSummary = (_req: Request, res: Response) => {
+  return res.json({
+    counts: analyticsEventCounts,
+    retention: 'process_lifetime_aggregate',
+    containsPersonalData: false,
+  });
+};
+router.get('/analytics/summary', requireRole('admin', 'executive'), handleAnalyticsSummary);
+router.get('/api/analytics/summary', requireRole('admin', 'executive'), handleAnalyticsSummary);
 
 // 2. Telemetry Stream & Status
 const handleTelemetryEvents = (req: Request, res: Response) => {
@@ -326,6 +386,8 @@ const handleTelemetryEvents = (req: Request, res: Response) => {
   res.json({
     events: filtered.slice(0, 50),
     stats: validationStats,
+    dataMode: demoTelemetryEnabled ? 'synthetic_demo' : 'awaiting_ingestion',
+    persistence: 'process_memory_only',
     timestamp: new Date().toISOString(),
   });
 };
@@ -334,12 +396,23 @@ router.get('/api/telemetry/events', handleTelemetryEvents);
 
 // 3. Telemetry Injector
 const handleTelemetryInject = (req: Request, res: Response) => {
+  const now = Date.now();
+  if (now - telemetryWindowStartedAt >= 60_000) {
+    telemetryWindowStartedAt = now;
+    telemetryEventsInWindow = 0;
+  }
+  if (telemetryEventsInWindow >= 120) {
+    return res.status(429).json({ error: 'Telemetry ingestion rate limit reached.' });
+  }
+  telemetryEventsInWindow += 1;
+
   const incoming = req.body;
   validationStats.totalReceived++;
 
   const val = validateKingdomTelemetry(incoming);
   if (val.success && val.event) {
     eventHistory.unshift(val.event);
+    if (eventHistory.length > MAX_STORED_EVENTS) eventHistory.pop();
     validationStats.validCount++;
     res.json({
       status: 'accepted',

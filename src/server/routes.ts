@@ -42,8 +42,6 @@ const MAX_STORED_EVENTS = 120;
 const eventHistory: AnyKingdomEvent[] = [];
 const demoTelemetryEnabled = process.env.KINGDOM_DEMO_TELEMETRY === 'true';
 const analyticsEventCounts: Partial<Record<AnalyticsEventName, number>> = {};
-let analyticsWindowStartedAt = Date.now();
-let analyticsEventsInWindow = 0;
 let telemetryWindowStartedAt = Date.now();
 let telemetryEventsInWindow = 0;
 let validationStats = {
@@ -249,7 +247,7 @@ router.get('/api/health', handleHealth);
 // All router-mounted APIs below this point require a verified Supabase user. Public event-only analytics routes are registered on app separately.
 router.use(requireAuthenticatedUser);
 
-// Privacy-safe product analytics: allow-listed event names only; no event properties,
+// Privacy-safe product analytics: authenticated callers may send allow-listed event names only; no event properties,
 // account IDs, IP addresses, route strings, health details, or form contents are retained.
 const handleAnalyticsEvent = (req: Request, res: Response) => {
   const parsed = AnalyticsEventPayloadSchema.safeParse(req.body);
@@ -257,23 +255,13 @@ const handleAnalyticsEvent = (req: Request, res: Response) => {
     return res.status(422).json({ error: 'Event is not part of the approved analytics contract.' });
   }
 
-  const now = Date.now();
-  if (now - analyticsWindowStartedAt >= 60_000) {
-    analyticsWindowStartedAt = now;
-    analyticsEventsInWindow = 0;
-  }
-  if (analyticsEventsInWindow >= 300) {
-    return res.status(429).json({ error: 'Analytics event rate limit reached.' });
-  }
-
-  analyticsEventsInWindow += 1;
   const eventName = parsed.data.event;
   analyticsEventCounts[eventName] = (analyticsEventCounts[eventName] ?? 0) + 1;
   return res.status(202).json({ accepted: true });
 };
-// Public anonymous endpoint: strict allow-listed event name only; no identity or event properties are retained.
-app.post('/analytics/event', handleAnalyticsEvent);
-app.post('/api/analytics/event', handleAnalyticsEvent);
+// Authenticated event-only analytics use the same distributed per-user quota on both route aliases.
+router.post('/analytics/event', requireDistributedRateLimit('analytics-event'), handleAnalyticsEvent);
+router.post('/api/analytics/event', requireDistributedRateLimit('analytics-event'), handleAnalyticsEvent);
 
 const handleAnalyticsSummary = (_req: Request, res: Response) => {
   return res.json({

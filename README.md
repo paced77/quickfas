@@ -46,6 +46,12 @@ Install dependencies and use the scripts in `package.json`:
 
 Configure deployment environment variables securely. Never commit credentials, API keys, service-role keys, access tokens, patient data, or secrets. Browser-exposed `VITE_*` variables must contain publishable values only.
 
+## Authentication configuration
+
+The browser client accepts either `VITE_SUPABASE_URL` / `VITE_SUPABASE_PUBLISHABLE_KEY` or the existing Vercel integration names `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`. Only these public-prefixed variables are exposed to the browser. The Express API uses server-side `SUPABASE_URL` and `SUPABASE_PUBLISHABLE_KEY`.
+
+The profile/role schema in `supabase/schema.sql` must be applied to the confirmed Supabase project through a reviewed migration before persistent role-based sign-in can be considered verified. Do not rely on guest preview as authenticated access.
+
 ## Safety and privacy
 
 - Use synthetic fixtures only in demos and tests.

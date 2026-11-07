@@ -73,7 +73,7 @@ export const RiskEventSchema = BaseKingdomEventSchema.extend({
   eventType: z.enum(['risk.detected', 'risk.mitigated', 'risk.escalated']),
   domain: DomainSchema,
   payload: z.object({
-    category: z.enum(['regulatory', 'clinical', 'financial', 'operational', 'cybersecurity']),
+    category: z.enum(['regulatory', 'financial', 'operational', 'cybersecurity']),
     headline: z.string().min(1),
     probability: z.number().min(0).max(1),
     impactRating: z.number().min(1).max(10),
@@ -157,6 +157,14 @@ export function validateKingdomTelemetry(data: unknown): {
   event?: AnyKingdomEvent;
   error?: string;
 } {
+  const record = data && typeof data === 'object' && !Array.isArray(data)
+    ? data as Record<string, unknown>
+    : null;
+  const metadata = record?.metadata;
+  if (!metadata || typeof metadata !== 'object' || Array.isArray(metadata)
+    || (metadata as Record<string, unknown>).dataClassification !== 'synthetic_demo') {
+    return { success: false, error: 'Telemetry must be explicitly classified as synthetic_demo.' };
+  }
   if (containsRestrictedTelemetryContent(data)) {
     return { success: false, error: 'Potentially restricted personal or health information is not accepted in telemetry.' };
   }

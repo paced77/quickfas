@@ -356,8 +356,9 @@ const handleAnalyticsEvent = (req: Request, res: Response) => {
   analyticsEventCounts[eventName] = (analyticsEventCounts[eventName] ?? 0) + 1;
   return res.status(202).json({ accepted: true });
 };
-router.post('/analytics/event', handleAnalyticsEvent);
-router.post('/api/analytics/event', handleAnalyticsEvent);
+// Public anonymous endpoint: the payload contains only an approved event name and no identity.
+app.post('/analytics/event', handleAnalyticsEvent);
+app.post('/api/analytics/event', handleAnalyticsEvent);
 
 const handleAnalyticsSummary = (_req: Request, res: Response) => {
   return res.json({

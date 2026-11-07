@@ -8,6 +8,7 @@ import {
 } from '../src/platform/consent/consentModel.ts';
 import { validateKingdomTelemetry } from '../src/schemas/events.ts';
 import { buildStorageAudit, storageAuditToCsv } from '../src/platform/storage/storageRegistry.ts';
+import { getSpeechRetryDelayMs } from '../src/platform/audio/retryPolicy.ts';
 import {
   AnalyticsEventNameSchema,
   AnalyticsEventPayloadSchema,
@@ -86,4 +87,12 @@ test('storage audit CSV uses RFC4180 quote escaping', () => {
   const csv = storageAuditToCsv(report);
   assert.match(csv, /^"key","owner","category"/);
   assert.match(csv, /"Stores the visitor analytics consent choice and schema version\."/);
+});
+
+
+test('speech retry policy applies bounded exponential backoff with jitter', () => {
+  assert.equal(getSpeechRetryDelayMs(0, 0), 250);
+  assert.equal(getSpeechRetryDelayMs(1, 0.5), 550);
+  assert.equal(getSpeechRetryDelayMs(99, 0.999), 2099);
+  assert.equal(getSpeechRetryDelayMs(-4, 0), 250);
 });

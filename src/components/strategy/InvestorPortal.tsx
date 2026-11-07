@@ -67,6 +67,9 @@ export const InvestorPortal: React.FC<InvestorPortalProps> = ({ onNotify }) => {
 
   return (
     <div className="space-y-6">
+      <aside role="note" aria-label="Financial model disclosure" className="rounded-lg border border-amber-400/30 bg-amber-950/25 px-4 py-3 text-xs leading-5 text-amber-100">
+        <strong>Illustrative planning model only.</strong> Market sizes, revenue, pricing, CAC/LTV, margins, valuations, ownership, and return scenarios are assumptions—not actual traction, audited financials, verified market research, an investment offer, or guaranteed returns. Validate every input before external use.
+      </aside>
       {/* Action Header & View Switcher (Hidden in Print) */}
       <div className="no-print bg-[#0f172a]/90 backdrop-blur-xl border border-[#6ee7ff]/20 rounded-xl p-5 shadow-[0_0_30px_rgba(34,211,238,0.06)] flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
@@ -80,7 +83,7 @@ export const InvestorPortal: React.FC<InvestorPortalProps> = ({ onNotify }) => {
             <span>Project Kingdom: Master Strategy & Investor Portal</span>
           </h1>
           <p className="text-xs sm:text-sm text-slate-400 mt-0.5">
-            Rule with Clarity. Command with Confidence. Complete documentation, investor model, and clean PDF export.
+            Draft strategy, illustrative financial assumptions, and an exportable working model. Validate all assumptions before sharing.
           </p>
         </div>
 
@@ -163,7 +166,7 @@ export const InvestorPortal: React.FC<InvestorPortalProps> = ({ onNotify }) => {
             <div className="border-b border-cyan-500/20 pb-6 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
               <div>
                 <span className="text-xs font-mono uppercase tracking-wider text-cyan-400">
-                  CONFIDENTIAL EXECUTIVE MEMO · INVESTOR BRIEF
+                  DRAFT MODEL · ILLUSTRATIVE ASSUMPTIONS
                 </span>
                 <h1 className="text-3xl sm:text-4xl font-extrabold text-white mt-1">
                   PROJECT KINGDOM
@@ -808,8 +811,10 @@ export const InvestorPortal: React.FC<InvestorPortalProps> = ({ onNotify }) => {
 // CLEAN MARKDOWN STRINGS (FORMATTED FOR GEMINI)
 // ==========================================
 
-const SHORT_INVESTOR_MARKDOWN = `# PROJECT KINGDOM: EXECUTIVE INVESTOR TEASER
-**Confidential Executive Summary & Investment Memo**
+const SHORT_INVESTOR_MARKDOWN = `# PROJECT KINGDOM: ILLUSTRATIVE INVESTOR SCENARIO
+> **Model disclosure:** All market, revenue, pricing, unit-economics, valuation, ownership, and exit figures below are unverified planning assumptions. They are not actual company results, audited financials, sourced market research, a securities offer, or guaranteed returns. Validate and source every figure before external distribution.
+
+**Draft executive overview and illustrative scenario model**
 *Rule with Clarity. Command with Confidence.*
 
 ---
@@ -848,7 +853,9 @@ Project Kingdom is the first **Strategic Operating System** designed for modern 
 ---
 *One Platform. Complete Visibility. Smarter Execution.*`;
 
-const MASTER_DOCUMENT_MARKDOWN = `# PROJECT KINGDOM: COMPLETE SHAREABLE MASTER DOCUMENT
+const MASTER_DOCUMENT_MARKDOWN = `# PROJECT KINGDOM: MASTER STRATEGY — ILLUSTRATIVE MODEL
+> **Model disclosure:** All market, revenue, pricing, unit-economics, valuation, ownership, and exit figures below are unverified planning assumptions. They are not actual company results, audited financials, sourced market research, a securities offer, or guaranteed returns. Validate and source every figure before external distribution.
+
 *Product Strategy • MVP • Website • Investor Deck • Financial Model • Growth Plan*
 
 ## 1. Executive Summary & Brand Positioning
@@ -890,7 +897,7 @@ const MASTER_DOCUMENT_MARKDOWN = `# PROJECT KINGDOM: COMPLETE SHAREABLE MASTER D
 - Slide 14: Go-To-Market & Acquisition Flywheel
 - Slide 15: Three-Year Financial Model ($58.8K -> $531K -> $2.07M)
 - Slide 16: Cap Table, SAFE Scenarios & Dilution
-- Slide 17: Enterprise Case Studies (Tech, Healthcare, Gov)
+- Slide 17: Illustrative Use-Case Examples (Not Customer Case Studies)
 - Slide 18: KPI Dashboard (Retention, NRR, AI Brevity)
 - Slide 19: Use of Funds (40% Product, 25% GTM, 20% Talent, 15% Ops)
 - Slide 20: Closing Narrative: The Sovereign AI Era

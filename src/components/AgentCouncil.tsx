@@ -38,7 +38,7 @@ export const permanentLeaders: CouncilMember[] = [
     status: 'deliberating',
     confidenceScore: 0.94,
     recentDirective: 'Fictional sample — not connected to live data',
-    focusMetric: 'Current Enrollment: 684 / 720 Pts',
+    focusMetric: 'Sample metric: not connected',
   },
   {
     id: 'agent-risk',
@@ -115,9 +115,8 @@ export const AgentCouncil: React.FC = () => {
         body: JSON.stringify({
           agendaTopic: agendaToRun,
           contextData: {
-            activeAgents: 34,
-            clinicalHealth: 'Not connected',
-            runwayMonths: 0,
+            dataMode: 'illustrative_sample',
+            sourceStatus: 'not_connected',
           },
         }),
       });

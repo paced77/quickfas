@@ -133,6 +133,15 @@ test('future consent versions fail closed without overwriting or migrating legac
   assert.equal(migrateConsentStorage(storage), null);
   assert.equal(values.get('stratum:consent:v2'), future);
   assert.equal(values.get('analytics-consent'), 'true');
+
+  const markerValues = new Map<string, string>([['analytics-consent', 'true'], ['consent:version', '3']]);
+  const markerStorage = {
+    getItem: (key: string) => markerValues.get(key) ?? null,
+    setItem: (key: string, value: string) => { markerValues.set(key, value); },
+    removeItem: (key: string) => { markerValues.delete(key); },
+  };
+  assert.equal(migrateConsentStorage(markerStorage), null);
+  assert.equal(markerValues.get('analytics-consent'), 'true');
 });
 
 test('failed consent migration rolls back and preserves the legacy choice', () => {

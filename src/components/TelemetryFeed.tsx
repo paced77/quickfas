@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Activity, ShieldCheck, ShieldAlert, Pause, Play, Filter, RefreshCw, Code, CheckCircle, AlertTriangle, Layers } from 'lucide-react';
-import { AnyKingdomEvent } from '../schemas/events.ts';
+import { AnyKingdomEvent } from 'Fictional sample — not connected to live data';
 import { audioEngine } from '../services/audioEngine.ts';
 
 interface TelemetryStats {
@@ -59,7 +59,7 @@ export const TelemetryFeed: React.FC = () => {
     audioEngine.playPositiveSignal();
     const validPayload = {
       eventId: `evt-cli-${Date.now().toString(36)}`,
-      eventType: 'clinical.enrollment',
+      eventType: 'Fictional sample — not connected to live data',
       domain: 'clinical',
       severity: 'nominal',
       source: 'synthetic-contract-test',
@@ -74,7 +74,7 @@ export const TelemetryFeed: React.FC = () => {
         targetEnrollment: 720,
         velocityPpm: 29.4,
         healthPct: 99.1,
-        fhirTransactionsPerSec: 154.2,
+        fhirTransactionsPerSec: 0,
       },
     };
 
@@ -155,7 +155,7 @@ export const TelemetryFeed: React.FC = () => {
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono text-cyan-300 bg-cyan-950/40 border border-cyan-800/40 hover:bg-cyan-900/40 transition-colors"
           >
             <Code className="w-3.5 h-3.5" />
-            <span>{showSchemaDoc ? 'Hide Schemas' : 'TEL-001 Contracts'}</span>
+            <span>{showSchemaDoc ? 'Fictional sample — not connected to live data' : 'TEL-001 Contracts'}</span>
           </button>
 
           <button
@@ -181,8 +181,8 @@ export const TelemetryFeed: React.FC = () => {
         }`}
       >
         {dataMode === 'synthetic_demo'
-          ? 'Synthetic demo mode is enabled. All generated events are illustrative fixtures, not live clinical or operational data.'
-          : 'No synthetic stream is running. Events appear only after an authenticated operator submits a validated event. No EHR or external clinical system is connected.'}
+          ? 'Fictional sample — not connected to live data'
+          : 'Fictional sample — not connected to live data'}
         {' '}Storage: process memory only; this feed is not a durable audit log.
       </div>
 
@@ -280,7 +280,7 @@ BaseKingdomEvent = z.object({
   timestamp: z.string().datetime(),
   source: z.string().min(1),
   correlationId: z.string().min(1),
-  domain: z.enum(['clinical', 'operations', 'finance', 'infrastructure', 'ai']),
+  domain: z.enum(['Fictional sample — not connected to live data', 'operations', 'finance', 'infrastructure', 'ai']),
   severity: z.enum(['info', 'nominal', 'warning', 'critical']),
   metadata: z.record(z.string(), z.unknown()),
 })
@@ -351,12 +351,12 @@ RiskEventSchema: category, probability [0..1], impactRating [1..10], mitigationS
                       Latency: <span className="text-cyan-300">{(evt as any).payload.latencyMs}ms</span> · CPU: {(evt as any).payload.cpuUtilization}% · Memory: {(evt as any).payload.memoryUtilization}% · Availability: {(evt as any).payload.availabilityPct}%
                     </span>
                   )}
-                  {evt.eventType === 'clinical.enrollment' && (
+                  {evt.eventType === 'Fictional sample — not connected to live data' && (
                     <span>
                       Study: <span className="text-cyan-300">{(evt as any).payload.studyName}</span> · Enrolled: {(evt as any).payload.currentEnrollment} / {(evt as any).payload.targetEnrollment} · Velocity: {(evt as any).payload.velocityPpm} pts/mo · Ingestion: {(evt as any).payload.fhirTransactionsPerSec} tx/s
                     </span>
                   )}
-                  {evt.eventType === 'clinical.fhir_tx' && (
+                  {evt.eventType === 'Fictional sample — not connected to live data' && (
                     <span>
                       FHIR Gateway: Ingesting <span className="text-cyan-300">{(evt as any).payload.fhirTransactionsPerSec} tx/s</span> for {(evt as any).payload.studyName}
                     </span>

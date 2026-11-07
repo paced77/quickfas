@@ -7,17 +7,17 @@ export const initialMissions: MissionItem[] = [
   {
     id: 'mis-01',
     codename: 'OPERATION HYPERION',
-    title: 'Phase-III Immunotherapy Cohort Milestone Acceleration',
+    title: 'Fictional sample — not connected to live data',
     category: 'clinical',
-    leadAgent: 'Clinical Director',
+    leadAgent: 'Fictional sample — not connected to live data',
     readinessPct: 92,
     status: 'active',
     deadline: 'Q3 Day +14',
     impactScore: 96,
     keyOutcomes: [
-      '684 of 720 target patients enrolled and verified in Mayo/Charité nodes',
+      'Fictional sample — not connected to live data',
       'Zero protocol excursions logged across 140 consecutive samples',
-      'FDA & EMA synchronised interim submission package draft ready',
+      'Fictional sample — not connected to live data',
     ],
   },
   {
@@ -31,7 +31,7 @@ export const initialMissions: MissionItem[] = [
     deadline: 'Day 0 (Invariant)',
     impactScore: 99,
     keyOutcomes: [
-      '14.8M FHIR records sealed with hardware HSM provenance',
+      'Fictional sample — not connected to live data',
       'Automated penetration probing frequency reduced latency to 14ms',
       'Full compliance readiness for Title 21 CFR Part 11',
     ],
@@ -39,7 +39,7 @@ export const initialMissions: MissionItem[] = [
   {
     id: 'mis-03',
     codename: 'TREASURY HORIZON',
-    title: 'Autonomous Capital Rebalancing to Zurich Edge Enclave',
+    title: 'Fictional sample — not connected to live data',
     category: 'capital',
     leadAgent: 'Finance Oracle',
     readinessPct: 84,
@@ -48,14 +48,14 @@ export const initialMissions: MissionItem[] = [
     impactScore: 91,
     keyOutcomes: [
       '$850k transferred from dormant EU compute reserves',
-      'Reduces intercontinental genomics transit latency from 140ms to 28ms',
-      'Protects 38.5-month operational runway trajectory',
+      'Fictional sample — not connected to live data',
+      'Fictional sample — not connected to live data',
     ],
   },
   {
     id: 'mis-04',
     codename: 'COLD-CHAIN SENTINEL',
-    title: 'Zurich Biostorage Unit 4 Thermal Drift Mitigation',
+    title: 'Fictional sample — not connected to live data',
     category: 'infrastructure',
     leadAgent: 'Risk Sentinel',
     readinessPct: 78,
@@ -79,8 +79,8 @@ export const initialMissions: MissionItem[] = [
     deadline: 'Q4 Day +30',
     impactScore: 85,
     keyOutcomes: [
-      'Tokyo & Singapore FHIR endpoint integration audit underway',
-      'Assay capacity buffer projected to expand by +450 assays/hr',
+      'Fictional sample — not connected to live data',
+      'Fictional sample — not connected to live data',
       'Local sovereign data sovereignty covenants drafted',
     ],
   },

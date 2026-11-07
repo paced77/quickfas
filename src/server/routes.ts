@@ -249,12 +249,12 @@ const requireAuthenticatedUser: express.RequestHandler = async (req, res, next) 
   const authUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL;
   const publishableKey = process.env.SUPABASE_PUBLISHABLE_KEY || process.env.VITE_SUPABASE_PUBLISHABLE_KEY;
   if (!authUrl || !publishableKey) {
-    return res.status(503).json({ error: 'Authentication service is not configured.' });
+    res.status(503).json({ error: 'Authentication service is not configured.' }); return;
   }
 
   const authorization = req.header('authorization') || '';
   const token = authorization.startsWith('Bearer ') ? authorization.slice(7) : '';
-  if (!token) return res.status(401).json({ error: 'A valid sign-in session is required.' });
+  if (!token) { res.status(401).json({ error: 'A valid sign-in session is required.' }); return; }
 
   try {
     const authClient = createClient(authUrl, publishableKey, {
@@ -262,7 +262,7 @@ const requireAuthenticatedUser: express.RequestHandler = async (req, res, next) 
       global: { headers: { Authorization: `Bearer ${token}` } },
     });
     const { data: { user }, error: authError } = await authClient.auth.getUser(token);
-    if (authError || !user) return res.status(401).json({ error: 'Your session is invalid or expired.' });
+    if (authError || !user) { res.status(401).json({ error: 'Your session is invalid or expired.' }); return; }
 
     const { data: profile, error: profileError } = await authClient
       .from('profiles')
@@ -271,9 +271,9 @@ const requireAuthenticatedUser: express.RequestHandler = async (req, res, next) 
       .maybeSingle();
     if (profileError) {
       console.error('Unable to load authorization profile:', profileError.message);
-      return res.status(503).json({ error: 'Authorization profile is unavailable. Apply the Supabase profiles migration.' });
+      res.status(503).json({ error: 'Authorization profile is unavailable. Apply the Supabase profiles schema before enabling sign-in.' }); return;
     }
-    if (!profile) return res.status(403).json({ error: 'No access profile exists for this account.' });
+    if (!profile) { res.status(403).json({ error: 'No access profile exists for this account.' }); return; }
 
     const authenticatedRequest = req as AuthenticatedRequest;
     authenticatedRequest.authUser = { id: user.id, email: user.email };
@@ -281,14 +281,14 @@ const requireAuthenticatedUser: express.RequestHandler = async (req, res, next) 
     next();
   } catch (error) {
     console.error('Authentication verification failed:', error);
-    return res.status(503).json({ error: 'Unable to verify your session right now.' });
+    res.status(503).json({ error: 'Unable to verify your session right now.' }); return;
   }
 };
 
 const requireRole = (...allowedRoles: string[]): express.RequestHandler => (req, res, next) => {
   const role = (req as AuthenticatedRequest).authRole;
   if (!role || !allowedRoles.includes(role)) {
-    return res.status(403).json({ error: 'Your account does not have permission to perform this action.' });
+    res.status(403).json({ error: 'Your account does not have permission to perform this action.' }); return;
   }
   next();
 };

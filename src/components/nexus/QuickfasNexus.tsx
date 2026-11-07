@@ -16,6 +16,7 @@ type GithubRepo = {
 type GithubCommit = { sha: string; html_url: string; commit: { message: string; author: { name: string; date: string } | null }; author: { login: string } | null };
 type GithubContributor = { login: string; contributions: number; html_url: string; avatar_url: string };
 type GithubFork = { full_name: string; html_url: string; stargazers_count: number; owner: { login: string } };
+type GithubIssue = { number: number; title: string; html_url: string; created_at: string; user: { login: string } | null; pull_request?: { url: string } };
 
 const API = 'https://api.github.com';
 const DEFAULT_REPOSITORY = 'paced77/quickfas';
@@ -54,6 +55,8 @@ export const QuickfasNexus: React.FC = () => {
   const [commits, setCommits] = useState<GithubCommit[]>([]);
   const [contributors, setContributors] = useState<GithubContributor[]>([]);
   const [forks, setForks] = useState<GithubFork[]>([]);
+  const [openIssues, setOpenIssues] = useState<GithubIssue[]>([]);
+  const [openPullRequests, setOpenPullRequests] = useState<GithubIssue[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
@@ -68,16 +71,19 @@ export const QuickfasNexus: React.FC = () => {
     setError(null);
     try {
       const encoded = name.split('/').map(encodeURIComponent).join('/');
-      const [repository, recentCommits, recentContributors, recentForks] = await Promise.all([
+      const [repository, recentCommits, recentContributors, recentForks, openItems] = await Promise.all([
         githubGet<GithubRepo>(`/repos/${encoded}`),
         githubGet<GithubCommit[]>(`/repos/${encoded}/commits?per_page=30`),
         githubGet<GithubContributor[]>(`/repos/${encoded}/contributors?per_page=100`),
         githubGet<GithubFork[]>(`/repos/${encoded}/forks?per_page=8&sort=newest`),
+        githubGet<GithubIssue[]>(`/repos/${encoded}/issues?state=open&per_page=100`),
       ]);
       setRepo(repository);
       setCommits(recentCommits);
       setContributors(recentContributors);
       setForks(recentForks);
+      setOpenIssues(openItems.filter((item) => !item.pull_request));
+      setOpenPullRequests(openItems.filter((item) => Boolean(item.pull_request)));
       setInput(repository.full_name);
       setLastUpdated(new Date());
     } catch (reason) {
@@ -87,7 +93,11 @@ export const QuickfasNexus: React.FC = () => {
     }
   }, []);
 
-  useEffect(() => { void refresh(DEFAULT_REPOSITORY); }, [refresh]);
+  useEffect(() => {
+    void refresh(DEFAULT_REPOSITORY);
+    const interval = window.setInterval(() => { void refresh(input); }, 6 * 60 * 60 * 1000);
+    return () => window.clearInterval(interval);
+  }, [refresh]);
 
   const formatDate = (value: string) => new Date(value).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
 
@@ -121,13 +131,38 @@ export const QuickfasNexus: React.FC = () => {
         <div className="shrink-0 text-[11px] text-slate-500">{repo.language || 'Language not specified'} · default branch: {repo.default_branch}</div>
       </div>
 
-      <div className="grid grid-cols-2 gap-3 xl:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 xl:grid-cols-5">
         <StatCard icon={<GitCommit className="h-3.5 w-3.5" />} label="Recent commits" value={commits.length} detail="Latest commit records loaded (max 30)" />
-        <StatCard icon={<CircleDot className="h-3.5 w-3.5" />} label="Open items" value={repo.open_issues_count} detail="GitHub count includes open pull requests" />
+        <StatCard icon={<CircleDot className="h-3.5 w-3.5" />} label="Open issues" value={openIssues.length} detail="First 100 open items returned" />
+        <StatCard icon={<Activity className="h-3.5 w-3.5" />} label="Open pull requests" value={openPullRequests.length} detail="First 100 open items returned" />
         <StatCard icon={<Users className="h-3.5 w-3.5" />} label="Contributors" value={contributors.length} detail="Contributor profiles returned (max 100)" />
         <StatCard icon={<GitFork className="h-3.5 w-3.5" />} label="Forks" value={repo.forks_count} detail="Total public fork count reported by GitHub" />
       </div>
 
+      <div className="rounded-xl border border-slate-800 bg-slate-900/50 p-4">
+        <div className="mb-3 flex items-center justify-between"><h2 className="flex items-center gap-2 text-sm font-semibold text-slate-100"><Activity className="h-4 w-4 text-cyan-300" /> Commit activity snapshot</h2><span className="text-[10px] text-slate-500">Latest 30 records</span></div>
+        {(() => {
+          const days = Array.from({ length: 14 }, (_, index) => {
+            const date = new Date(); date.setHours(0, 0, 0, 0); date.setDate(date.getDate() - (13 - index));
+            const count = commits.filter((commit) => {
+              const timestamp = commit.commit.author?.date;
+              if (!timestamp) return false;
+              const commitDate = new Date(timestamp); commitDate.setHours(0, 0, 0, 0);
+              return commitDate.getTime() === date.getTime();
+            }).length;
+            return { label: date.toLocaleDateString(undefined, { month: "numeric", day: "numeric" }), count };
+          });
+          const max = Math.max(1, ...days.map((day) => day.count));
+          return <div className="flex h-32 items-end gap-1" role="img" aria-label="Commit counts per day across the last fourteen days, based on the latest thirty commit records">
+            {days.map((day) => <div key={day.label} className="flex h-full min-w-0 flex-1 flex-col items-center justify-end gap-1" title={`${day.label}: ${day.count} commits`}>
+              <span className="text-[9px] text-slate-400">{day.count || ""}</span>
+              <div className="w-full rounded-t bg-cyan-400/80" style={{ height: `${Math.max(day.count ? 8 : 2, (day.count / max) * 76)}px` }} />
+              <span className="text-[8px] text-slate-500">{day.label}</span>
+            </div>)}
+          </div>;
+        })()}
+        <p className="mt-2 text-[11px] text-slate-500">Limited snapshot of the latest fetched commits, not a complete contribution history.</p>
+      </div>
       <div className="grid gap-4 xl:grid-cols-[1.3fr_1fr]">
         <div className="rounded-xl border border-slate-800 bg-slate-900/50 p-4">
           <div className="mb-3 flex items-center justify-between"><h2 className="flex items-center gap-2 text-sm font-semibold text-slate-100"><Network className="h-4 w-4 text-cyan-300" /> Fork relationship map</h2><span className="text-[10px] text-slate-500">Latest 8 forks</span></div>
@@ -170,7 +205,7 @@ export const QuickfasNexus: React.FC = () => {
       </div>
       <div className="flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-500">
         <span>Repository last updated {formatDate(repo.updated_at)} · Public data from api.github.com</span>
-        <span>{lastUpdated ? `Snapshot refreshed ${lastUpdated.toLocaleTimeString()}` : 'Loading snapshot time…'}</span>
+        <span>{lastUpdated ? `Snapshot refreshed ${lastUpdated.toLocaleTimeString()} · auto-refresh every 6 hours while open` : 'Loading snapshot time…'}</span>
       </div>
     </>}
   </section>;

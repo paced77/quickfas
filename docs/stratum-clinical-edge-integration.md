@@ -211,3 +211,25 @@ CI gates: install, lint/typecheck, unit, integration, contract, privacy, propert
 A phase is complete only when its code is merged through review, tests pass in CI, data/privacy boundaries are verified, accessibility requirements for the phase pass, operational documentation exists, and rollback/recovery is documented. A written plan or an open pull request is not implementation completion.
 
 **Current implementation update:** the existing landing page now includes an initial Stratum Clinical Edge learning hub with four expandable introductory topics, the education-not-diagnosis boundary, and visible co-branding with Project Kingdom. Sidebar, secure-entry copy, and page metadata also carry both names. This is an initial frontend slice, not the completed education product. The consent pipeline, analytics/referral/audit APIs, governed persistence, full accessibility validation, migration suite, and launch gates remain to be implemented and tested. No production deployment or clinical-content review is claimed.
+
+## 10. Implemented foundation on the integration branch
+
+The following items are implemented in code on the current branch:
+
+- A versioned analytics consent record (schema version 2) stored locally, with malformed/future records failing closed.
+- Cross-tab consent synchronization using BroadcastChannel with the browser storage event as a fallback.
+- A visible, keyboard-operable privacy control that allows the visitor to grant or withdraw optional analytics consent.
+- An allow-listed analytics event schema. The client sends only the event name and only after local consent is granted; event properties are rejected.
+- An authenticated analytics intake endpoint that validates the event contract, applies a process-wide request cap, and retains only aggregate counters in process memory. It does not retain account IDs, IP addresses, route strings, topic titles, form contents, health information, or credentials.
+- Baseline API security headers, disabled Express technology disclosure, and a bounded JSON request body.
+- Synthetic telemetry seeding and random pulse generation are disabled by default. They can be enabled only with the explicit `KINGDOM_DEMO_TELEMETRY=true` environment setting. The interface labels those events as illustrative.
+- A persistent dashboard disclosure that the existing hardcoded charts, map, briefing and AI fallback scenarios are not connected to live clinical, financial, or operational systems.
+- Initial Node test-runner coverage for consent record validation and analytics allow-list enforcement.
+
+### Important limits that remain
+
+The current telemetry event store and analytics aggregates are process-local and are lost on restart; neither is a durable audit or reporting database. No EHR/FHIR integration, production clinical data connection, durable consent ledger, age verification, referral service, full migration/rollback system, complete WCAG 2.2 AA audit, or end-to-end security test suite is claimed by this implementation. The integration remains additive and uses the existing Supabase authentication foundation. Do not use synthetic scenarios for clinical, financial, regulatory, or operational decisions.
+
+### Verification gate
+
+The source changes have been committed to this branch, but the complete TypeScript check, test suite, production build, accessibility audit, and deployment workflow still need to run against the current head commit. Keep the pull request in draft until those checks pass and the Okteto preview credential dependency is resolved or the preview workflow is intentionally changed.

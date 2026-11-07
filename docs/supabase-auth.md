@@ -1,37 +1,43 @@
 # Supabase authentication setup
 
+Quickfas (including the Project Kingdom workspace and Stratum Clinical Edge learning experience) uses the existing Supabase project **seventeen-pockets** in the Simplemn organization.
+
+- Project ref: `babdeawtwaoorsmdnxip`
+- API URL: `https://babdeawtwaoorsmdnxip.supabase.co`
+- Region: `us-east-1`
+
 ## Vercel environment variables
 
-Set these in the Vercel project for the environments you intend to use:
+The Quickfas Vercel project has the following app-specific variables configured for production, preview, and development:
 
-- `VITE_SUPABASE_URL`: `https://babdeawtwaoorsmdnxip.supabase.co`
-- `VITE_SUPABASE_PUBLISHABLE_KEY`: the active publishable key from Supabase Project Settings → API Keys
-- `SUPABASE_URL`: same project URL (server-side)
-- `SUPABASE_PUBLISHABLE_KEY`: same publishable key (server-side)
-- `GEMINI_API_KEY`: existing server-side Gemini key, if AI endpoints are enabled
+- `VITE_SUPABASE_URL`: the project URL above
+- `VITE_SUPABASE_PUBLISHABLE_KEY`: the active Supabase publishable key
 
-The `VITE_` values are bundled into the browser. Only a Supabase publishable key belongs there. Never use a Supabase secret or service-role key in a `VITE_` variable or commit any secret to Git.
+The `VITE_` values are bundled into the browser. Only a Supabase publishable key belongs there. Never use a Supabase secret or service-role key in a `VITE_` variable or commit any secret to Git. Existing integration-managed Vercel variables were left untouched.
 
-## Database setup
+## Database schema
 
-Review and run [schema.sql](./schema.sql) in the Supabase SQL Editor. It creates a profile row for each new account, defaults every new account to the least-privileged `viewer` role, and permits users to read only their own profile. It does not automatically grant anyone admin privileges.
+The migration [20261107192045_quickfas_profiles_least_privilege.sql](../supabase/migrations/20261107192045_quickfas_profiles_least_privilege.sql) has been applied to the target project.
 
-After verifying the first trusted operator's Auth user UUID, promote that account manually in the SQL Editor using the commented example at the end of `schema.sql`.
+It creates `public.profiles`, enables RLS, allows authenticated users to read only their own profile, and creates a profile for each new Auth user with the least-privileged `viewer` role. Anonymous users have no table SELECT grant. No account is automatically granted an elevated role.
 
-## Auth settings
+The migration was verified in Supabase: the table and profile-creation trigger exist, the own-profile policy exists, RLS is enabled, authenticated SELECT is granted, and anon SELECT is not granted. Security and performance advisors returned no findings.
 
-- Enable Email / Password in Supabase Authentication → Providers.
+After verifying the first trusted operator's Auth user UUID, promote that account manually using a controlled SQL session. Never grant admin based on user-editable `user_metadata` or an email supplied at signup.
+
+## Auth settings still to verify
+
+- Enable Email / Password in Supabase Authentication → Providers if that is the selected sign-in method.
 - Set the Site URL to the deployed Vercel origin.
-- Add the Vercel production and preview origins to the allowed redirect URLs.
+- Add the Vercel production and preview origins to allowed redirect URLs.
 - Decide whether email confirmation is required. If enabled, configure the confirmation email redirect to return users to the application origin.
 
-## Deploy and verify
+## Release verification
 
-1. Install dependencies and build the project.
-2. Configure environment variables in Vercel.
-3. Apply the reviewed database schema.
-4. Deploy only after reviewing and approving the pull request.
-5. Test signup, email confirmation (if enabled), login, logout, expired sessions, and direct API requests without a bearer token.
-6. Verify telemetry injection is rejected for `viewer` and `analyst` accounts and allowed only for `admin` and `operator`.
+1. Confirm the Vercel variables are available to the target deployment.
+2. Review and approve the security/accessibility pull request before deploying.
+3. Test signup, email confirmation (if enabled), login, logout, expired sessions, and direct API requests without a bearer token.
+4. Run end-to-end tests with dedicated `viewer`, `analyst`, `operator`, `executive`, and `admin` accounts.
+5. Verify telemetry injection is rejected for `viewer` and `analyst` accounts and allowed only for `admin` and `operator`.
 
 The application API routes other than `/api/health` require a verified Supabase access token. The telemetry write route additionally checks the server-loaded profile role. The Gemini key remains server-side.

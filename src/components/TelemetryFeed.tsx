@@ -59,22 +59,20 @@ export const TelemetryFeed: React.FC = () => {
     audioEngine.playPositiveSignal();
     const validPayload = {
       eventId: `evt-cli-${Date.now().toString(36)}`,
-      eventType: 'clinical.enrollment',
-      domain: 'clinical',
+      eventType: 'ops.capacity_update',
+      domain: 'operations',
       severity: 'nominal',
       source: 'synthetic-contract-test',
       correlationId: `corr-${Date.now()}`,
       timestamp: new Date().toISOString(),
       metadata: { dataClassification: 'synthetic_demo', testHarness: 'TEL-003-Valid' },
       payload: {
-        studyId: 'SYNTHETIC-TEST',
-        studyName: 'Synthetic contract test fixture',
-        siteId: 'SYNTHETIC-TEST',
-        currentEnrollment: 692,
-        targetEnrollment: 720,
-        velocityPpm: 29.4,
-        healthPct: 99.1,
-        fhirTransactionsPerSec: 154.2,
+        subsystem: 'Sample Workstream A',
+        capacityPct: 72,
+        utilizationPct: 64,
+        throughputPerHr: 120,
+        activeTasks: 8,
+        statusSummary: 'Fictional test fixture; no live operational connection',
       },
     };
 
@@ -108,7 +106,7 @@ export const TelemetryFeed: React.FC = () => {
       source: 'faulty-probe',
       correlationId: `corr-${Date.now()}`,
       timestamp: new Date().toISOString(),
-      metadata: { testHarness: 'TEL-003-Invalid-Injection' },
+      metadata: { dataClassification: 'synthetic_demo', testHarness: 'TEL-003-Invalid-Injection' },
       payload: {
         status: 'optimal',
         uptimeSeconds: 100,
@@ -155,7 +153,7 @@ export const TelemetryFeed: React.FC = () => {
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono text-cyan-300 bg-cyan-950/40 border border-cyan-800/40 hover:bg-cyan-900/40 transition-colors"
           >
             <Code className="w-3.5 h-3.5" />
-            <span>{showSchemaDoc ? 'Hide Schemas' : 'TEL-001 Contracts'}</span>
+            <span>{showSchemaDoc ? 'Fictional sample — not connected to live data' : 'TEL-001 Contracts'}</span>
           </button>
 
           <button
@@ -181,8 +179,8 @@ export const TelemetryFeed: React.FC = () => {
         }`}
       >
         {dataMode === 'synthetic_demo'
-          ? 'Synthetic demo mode is enabled. All generated events are illustrative fixtures, not live clinical or operational data.'
-          : 'No synthetic stream is running. Events appear only after an authenticated operator submits a validated event. No EHR or external clinical system is connected.'}
+          ? 'Fictional sample — not connected to live data'
+          : 'Fictional sample — not connected to live data'}
         {' '}Storage: process memory only; this feed is not a durable audit log.
       </div>
 
@@ -280,14 +278,14 @@ BaseKingdomEvent = z.object({
   timestamp: z.string().datetime(),
   source: z.string().min(1),
   correlationId: z.string().min(1),
-  domain: z.enum(['clinical', 'operations', 'finance', 'infrastructure', 'ai']),
+  domain: z.enum(['operations', 'finance', 'infrastructure', 'ai']),
   severity: z.enum(['info', 'nominal', 'warning', 'critical']),
   metadata: z.record(z.string(), z.unknown()),
 })
 
 // Sub-schemas:
 HealthEventSchema: status, uptime, latencyMs >= 0, errorsPerMin, cpu, memory, availability
-ClinicalEventSchema: studyId, studyName, siteId, currentEnrollment, targetEnrollment, velocityPpm
+Clinical and FHIR event ingestion is disabled; no EHR or patient-data connection is available
 RiskEventSchema: category, probability [0..1], impactRating [1..10], mitigationStrategy`}
           </pre>
         </div>
@@ -298,7 +296,7 @@ RiskEventSchema: category, probability [0..1], impactRating [1..10], mitigationS
         <span className="text-slate-500 font-mono text-[11px] mr-2 flex items-center gap-1">
           <Filter className="w-3 h-3" /> Filter:
         </span>
-        {['all', 'clinical', 'finance', 'operations', 'infrastructure', 'ai'].map((dom) => (
+        {['all', 'finance', 'operations', 'infrastructure', 'ai'].map((dom) => (
           <button
             key={dom}
             onClick={() => {
@@ -316,7 +314,8 @@ RiskEventSchema: category, probability [0..1], impactRating [1..10], mitigationS
         ))}
       </div>
 
-      {/* Live Events Table */}
+      {/* Authenticated in-memory event feed; no EHR or patient data ingestion is supported. */}
+      <aside role="note" className="mb-3 rounded-lg border border-amber-400/30 bg-amber-950/20 px-3 py-2 text-[11px] leading-5 text-amber-100">Only synthetic, non-sensitive operational examples belong here. Clinical and FHIR ingestion is disabled; never submit patient, health, or EHR data.</aside>
       <div className="space-y-2 max-h-[380px] overflow-y-auto pr-1">
         {events.length > 0 ? (
           events.map((evt) => {
@@ -351,16 +350,6 @@ RiskEventSchema: category, probability [0..1], impactRating [1..10], mitigationS
                       Latency: <span className="text-cyan-300">{(evt as any).payload.latencyMs}ms</span> · CPU: {(evt as any).payload.cpuUtilization}% · Memory: {(evt as any).payload.memoryUtilization}% · Availability: {(evt as any).payload.availabilityPct}%
                     </span>
                   )}
-                  {evt.eventType === 'clinical.enrollment' && (
-                    <span>
-                      Study: <span className="text-cyan-300">{(evt as any).payload.studyName}</span> · Enrolled: {(evt as any).payload.currentEnrollment} / {(evt as any).payload.targetEnrollment} · Velocity: {(evt as any).payload.velocityPpm} pts/mo · Ingestion: {(evt as any).payload.fhirTransactionsPerSec} tx/s
-                    </span>
-                  )}
-                  {evt.eventType === 'clinical.fhir_tx' && (
-                    <span>
-                      FHIR Gateway: Ingesting <span className="text-cyan-300">{(evt as any).payload.fhirTransactionsPerSec} tx/s</span> for {(evt as any).payload.studyName}
-                    </span>
-                  )}
                   {evt.eventType === 'finance.forecast_update' && (
                     <span>
                       MRR: <span className="text-emerald-400">${((evt as any).payload.mrrUsd / 1000000).toFixed(1)}M</span> · Runway: {(evt as any).payload.runwayMonths} mos · Growth: +{(evt as any).payload.forecastGrowthPct}%
@@ -378,7 +367,7 @@ RiskEventSchema: category, probability [0..1], impactRating [1..10], mitigationS
                   )}
                   {evt.eventType === 'ops.capacity_update' && (
                     <span>
-                      Subsystem: {(evt as any).payload.subsystem} · Utilization: {(evt as any).payload.utilizationPct}% · Throughput: {(evt as any).payload.throughputPerHr}/hr
+                      Sample workstream: <span className="text-cyan-300">{(evt as any).payload.subsystem}</span> · Capacity: {(evt as any).payload.capacityPct}% · Active tasks: {(evt as any).payload.activeTasks}
                     </span>
                   )}
                 </div>

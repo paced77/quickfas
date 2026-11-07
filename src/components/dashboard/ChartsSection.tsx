@@ -6,31 +6,31 @@ export const ChartsSection: React.FC = () => {
   const [activeHealthIndex, setActiveHealthIndex] = useState<number | null>(4);
   const [activeForecastIndex, setActiveForecastIndex] = useState<number | null>(4);
 
-  // Data specified directly from the spec:
-  // Kingdom Health (Mon 82, Tue 88, Wed 90, Thu 93, Fri 98)
+  // Static sample data for interface illustration only:
+  // Example readiness scores; not collected from live systems.
   const healthData = [
-    { day: 'Mon', score: 82, events: 'Cohort Ingestion Init' },
-    { day: 'Tue', score: 88, events: 'Zurich Failover Tested' },
-    { day: 'Wed', score: 90, events: 'FHIR Gateway Scaled' },
-    { day: 'Thu', score: 93, events: 'Audit Proof Invariant' },
-    { day: 'Fri', score: 98, events: 'Endpoint Milestone Day -14' },
+    { day: 'Mon', score: 82, events: 'Fictional sample — not connected to live data' },
+    { day: 'Tue', score: 88, events: 'Fictional sample — not connected to live data' },
+    { day: 'Wed', score: 90, events: 'Fictional sample — not connected to live data' },
+    { day: 'Thu', score: 93, events: 'Illustrative sample event' },
+    { day: 'Fri', score: 98, events: 'Illustrative sample event' },
   ];
 
-  // Strategic Forecast (Jan 72, Feb 78, Mar 84, Apr 91, May 95)
+  // Illustrative trend values; not a forecast or prediction.
   const forecastData = [
-    { month: 'Jan', value: 72, label: 'Phase II Wrap' },
-    { month: 'Feb', value: 78, label: 'EHR Mesh Live' },
-    { month: 'Mar', value: 84, label: 'CapEx Optimized' },
-    { month: 'Apr', value: 91, label: 'Zurich Edge Enclave' },
-    { month: 'May', value: 95, label: 'Full Autonomy Target' },
+    { month: 'Jan', value: 72, label: 'Sample point' },
+    { month: 'Feb', value: 78, label: 'Fictional sample — not connected to live data' },
+    { month: 'Mar', value: 84, label: 'Sample point' },
+    { month: 'Apr', value: 91, label: 'Fictional sample — not connected to live data' },
+    { month: 'May', value: 95, label: 'Sample point' },
   ];
 
-  // Resource Allocation (Infrastructure 35%, Research 25%, Intelligence 20%, Operations 20%)
+  // Example allocation percentages; not a real budget.
   const resourcesData = [
-    { name: 'Infrastructure', pct: 35, color: '#22d3ee', spend: '$1.4M/mo' },
-    { name: 'Research & Studies', pct: 25, color: '#818cf8', spend: '$1.0M/mo' },
-    { name: 'Sovereign Intelligence', pct: 20, color: '#6ee7ff', spend: '$800k/mo' },
-    { name: 'Field Operations', pct: 20, color: '#10b981', spend: '$800k/mo' },
+    { name: 'Infrastructure', pct: 35, color: '#22d3ee', spend: 'Illustrative allocation' },
+    { name: 'Research & Studies', pct: 25, color: '#818cf8', spend: 'Illustrative allocation' },
+    { name: 'Sovereign Intelligence', pct: 20, color: '#6ee7ff', spend: 'Illustrative allocation' },
+    { name: 'Field Operations', pct: 20, color: '#10b981', spend: 'Illustrative allocation' },
   ];
 
   // Area Chart Dimensions
@@ -76,16 +76,16 @@ export const ChartsSection: React.FC = () => {
             <div className="flex items-center gap-2">
               <Activity className="w-4 h-4 text-emerald-400" />
               <span className="text-xs font-mono font-bold tracking-wider text-slate-200 uppercase">
-                Kingdom Health History
+                Sample Readiness Trend
               </span>
             </div>
             <span className="text-xs font-mono text-emerald-400 font-extrabold tabular-nums">
-              98% Peak
+              Sample peak: 98%
             </span>
           </div>
 
           <p className="text-[11px] text-slate-400 mb-2">
-            Area Chart // Progressive 5-day sovereign operational readiness trajectory.
+            Illustrative 5-day sample series; no live telemetry is connected.
           </p>
 
           {/* SVG Area Chart */}
@@ -151,14 +151,14 @@ export const ChartsSection: React.FC = () => {
         )}
       </div>
 
-      {/* 2. Strategic Forecast Line Chart */}
+      {/* 2. Illustrative Trend Example Line Chart */}
       <div className="glass-panel rounded-xl p-4 flex flex-col justify-between">
         <div>
           <div className="flex items-center justify-between pb-2 border-b border-white/5 mb-3">
             <div className="flex items-center gap-2">
               <TrendingUp className="w-4 h-4 text-cyan-400" />
               <span className="text-xs font-mono font-bold tracking-wider text-slate-200 uppercase">
-                Strategic Forecast
+                Illustrative Trend Example
               </span>
             </div>
             <span className="text-xs font-mono text-cyan-400 font-extrabold tabular-nums">
@@ -279,7 +279,7 @@ export const ChartsSection: React.FC = () => {
         </div>
 
         <div className="mt-3 pt-2.5 border-t border-white/5 text-[10px] font-mono text-slate-500 text-right">
-          Budget Efficiency: 94.2% Optimal
+          Illustrative resource mix; not a budget report
         </div>
       </div>
     </div>

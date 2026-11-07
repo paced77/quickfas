@@ -8,7 +8,7 @@ import { z } from 'zod';
 export const SeveritySchema = z.enum(['info', 'nominal', 'warning', 'critical']);
 export type Severity = z.infer<typeof SeveritySchema>;
 
-export const DomainSchema = z.enum(['clinical', 'operations', 'finance', 'infrastructure', 'ai']);
+export const DomainSchema = z.enum(['operations', 'finance', 'infrastructure', 'ai']);
 export type Domain = z.infer<typeof DomainSchema>;
 
 // Base Kingdom Event
@@ -65,29 +65,15 @@ export const AgentEventSchema = BaseKingdomEventSchema.extend({
 });
 export type AgentEvent = z.infer<typeof AgentEventSchema>;
 
-// 3. Clinical Telemetry Event
-export const ClinicalEventSchema = BaseKingdomEventSchema.extend({
-  eventType: z.enum(['clinical.enrollment', 'clinical.study_milestone', 'clinical.fhir_tx']),
-  domain: z.literal('clinical'),
-  payload: z.object({
-    studyId: z.string().min(1),
-    studyName: z.string().min(1),
-    siteId: z.string().min(1),
-    currentEnrollment: z.number().int().nonnegative(),
-    targetEnrollment: z.number().int().positive(),
-    velocityPpm: z.number(), // patients per month
-    healthPct: z.number().min(0).max(100),
-    fhirTransactionsPerSec: z.number().nonnegative(),
-  }),
-});
-export type ClinicalEvent = z.infer<typeof ClinicalEventSchema>;
+// Clinical and FHIR telemetry ingestion is intentionally not part of this product.
+// Stratum Clinical Edge is an educational experience, not an EHR integration.
 
 // 4. Risk Event
 export const RiskEventSchema = BaseKingdomEventSchema.extend({
   eventType: z.enum(['risk.detected', 'risk.mitigated', 'risk.escalated']),
   domain: DomainSchema,
   payload: z.object({
-    category: z.enum(['regulatory', 'clinical', 'financial', 'operational', 'cybersecurity']),
+    category: z.enum(['regulatory', 'financial', 'operational', 'cybersecurity']),
     headline: z.string().min(1),
     probability: z.number().min(0).max(1),
     impactRating: z.number().min(1).max(10),
@@ -132,7 +118,6 @@ export type FinanceEvent = z.infer<typeof FinanceEventSchema>;
 export const KingdomEventUnionSchema = z.discriminatedUnion('eventType', [
   HealthEventSchema,
   AgentEventSchema,
-  ClinicalEventSchema,
   RiskEventSchema,
   OperationsEventSchema,
   FinanceEventSchema,
@@ -172,6 +157,14 @@ export function validateKingdomTelemetry(data: unknown): {
   event?: AnyKingdomEvent;
   error?: string;
 } {
+  const record = data && typeof data === 'object' && !Array.isArray(data)
+    ? data as Record<string, unknown>
+    : null;
+  const metadata = record?.metadata;
+  if (!metadata || typeof metadata !== 'object' || Array.isArray(metadata)
+    || (metadata as Record<string, unknown>).dataClassification !== 'synthetic_demo') {
+    return { success: false, error: 'Telemetry must be explicitly classified as synthetic_demo.' };
+  }
   if (containsRestrictedTelemetryContent(data)) {
     return { success: false, error: 'Potentially restricted personal or health information is not accepted in telemetry.' };
   }

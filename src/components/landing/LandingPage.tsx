@@ -65,7 +65,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onEnterKingdom }) => {
             className="glow-btn-secondary px-6 py-3 rounded-xl text-sm font-semibold flex items-center gap-2"
           >
             <Play className="w-4 h-4 fill-current text-cyan-400" />
-            <span>View Live Command Bridge</span>
+            <span>View Sample Command Bridge</span>
           </button>
         </div>
       </section>
@@ -88,7 +88,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onEnterKingdom }) => {
             </p>
 
             <div className="flex flex-wrap justify-center gap-2 text-xs font-mono text-cyan-300">
-              <span className="px-3 py-1 bg-white/5 rounded-full border border-white/10">Real-Time Intelligence</span>
+              <span className="px-3 py-1 bg-white/5 rounded-full border border-white/10">Connected Intelligence (when configured)</span>
               <span className="px-3 py-1 bg-white/5 rounded-full border border-white/10">Mission Control</span>
               <span className="px-3 py-1 bg-white/5 rounded-full border border-white/10">AI Sovereign Advisor</span>
               <span className="px-3 py-1 bg-white/5 rounded-full border border-white/10">Strategic Analytics</span>
@@ -117,7 +117,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onEnterKingdom }) => {
             </div>
             <h3 className="text-base font-bold text-white mb-2">Command Dashboard</h3>
             <p className="text-xs text-slate-300 leading-relaxed">
-              Instant visibility into operations, priorities, and strategic health through single-source executive telemetry.
+              Illustrative visibility into example workstreams and priorities. Connect validated data sources before using operational metrics.
             </p>
           </div>
 
@@ -139,7 +139,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onEnterKingdom }) => {
             </div>
             <h3 className="text-base font-bold text-white mb-2">AI Sovereign Advisor</h3>
             <p className="text-xs text-slate-300 leading-relaxed">
-              Receive situation summaries, priority recommendations, forecast analysis, and natural spoken briefings powered by Gemini.
+              Generate on-demand summaries and scenario analysis with Gemini; outputs require human review and verified source context.
             </p>
           </div>
 
@@ -150,7 +150,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onEnterKingdom }) => {
             </div>
             <h3 className="text-base font-bold text-white mb-2">Strategic Analytics</h3>
             <p className="text-xs text-slate-300 leading-relaxed">
-              Transform data into actionable decisions with health history curves, line forecast trends, and resource allocation matrices.
+              Transform data into actionable decisions with sample trend examples and illustrative resource-allocation views.
             </p>
           </div>
 

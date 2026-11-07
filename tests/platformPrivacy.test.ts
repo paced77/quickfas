@@ -47,7 +47,7 @@ test('telemetry rejects direct identifiers and obvious personal data', () => {
     source: 'unit-test',
     correlationId: 'corr-test',
     timestamp: new Date('2026-11-07T12:00:00.000Z').toISOString(),
-    metadata: { region: 'test-region' },
+    metadata: { region: 'test-region', dataClassification: 'synthetic_demo' },
     payload: {
       status: 'optimal',
       uptimeSeconds: 60,
@@ -59,13 +59,14 @@ test('telemetry rejects direct identifiers and obvious personal data', () => {
     },
   };
   assert.equal(validateKingdomTelemetry(event).success, true);
+  assert.equal(validateKingdomTelemetry({ ...event, metadata: { region: 'test-region' } }).success, false);
   assert.equal(validateKingdomTelemetry({
     ...event,
-    metadata: { patientName: 'Example Person' },
+    metadata: { dataClassification: 'synthetic_demo', patientName: 'Example Person' },
   }).success, false);
   assert.equal(validateKingdomTelemetry({
     ...event,
-    metadata: { operatorContact: 'operator@example.com' },
+    metadata: { dataClassification: 'synthetic_demo', operatorContact: 'operator@example.com' },
   }).success, false);
 });
 

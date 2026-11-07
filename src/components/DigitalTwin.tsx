@@ -11,21 +11,21 @@ export const initialTwinNodes: DigitalTwinNode[] = [
     healthPct: 98.6,
     monthlyCostUsd: '$340,000',
     riskLevel: 'Low',
-    outputMetric: 'Strategic Directives: 100% Invariant',
-    dependencies: ['Clinical Intelligence', 'Finance Oracle', 'Operations Commander', 'Technology Fabric'],
-    forecastTrend: 'Target Horizon Alignment: 99.2%',
+    outputMetric: 'Illustrative sample output',
+    dependencies: ['Illustrative sample value', 'Finance Oracle', 'Operations Commander', 'Technology Fabric'],
+    forecastTrend: 'Illustrative target value only',
     telemetryStream: [96, 97, 98, 97, 99, 98, 98.6],
   },
   {
-    id: 'node-clinical',
-    label: 'Clinical Intelligence Mesh',
-    department: 'Trials & Patient Velocity',
+    id: 'node-education',
+    label: 'Health Education Example',
+    department: 'Education',
     healthPct: 98.4,
     monthlyCostUsd: '$1,280,000',
     riskLevel: 'Moderate',
-    outputMetric: '684 / 720 Patients Enrolled (28.5/mo)',
+    outputMetric: 'Illustrative sample value',
     dependencies: ['Operations Commander', 'Technology Fabric'],
-    forecastTrend: 'Phase-III Milestone achieved 14 days early',
+    forecastTrend: 'Illustrative sample value',
     telemetryStream: [92, 94, 95, 96, 97, 98, 98.4],
   },
   {
@@ -35,9 +35,9 @@ export const initialTwinNodes: DigitalTwinNode[] = [
     healthPct: 99.1,
     monthlyCostUsd: '$180,000',
     riskLevel: 'Low',
-    outputMetric: '$14.2M MRR · 38.5 Months Net Runway',
+    outputMetric: 'Illustrative sample value',
     dependencies: ['Technology Fabric'],
-    forecastTrend: 'Burn efficiency +18% via automated routing',
+    forecastTrend: 'Illustrative cost scenario only',
     telemetryStream: [97, 98, 98, 99, 99, 99, 99.1],
   },
   {
@@ -47,9 +47,9 @@ export const initialTwinNodes: DigitalTwinNode[] = [
     healthPct: 96.2,
     monthlyCostUsd: '$890,000',
     riskLevel: 'Moderate',
-    outputMetric: '1,840 assays/hr · 74% Lab Capacity',
-    dependencies: ['Technology Fabric', 'Clinical Intelligence'],
-    forecastTrend: 'Buffer capacity 26% prevents queue bottlenecks',
+    outputMetric: 'Illustrative sample value',
+    dependencies: ['Technology Fabric', 'Illustrative sample value'],
+    forecastTrend: 'Illustrative operations scenario only',
     telemetryStream: [94, 95, 96, 96, 95, 96, 96.2],
   },
   {
@@ -59,31 +59,31 @@ export const initialTwinNodes: DigitalTwinNode[] = [
     healthPct: 99.7,
     monthlyCostUsd: '$410,000',
     riskLevel: 'Low',
-    outputMetric: '83ms Latency · 0 Invariant Violations',
+    outputMetric: 'Illustrative sample output; no audit performed',
     dependencies: [],
-    forecastTrend: '99.99% Availability across 3 Global Regions',
+    forecastTrend: 'Illustrative availability value; not measured',
     telemetryStream: [99, 99, 99, 99.5, 99.6, 99.7, 99.7],
   },
 ];
 
 const PRESET_PERTURBATIONS = [
   {
-    title: 'Accelerate Phase-III Multi-Center Patient Enrollment Surge (+35%)',
-    type: 'clinical_velocity_surge',
+    title: 'Illustrative sample value',
+    type: 'Illustrative sample value',
     magnitude: 35,
   },
   {
-    title: 'Zurich Biostorage Cold-Chain Thermal Excursion (-20% stability)',
+    title: 'Illustrative sample value',
     type: 'cold_chain_shock',
     magnitude: 20,
   },
   {
-    title: 'CapEx Reallocation ($1.2M) into Regional Edge Genotyping',
+    title: 'Sample budget reallocation scenario',
     type: 'capital_shift',
     magnitude: 25,
   },
   {
-    title: 'Global Ingress Transit Latency Surge (+120ms network congestion)',
+    title: 'Sample network congestion scenario',
     type: 'network_congestion',
     magnitude: 40,
   },
@@ -131,14 +131,14 @@ export const DigitalTwin: React.FC = () => {
           <div>
             <h3 className="text-sm font-bold text-white tracking-wide uppercase font-mono flex items-center gap-2">
               <GitBranch className="w-4 h-4 text-cyan-400" />
-              <span>Enterprise Digital Twin // Organizational Dependency Graph</span>
+              <span>Illustrative Enterprise Map // Example Dependencies</span>
             </h3>
             <p className="text-xs text-slate-400 mt-0.5">
-              Live computational replica of enterprise topology: CEO Core, Clinical, Finance, Operations, and Technology.
+              Illustrative topology and sample metrics only; no live systems or financial data are connected.
             </p>
           </div>
           <span className="text-xs font-mono text-emerald-400 bg-emerald-950/40 border border-emerald-800/40 px-2.5 py-1 rounded">
-            5 / 5 Nodes In Real-Time Sync
+            5 Example Nodes
           </span>
         </div>
 
@@ -212,7 +212,7 @@ export const DigitalTwin: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
           <div className="bg-[#050811]/60 p-3.5 rounded-lg border border-white/5">
             <span className="text-[10px] font-mono text-slate-500 block uppercase mb-1">
-              Real-Time Node Output
+              Sample Node Output
             </span>
             <p className="text-slate-200 font-medium">{selectedNode.outputMetric}</p>
           </div>
@@ -253,7 +253,7 @@ export const DigitalTwin: React.FC = () => {
                 Digital Twin Scenario Simulator
               </h3>
               <p className="text-xs text-slate-400 mt-0.5">
-                Inject operational perturbations and simulate predicted cascading ripple effects across nodes.
+                Explore an illustrative scenario using sample inputs; the output is not a verified forecast.
               </p>
             </div>
           </div>
@@ -264,7 +264,7 @@ export const DigitalTwin: React.FC = () => {
             className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-xs font-bold text-white bg-gradient-to-r from-indigo-600 via-blue-600 to-cyan-600 hover:from-indigo-500 hover:to-cyan-500 transition-all shadow-[0_0_20px_rgba(99,102,241,0.3)] disabled:opacity-50 shrink-0"
           >
             <Play className={`w-3.5 h-3.5 fill-current ${isSimulating ? 'animate-spin' : ''}`} />
-            <span>{isSimulating ? 'Simulating Cascade...' : 'Run Twin Simulation'}</span>
+            <span>{isSimulating ? 'Generating Example...' : 'Generate Scenario Example'}</span>
           </button>
         </div>
 
@@ -384,7 +384,7 @@ export const DigitalTwin: React.FC = () => {
           </div>
         ) : (
           <div className="text-center py-10 border border-dashed border-white/10 rounded-xl text-slate-500 text-xs">
-            Select a perturbation preset and click "Run Twin Simulation" to project organizational ripple effects.
+            Select a perturbation preset and click "Generate Scenario Example" to project organizational ripple effects.
           </div>
         )}
       </div>

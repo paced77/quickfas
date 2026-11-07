@@ -22,39 +22,39 @@ import { StorageAuditPanel } from './components/privacy/StorageAuditPanel.tsx';
 import { trackAnalyticsEvent } from './platform/analytics/analyticsEvents.ts';
 
 const INITIAL_BRIEFING: ExecutiveBriefingData = {
-  headline: 'All Kingdom Systems Nominal · Clinical Endpoint Acceleration Approved',
-  statusSummary: 'Multi-center clinical trial velocity exceeds protocol baseline by 32%. Revenue trajectory tracks at $14.2M MRR with 38.5 months runway. Two strategic risks actively monitored with automated failover.',
-  spokenScript: 'Good morning. Kingdom systems online. Clinical operations stable. Revenue forecast increased. Two strategic risks require review. Overall system health remains above target.',
+  headline: 'Illustrative Project Briefing · Sample Scenario',
+  statusSummary: 'This dashboard is showing fictional operational examples for interface demonstration only. No live business, financial, clinical, patient, or institutional data is connected.',
+  spokenScript: 'This is an illustrative workspace using fictional sample information. Review connected data sources and permissions before relying on any operational report.',
   coreAnswers: {
-    whatIsHappeningNow: 'Multi-center clinical operations are executing with sub-90ms ingestion across Mayo and Charite nodes. Cohort enrollment is at 684 out of 720 patients.',
-    whyIsItHappening: 'Automated FHIR pipelines have removed manual site verification lag, increasing monthly patient intake velocity to 28.5 patients per month.',
-    whatHappensNext: 'Phase III protocol milestone will be achieved 14 calendar days ahead of schedule, enabling expedited submission package generation.',
-    whatShouldIDo: 'Authorize the Sovereign AI Council directive to pre-allocate $850k into Zurich edge genomics processing to maintain real-time analysis parity.',
+    whatIsHappeningNow: 'Sample scenario: three fictional workstreams are being tracked in this demonstration. These entries do not describe real organizations, people, projects, or outcomes.',
+    whyIsItHappening: 'The figures shown here are static interface examples used to demonstrate how status summaries and decision-support views may be presented.',
+    whatHappensNext: 'Replace these examples with validated, authorized source data only after the relevant integrations, access controls, and data-quality checks have been reviewed.',
+    whatShouldIDo: 'Use this workspace to explore navigation and reporting behavior only. Do not make clinical, financial, regulatory, staffing, or operational decisions from sample content.',
   },
   keySignals: [
     {
-      metric: 'REVENUE / MRR',
-      delta: '$14.2M',
-      sentiment: 'positive',
-      context: '+24.8% YoY Growth',
-    },
-    {
-      metric: 'CLINICAL VELOCITY',
-      delta: '28.5 / mo',
-      sentiment: 'positive',
-      context: '684 / 720 Enrolled',
-    },
-    {
-      metric: 'SYSTEM LATENCY',
-      delta: '83ms',
+      metric: 'SAMPLE WORKSTREAMS',
+      delta: '3',
       sentiment: 'nominal',
-      context: '142.8 FHIR tx/s',
+      context: 'Fictional interface example',
     },
     {
-      metric: 'STRATEGIC RISKS',
-      delta: '2 Active',
+      metric: 'SAMPLE TASKS',
+      delta: '8',
+      sentiment: 'nominal',
+      context: 'Not connected to a live project',
+    },
+    {
+      metric: 'SAMPLE COMPLETION',
+      delta: '60%',
+      sentiment: 'nominal',
+      context: 'Illustrative value only',
+    },
+    {
+      metric: 'SAMPLE RISKS',
+      delta: '2',
       sentiment: 'warning',
-      context: 'Zurich Biostorage & EMA',
+      context: 'Fictional training scenario',
     },
   ],
 };
@@ -130,7 +130,7 @@ export default function App() {
   };
 
   const handleActionTriggered = (actionTitle: string) => {
-    triggerToast(`Sovereign Action Enacted: "${actionTitle}"`);
+    triggerToast(`Sample action selected: "${actionTitle}". No external workflow was executed.`);
   };
 
   return (
@@ -182,9 +182,9 @@ export default function App() {
             aria-label="Sample data disclosure"
             className="mb-5 rounded-lg border border-amber-400/30 bg-amber-950/30 px-4 py-3 text-xs leading-5 text-amber-100"
           >
-            <strong>Illustrative workspace:</strong> some dashboard metrics, maps, charts, and AI fallback responses use
-            sample scenarios. They are not connected to live clinical, financial, or operational systems and must not be
-            used to make real-world decisions. No patient records are loaded.
+            <strong>Illustrative workspace:</strong> dashboard metrics, charts, maps, missions, investor-model figures, telemetry fixtures, and AI fallback responses are
+            illustrative examples only. They are not connected to live clinical, financial, or operational systems and are
+            not validated forecasts or real work records. No patient records or EHR data are loaded.
           </aside>
           {/* Toast Notification */}
           {notification && (

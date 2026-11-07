@@ -13,6 +13,7 @@ export function AuthGate({ children }: AuthGateProps) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
+  const [profileRole, setProfileRole] = useState<string | null>(null);
 
   useEffect(() => {
     if (!supabase) {
@@ -36,6 +37,28 @@ export function AuthGate({ children }: AuthGateProps) {
     };
   }, []);
 
+  useEffect(() => {
+    if (!supabase || !session) {
+      setProfileRole(null);
+      return;
+    }
+    let active = true;
+    setProfileRole('checking');
+    void (async () => {
+      try {
+        const { data, error: profileError } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('id', session.user.id)
+          .maybeSingle();
+        if (active) setProfileRole(profileError ? 'unavailable' : data?.role ?? 'missing');
+      } catch {
+        if (active) setProfileRole('unavailable');
+      }
+    })();
+    return () => { active = false; };
+  }, [session?.user.id]);
+
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!supabase) return;
@@ -47,9 +70,9 @@ export function AuthGate({ children }: AuthGateProps) {
         const { data, error: authError } = await supabase.auth.signUp({ email, password });
         if (authError) throw authError;
         if (!data.session) {
-          setNotice('Check your email to confirm your account, then return here to sign in.');
+          setNotice('Check your email to confirm your account. New accounts start with read-only viewer access.');
         } else {
-          setNotice('Account created. Your secure workspace is ready.');
+          setNotice('Account created with read-only viewer access. An administrator must grant additional permissions.');
         }
       } else {
         const { error: authError } = await supabase.auth.signInWithPassword({ email, password });
@@ -79,7 +102,7 @@ export function AuthGate({ children }: AuthGateProps) {
       <>
         {children}
         <div className="fixed bottom-5 right-5 z-[100] flex max-w-[calc(100vw-2rem)] items-center gap-3 rounded-xl border border-amber-400/30 bg-[#0f172a]/95 px-3 py-2 shadow-xl backdrop-blur font-mono text-[11px]">
-          <span className="text-amber-300">GUEST PREVIEW MODE</span>
+          <span className="text-amber-300">GUEST PREVIEW · PROTECTED ACTIONS DISABLED</span>
           <button
             type="button"
             onClick={() => setGuestPreview(false)}
@@ -154,7 +177,7 @@ export function AuthGate({ children }: AuthGateProps) {
               onClick={() => setGuestPreview(true)}
               className="text-xs text-cyan-300/80 hover:text-cyan-200 underline font-mono tracking-wide"
             >
-              Or enter as Guest Operator →
+              Or enter as Guest Preview →
             </button>
           </div>
 
@@ -168,7 +191,7 @@ export function AuthGate({ children }: AuthGateProps) {
     <>
       {children}
       <div className="fixed bottom-5 right-5 z-[100] flex max-w-[calc(100vw-2rem)] items-center gap-3 rounded-xl border border-cyan-300/20 bg-[#0f172a]/95 px-3 py-2 shadow-xl backdrop-blur">
-        <span className="max-w-48 truncate text-[11px] text-slate-300">{session.user.email}</span>
+        <span className="flex max-w-64 flex-col truncate text-[11px] text-slate-300"><span className="truncate">{session.user.email}</span><span className="font-mono text-[9px] uppercase tracking-wider text-cyan-300">Access: {profileRole ?? 'checking'}</span></span>
         <button type="button" onClick={signOut} className="rounded-md border border-white/10 px-3 py-1.5 text-[10px] font-semibold tracking-wider text-cyan-200 hover:bg-cyan-300/10">SIGN OUT</button>
       </div>
     </>

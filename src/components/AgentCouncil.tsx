@@ -13,7 +13,7 @@ export const permanentLeaders: CouncilMember[] = [
     responsibilities: ['Overall guidance', 'Existential positioning', 'Horizon-3 strategic planning'],
     status: 'advising',
     confidenceScore: 0.96,
-    recentDirective: 'Accelerate Phase-III endpoint closure by 14 days to front-run global competitive submissions.',
+    recentDirective: 'Fictional sample — not connected to live data',
     focusMetric: 'Strategic Horizon: 2027–2030',
   },
   {
@@ -22,23 +22,23 @@ export const permanentLeaders: CouncilMember[] = [
     title: 'Capital Allocation & Growth Forecaster',
     domain: 'Capital & Treasury',
     avatarSeed: 'finance',
-    responsibilities: ['Revenue trajectory', 'Profitability optimization', 'Dynamic runway extension'],
+    responsibilities: ['Fictional sample — not connected to live data', 'Profitability optimization', 'Fictional sample — not connected to live data'],
     status: 'advising',
     confidenceScore: 0.98,
-    recentDirective: 'Reallocate $850k from dormant hosting reserves to Zurich genomics compute cluster.',
-    focusMetric: 'Runway: 38.5 Months ($14.2M MRR)',
+    recentDirective: 'Fictional sample — not connected to live data',
+    focusMetric: 'Fictional sample — not connected to live data',
   },
   {
     id: 'agent-clin',
-    name: 'Clinical Director',
-    title: 'Trial Velocity & Patient Cohort Lead',
-    domain: 'Clinical Mesh',
-    avatarSeed: 'clinical',
-    responsibilities: ['Multi-center studies', 'Patient safety', 'Enrollment velocity & FHIR sync'],
+    name: 'Fictional sample — not connected to live data',
+    title: 'Fictional sample — not connected to live data',
+    domain: 'Fictional sample — not connected to live data',
+    avatarSeed: 'Fictional sample — not connected to live data',
+    responsibilities: ['Health education content review', 'Fictional sample — not connected to live data', 'Fictional sample — not connected to live data'],
     status: 'deliberating',
     confidenceScore: 0.94,
-    recentDirective: 'Mayo and Charite site enrollment velocity is +32% above protocol baseline.',
-    focusMetric: 'Current Enrollment: 684 / 720 Pts',
+    recentDirective: 'Fictional sample — not connected to live data',
+    focusMetric: 'Sample metric: not connected',
   },
   {
     id: 'agent-risk',
@@ -49,7 +49,7 @@ export const permanentLeaders: CouncilMember[] = [
     responsibilities: ['Unmitigated exposures', 'Cold-chain excursions', 'Operational shock resilience'],
     status: 'monitoring',
     confidenceScore: 0.95,
-    recentDirective: 'Zurich Biostorage micro-excursion mitigated via secondary nitrogen compressor.',
+    recentDirective: 'Fictional sample — not connected to live data',
     focusMetric: 'Active Risks: 2 Monitored',
   },
   {
@@ -61,8 +61,8 @@ export const permanentLeaders: CouncilMember[] = [
     responsibilities: ['Workflow throughput', 'Lab capacity balancing', 'Reagent supply logistics'],
     status: 'advising',
     confidenceScore: 0.97,
-    recentDirective: 'Core assay pipelines operating at 74% capacity with zero unassigned queues.',
-    focusMetric: 'Throughput: 1,840 Assays/Hr',
+    recentDirective: 'Fictional sample — not connected to live data',
+    focusMetric: 'Fictional sample — not connected to live data',
   },
   {
     id: 'agent-comp',
@@ -70,10 +70,10 @@ export const permanentLeaders: CouncilMember[] = [
     title: 'Regulatory Posture & Audit Invariants',
     domain: 'Regulatory Affairs',
     avatarSeed: 'compliance',
-    responsibilities: ['FDA 21 CFR Part 11', 'EMA Priority Dossiers', 'Autonomous audit packaging'],
+    responsibilities: ['Fictional sample — not connected to live data', 'Fictional sample — not connected to live data', 'Autonomous audit packaging'],
     status: 'monitoring',
     confidenceScore: 0.99,
-    recentDirective: 'Audit invariance proof generated for EU-US pseudonymized genomics transmission.',
+    recentDirective: 'Fictional sample — not connected to live data',
     focusMetric: 'Audit Readiness: 100% Invariant',
   },
   {
@@ -85,14 +85,14 @@ export const permanentLeaders: CouncilMember[] = [
     responsibilities: ['Zero-Trust mTLS mesh', 'HSM hardware security', 'API invariant anomaly detection'],
     status: 'monitoring',
     confidenceScore: 0.99,
-    recentDirective: '0 unauthorized penetration attempts detected; all 14.8M FHIR records cryptographically sealed.',
+    recentDirective: 'Fictional sample — not connected to live data',
     focusMetric: 'Breaches / Anomalies: 0',
   },
 ];
 
 const PRESET_AGENDAS = [
-  'Phase III Oncology Study Site Bottleneck vs Q3 Global Milestone Acceleration',
-  'Automated Capital Reallocation ($1.2M) into Edge FHIR Inference Nodes',
+  'Fictional sample — not connected to live data',
+  'Fictional sample — not connected to live data',
   'Supply Chain Reagent Shortage: Dual-Sourcing vs Regulatory Addendum',
   'Cyber Threat Containment on Public Interconnect without Study Halting',
 ];
@@ -115,9 +115,8 @@ export const AgentCouncil: React.FC = () => {
         body: JSON.stringify({
           agendaTopic: agendaToRun,
           contextData: {
-            activeAgents: 34,
-            clinicalHealth: '98.4%',
-            runwayMonths: 38.5,
+            dataMode: 'illustrative_sample',
+            sourceStatus: 'not_connected',
           },
         }),
       });
@@ -142,14 +141,14 @@ export const AgentCouncil: React.FC = () => {
           <div>
             <h3 className="text-sm font-bold text-white tracking-wide uppercase font-mono flex items-center gap-2">
               <Users className="w-4 h-4 text-cyan-400" />
-              <span>Permanent AI Council // 7 Sovereign Leaders</span>
+              <span>AI Council Roster // 7 Example Roles</span>
             </h3>
             <p className="text-xs text-slate-400 mt-0.5">
-              Autonomous executive leaders continuously governing strategy, capital, clinical trials, security, and risk.
+              Seven illustrative advisory personas. They do not continuously govern, monitor systems, or execute actions.
             </p>
           </div>
           <div className="text-xs font-mono text-cyan-300 bg-cyan-950/40 border border-cyan-800/40 px-2.5 py-1 rounded">
-            All 7 Leaders Synchronized (Gemini 3.8 Flash Bus)
+            On-demand AI responses; no agents are continuously synchronized
           </div>
         </div>
 
@@ -256,7 +255,7 @@ export const AgentCouncil: React.FC = () => {
               type="text"
               value={agendaInput}
               onChange={(e) => setAgendaInput(e.target.value)}
-              placeholder="Enter custom strategic dilemma, trial crisis, or capital allocation question..."
+              placeholder="Enter custom strategic dilemma, sample planning scenario, or capital allocation question..."
               className="w-full bg-[#050811] border border-white/10 rounded-lg px-3.5 py-2 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-cyan-500/50"
             />
           </div>

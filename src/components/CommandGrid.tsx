@@ -9,46 +9,46 @@ interface CommandGridProps {
 
 export const initialSubsystems: SubsystemTelemetry[] = [
   {
-    id: 'sub-clinical',
-    name: 'Clinical Intelligence Engine',
-    domain: 'clinical',
-    purpose: 'Continuous ingestion of FHIR EHR feeds, multi-center oncology trial velocity & cohort stability',
-    currentState: 'Active Multi-Center Ingestion',
+    id: 'sub-sample-workstream',
+    name: 'Sample Workstream A',
+    domain: 'operations',
+    purpose: 'Illustrative sample value',
+    currentState: 'Sample state — not connected',
     healthPct: 98.4,
     latencyMs: 83,
-    dependencies: ['Zurich Biostorage API', 'Mayo Clinical Node', 'Charite Genomics Mesh'],
-    output: '142.8 FHIR tx/sec · 28.5 pts/month',
-    forecast: 'Target enrollment (+720 patients) reached 14 days ahead of Q3 protocol milestone',
+    dependencies: ['Illustrative sample value', 'Illustrative sample value', 'Illustrative sample value'],
+    output: 'Illustrative sample value',
+    forecast: 'Illustrative sample value',
     confidence: 'High',
-    velocityMetric: 'Enrollment Velocity: High (+24%)',
+    velocityMetric: 'Illustrative sample value',
     impactSentiment: 'positive',
   },
   {
     id: 'sub-finance',
     name: 'Finance Oracle Engine',
     domain: 'finance',
-    purpose: 'Autonomous capital allocation, dynamic runway modeling, and commercial revenue trajectory',
-    currentState: 'Predictive Cash Flow Optimization',
+    purpose: 'Illustrative sample value',
+    currentState: 'Sample state — not connected',
     healthPct: 99.1,
     latencyMs: 42,
     dependencies: ['Treasury Wire Gateway', 'ERP Ledger Sync', 'Contract Milestone Index'],
-    output: '$14.2M MRR · 38.5 Months Runway',
-    forecast: 'Forecast Accuracy: 96.2% · Gross Margin expansion to 78.4%',
+    output: 'Illustrative sample value',
+    forecast: 'Illustrative sample value',
     confidence: 'Very High',
-    velocityMetric: 'Runway Burn: Optimal ($2.1M/mo)',
+    velocityMetric: 'Illustrative sample value',
     impactSentiment: 'positive',
   },
   {
     id: 'sub-operations',
     name: 'Operations Command Grid',
     domain: 'operations',
-    purpose: 'Real-time workflow orchestration, lab capacity balancing, and reagent supply chain routing',
-    currentState: 'High-Throughput Balanced',
+    purpose: 'Illustrative workflow example; no lab, logistics, or supply-chain system is connected',
+    currentState: 'Sample state — not connected',
     healthPct: 96.2,
     latencyMs: 64,
-    dependencies: ['Core Lab Assays', 'Courier Dispatch API', 'Global Cold-Chain Telemetry'],
-    output: '1,840 assays/hour · 74% Capacity Utilization',
-    forecast: 'Zero critical bottlenecks through Day +60; Buffer capacity: 26%',
+    dependencies: ['Illustrative sample value', 'Courier Dispatch API', 'Global Cold-Chain Telemetry'],
+    output: 'Illustrative sample value',
+    forecast: 'Illustrative scenario; not a live forecast',
     confidence: 'High',
     velocityMetric: 'Throughput: Nominal',
     impactSentiment: 'nominal',
@@ -57,45 +57,45 @@ export const initialSubsystems: SubsystemTelemetry[] = [
     id: 'sub-security',
     name: 'Zero-Trust Security Sentinel',
     domain: 'security',
-    purpose: 'Continuous cryptographic provenance, automated FHIR ingress sanitization, and invariant audits',
-    currentState: 'Zero-Trust Guard Enforcing',
+    purpose: 'Illustrative sample value',
+    currentState: 'Sample state — not connected',
     healthPct: 99.9,
     latencyMs: 14,
     dependencies: ['Hardware HSM Cluster', 'Audit Ledger Proofs', 'mTLS Gateway Fabric'],
-    output: '0 Integrity Invariant Breaches · 14.8M tx audited',
-    forecast: '100% compliance audit readiness for FDA Title 21 CFR Part 11 and EU AI Act',
-    confidence: 'Guaranteed',
-    velocityMetric: 'Threat Level: Baseline Low',
+    output: 'Illustrative sample output; no audit was performed',
+    forecast: 'Illustrative sample value',
+    confidence: 'High',
+    velocityMetric: 'Sample classification only',
     impactSentiment: 'positive',
   },
   {
     id: 'sub-telemetry',
     name: 'Kingdom Telemetry Fabric',
     domain: 'infrastructure',
-    purpose: 'Microsecond distributed event bus with runtime Zod schema contract validation (TEL-001/005)',
-    currentState: 'Contract Validation 100% Invariant',
+    purpose: 'Illustrative sample value',
+    currentState: 'Sample state — not connected',
     healthPct: 99.7,
     latencyMs: 28,
-    dependencies: ['Event Streaming Mesh', 'Zod Schema Invariant Bus', 'Tracing Collector'],
-    output: '4,280 events/min · 0 Unhandled Exceptions',
-    forecast: 'Cluster auto-scaling headroom at 4.2x baseline traffic spike',
+    dependencies: ['Event Streaming Mesh', 'Illustrative sample value', 'Tracing Collector'],
+    output: 'Illustrative sample output; no live events collected',
+    forecast: 'Illustrative infrastructure scenario',
     confidence: 'Very High',
-    velocityMetric: 'Zod Validation: 100% Strict',
+    velocityMetric: 'Schema validation configured; sample value only',
     impactSentiment: 'positive',
   },
   {
     id: 'sub-ai-council',
-    name: 'Sovereign AI Council Bus',
+    name: 'AI Council Example',
     domain: 'infrastructure',
     purpose: 'Multi-agent deliberation orchestrator, strategic recommendation consensus, and executive guidance',
-    currentState: 'Deliberation Standby (34 Agents Active)',
+    currentState: 'Sample state — on-demand AI only',
     healthPct: 97.8,
     latencyMs: 112,
-    dependencies: ['Gemini 3.8 Flash Engine', 'Autonomous Agent Bus', 'Executive Policy Store'],
-    output: '34 Autonomous Agents Synchronized',
-    forecast: 'Consensus latency under 1.2s across all 7 Permanent Sovereign Leaders',
+    dependencies: ['Configured AI provider', 'Autonomous Agent Bus', 'Executive Policy Store'],
+    output: 'Example advisory roles; no agents are running autonomously',
+    forecast: 'Illustrative council scenario; no autonomous agents are synchronized',
     confidence: 'High',
-    velocityMetric: 'Decision Tempo: Sub-second',
+    velocityMetric: 'Illustrative sample value',
     impactSentiment: 'positive',
   },
 ];
@@ -129,10 +129,10 @@ export const CommandGrid: React.FC<CommandGridProps> = ({ onSelectSubsystem }) =
       <div className="flex items-center justify-between mb-4">
         <div>
           <h3 className="text-sm font-bold text-white tracking-wide uppercase font-mono">
-            Subsystem Live Performance Visibility
+            Subsystem Sample Metrics
           </h3>
           <p className="text-xs text-slate-400 mt-0.5">
-            2027 Sovereign Architecture: Continuous live verification across health, latency, dependencies, and forecast confidence.
+            Illustrative values only; no live health checks, latency probes, integrations, or forecasts are connected.
           </p>
         </div>
       </div>
@@ -181,14 +181,14 @@ export const CommandGrid: React.FC<CommandGridProps> = ({ onSelectSubsystem }) =
                 {/* Performance Metrics */}
                 <div className="space-y-1.5 text-xs">
                   <div className="flex items-center justify-between text-slate-300">
-                    <span className="text-[11px] text-slate-500">Current Output:</span>
+                    <span className="text-[11px] text-slate-500">Sample Output:</span>
                     <span className="font-mono text-slate-200 font-medium text-right text-[11px]">
                       {sub.output}
                     </span>
                   </div>
 
                   <div className="flex items-center justify-between text-slate-300">
-                    <span className="text-[11px] text-slate-500">Confidence:</span>
+                    <span className="text-[11px] text-slate-500">Illustrative Confidence:</span>
                     <span className="font-mono text-cyan-300 font-semibold text-[11px]">
                       {sub.confidence}
                     </span>
@@ -196,7 +196,7 @@ export const CommandGrid: React.FC<CommandGridProps> = ({ onSelectSubsystem }) =
 
                   <div className="bg-white/[0.02] rounded p-2 mt-2 border border-white/5 text-[11px]">
                     <span className="text-[10px] font-mono text-slate-500 block uppercase">
-                      Forecast Trajectory
+                      Illustrative Scenario
                     </span>
                     <span className="text-slate-300 leading-tight block mt-0.5">
                       {sub.forecast}
@@ -205,7 +205,7 @@ export const CommandGrid: React.FC<CommandGridProps> = ({ onSelectSubsystem }) =
 
                   <div className="pt-2">
                     <span className="text-[10px] font-mono text-slate-500 block uppercase mb-1">
-                      Live Dependencies ({sub.dependencies.length})
+                      Example Dependencies ({sub.dependencies.length})
                     </span>
                     <div className="flex flex-wrap gap-1">
                       {sub.dependencies.map((dep, dIdx) => (
@@ -229,7 +229,7 @@ export const CommandGrid: React.FC<CommandGridProps> = ({ onSelectSubsystem }) =
                   className="flex items-center gap-1 text-[11px] font-medium text-slate-300 hover:text-cyan-300 transition-colors"
                 >
                   <RefreshCw className={`w-3 h-3 ${isProbing ? 'animate-spin text-cyan-400' : ''}`} />
-                  <span>{isProbing ? 'Running Probe...' : 'Subsystem Probe'}</span>
+                  <span>{isProbing ? 'Simulating Sample...' : 'Simulate Sample Probe'}</span>
                 </button>
                 <span className="text-[10px] font-mono text-emerald-400/80 flex items-center gap-1">
                   <CheckCircle2 className="w-2.5 h-2.5" />

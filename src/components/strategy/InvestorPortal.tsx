@@ -67,6 +67,9 @@ export const InvestorPortal: React.FC<InvestorPortalProps> = ({ onNotify }) => {
 
   return (
     <div className="space-y-6">
+      <aside role="note" aria-label="Financial model disclosure" className="rounded-lg border border-amber-400/30 bg-amber-950/25 px-4 py-3 text-xs leading-5 text-amber-100">
+        <strong>Illustrative planning model only.</strong> Market sizes, revenue, pricing, CAC/LTV, margins, valuations, ownership, and return scenarios are assumptions—not actual traction, audited financials, verified market research, an investment offer, or guaranteed returns. Validate every input before external use.
+      </aside>
       {/* Action Header & View Switcher (Hidden in Print) */}
       <div className="no-print bg-[#0f172a]/90 backdrop-blur-xl border border-[#6ee7ff]/20 rounded-xl p-5 shadow-[0_0_30px_rgba(34,211,238,0.06)] flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
@@ -80,7 +83,7 @@ export const InvestorPortal: React.FC<InvestorPortalProps> = ({ onNotify }) => {
             <span>Project Kingdom: Master Strategy & Investor Portal</span>
           </h1>
           <p className="text-xs sm:text-sm text-slate-400 mt-0.5">
-            Rule with Clarity. Command with Confidence. Complete documentation, investor model, and clean PDF export.
+            Draft strategy, illustrative financial assumptions, and an exportable working model. Validate all assumptions before sharing.
           </p>
         </div>
 
@@ -163,7 +166,7 @@ export const InvestorPortal: React.FC<InvestorPortalProps> = ({ onNotify }) => {
             <div className="border-b border-cyan-500/20 pb-6 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
               <div>
                 <span className="text-xs font-mono uppercase tracking-wider text-cyan-400">
-                  CONFIDENTIAL EXECUTIVE MEMO · INVESTOR BRIEF
+                  DRAFT MODEL · ILLUSTRATIVE ASSUMPTIONS
                 </span>
                 <h1 className="text-3xl sm:text-4xl font-extrabold text-white mt-1">
                   PROJECT KINGDOM
@@ -178,7 +181,7 @@ export const InvestorPortal: React.FC<InvestorPortalProps> = ({ onNotify }) => {
               <div className="text-right font-mono text-xs text-slate-400 shrink-0">
                 <div>Seed Round: <span className="text-white font-semibold">$1.0M</span></div>
                 <div>Pre-Money Cap: <span className="text-cyan-400 font-semibold">$4.0M</span></div>
-                <div>Target SOM: <span className="text-emerald-400 font-semibold">$100M ARR</span></div>
+                <div>Illustrative SOM scenario: <span className="text-emerald-400 font-semibold">$100M ARR</span></div>
               </div>
             </div>
 
@@ -189,8 +192,8 @@ export const InvestorPortal: React.FC<InvestorPortalProps> = ({ onNotify }) => {
                 1. Executive Summary & Thesis
               </h2>
               <p className="text-sm sm:text-base text-slate-300">
-                Modern leaders operate across fragmented, siloed platforms: projects live in Jira or Asana, data is stranded in Snowflake or Datadog, communications drown in Slack, and critical strategic decisions happen in unrecorded meetings. 
-                <strong> Project Kingdom</strong> is the first sovereign command platform that sits above this fragmentation—unifying real-time intelligence, active missions, strategic analytics, workflow automation, and AI guidance into a single sovereign interface.
+                Illustrative problem statement: modern leaders may work across fragmented project, analytics, and communication tools. Validate the target-market problem with customer research before external use. 
+                <strong> Project Kingdom</strong> is the first sovereign command platform that sits above this fragmentation—bringing connected intelligence (when configured), planning workspaces, analytics examples, workflow concepts, and on-demand AI guidance into a single sovereign interface.
               </p>
             </section>
 
@@ -275,7 +278,7 @@ export const InvestorPortal: React.FC<InvestorPortalProps> = ({ onNotify }) => {
                 </div>
                 <div className="bg-slate-900/70 border border-emerald-500/40 p-4 rounded-lg bg-emerald-950/10">
                   <div className="text-xs font-mono text-emerald-400 uppercase">Serviceable Obtainable Market</div>
-                  <div className="text-2xl font-bold text-emerald-300 mt-1 tabular-nums">$100M ARR</div>
+                  <div className="text-2xl font-bold text-emerald-300 mt-1 tabular-nums">$100M ARR · Scenario</div>
                   <p className="text-xs text-slate-300 mt-2">
                     Initial 5-year focus on high-velocity technology teams, health/clinical networks, and institutional program offices.
                   </p>
@@ -384,7 +387,7 @@ export const InvestorPortal: React.FC<InvestorPortalProps> = ({ onNotify }) => {
                   Tagline: "See Everything. Direct Everything. Improve Everything."
                 </div>
                 <p>
-                  Modern leaders are overwhelmed by fragmented tooling: project status in one app, analytics in a second, communication in a third, and real-time operations scattered across disparate dashboards. Project Kingdom consolidates intelligence, active missions, automated workflows, and multi-agent AI guidance into one single operating system.
+                  Illustrative positioning hypothesis: Project Kingdom aims to bring project visibility, analytics, workflow coordination, and on-demand AI guidance into one workspace. Validate the problem and differentiation with customer research.
                 </p>
               </div>
             </section>
@@ -439,7 +442,7 @@ export const InvestorPortal: React.FC<InvestorPortalProps> = ({ onNotify }) => {
                       <li>AI Sovereign Executive Briefings (Spoken + Audio)</li>
                       <li>Progressive Analytics (Area, Line, Segmented)</li>
                       <li>Adaptive User Roles (5 personas)</li>
-                      <li>Live Event Feed & Priority Alerts</li>
+                      <li>Event Feed & Priority Alerts (when connected)</li>
                     </ul>
                   </div>
                   <div className="p-4 bg-rose-950/20 border border-rose-500/30 rounded-lg">
@@ -607,7 +610,7 @@ export const InvestorPortal: React.FC<InvestorPortalProps> = ({ onNotify }) => {
                   <ul className="space-y-1.5 text-slate-300">
                     <li>• W5: Mission creation & status workflow</li>
                     <li>• W6: Deadlines, priorities, owner assignments</li>
-                    <li>• W7: Activity feed & real-time notifications</li>
+                    <li>• W7: Activity feed and notifications (when configured)</li>
                     <li>• W8: Analytics charts & performance reporting</li>
                   </ul>
                 </div>
@@ -808,14 +811,16 @@ export const InvestorPortal: React.FC<InvestorPortalProps> = ({ onNotify }) => {
 // CLEAN MARKDOWN STRINGS (FORMATTED FOR GEMINI)
 // ==========================================
 
-const SHORT_INVESTOR_MARKDOWN = `# PROJECT KINGDOM: EXECUTIVE INVESTOR TEASER
-**Confidential Executive Summary & Investment Memo**
+const SHORT_INVESTOR_MARKDOWN = `# PROJECT KINGDOM: ILLUSTRATIVE INVESTOR SCENARIO
+> **Model disclosure:** All market, revenue, pricing, unit-economics, valuation, ownership, and exit figures below are unverified planning assumptions. They are not actual company results, audited financials, sourced market research, a securities offer, or guaranteed returns. Validate and source every figure before external distribution.
+
+**Draft executive overview and illustrative scenario model**
 *Rule with Clarity. Command with Confidence.*
 
 ---
 
 ### 1. Executive Summary & Thesis
-Project Kingdom is the first **Strategic Operating System** designed for modern leadership. Modern enterprises and high-growth organizations suffer from severe operational fragmentation: projects live in Jira/Asana, analytics in Datadog/Snowflake, communications in Slack, and strategic decisions in unrecorded meetings. Project Kingdom unifies real-time intelligence, active missions, strategic analytics, workflow automation, and multi-agent AI guidance into one sovereign command center.
+Project Kingdom is designed as a unified strategic operating workspace for modern leadership. Modern enterprises and high-growth organizations suffer from severe operational fragmentation: projects live in Jira/Asana, analytics in Datadog/Snowflake, communications in Slack, and strategic decisions in unrecorded meetings. Project Kingdom unifies real-time intelligence, active missions, strategic analytics, workflow automation, and multi-agent AI guidance into one sovereign command center.
 
 ### 2. Market Opportunity (TAM / SAM / SOM)
 - **TAM ($150B+)**: Work Management ($24B) + Business Intelligence ($33B) + Observability ($22B) + Enterprise AI Assistants ($70B+).
@@ -848,7 +853,9 @@ Project Kingdom is the first **Strategic Operating System** designed for modern 
 ---
 *One Platform. Complete Visibility. Smarter Execution.*`;
 
-const MASTER_DOCUMENT_MARKDOWN = `# PROJECT KINGDOM: COMPLETE SHAREABLE MASTER DOCUMENT
+const MASTER_DOCUMENT_MARKDOWN = `# PROJECT KINGDOM: MASTER STRATEGY — ILLUSTRATIVE MODEL
+> **Model disclosure:** All market, revenue, pricing, unit-economics, valuation, ownership, and exit figures below are unverified planning assumptions. They are not actual company results, audited financials, sourced market research, a securities offer, or guaranteed returns. Validate and source every figure before external distribution.
+
 *Product Strategy • MVP • Website • Investor Deck • Financial Model • Growth Plan*
 
 ## 1. Executive Summary & Brand Positioning
@@ -890,7 +897,7 @@ const MASTER_DOCUMENT_MARKDOWN = `# PROJECT KINGDOM: COMPLETE SHAREABLE MASTER D
 - Slide 14: Go-To-Market & Acquisition Flywheel
 - Slide 15: Three-Year Financial Model ($58.8K -> $531K -> $2.07M)
 - Slide 16: Cap Table, SAFE Scenarios & Dilution
-- Slide 17: Enterprise Case Studies (Tech, Healthcare, Gov)
+- Slide 17: Illustrative Use-Case Examples (Not Customer Case Studies)
 - Slide 18: KPI Dashboard (Retention, NRR, AI Brevity)
 - Slide 19: Use of Funds (40% Product, 25% GTM, 20% Talent, 15% Ops)
 - Slide 20: Closing Narrative: The Sovereign AI Era

@@ -55,7 +55,7 @@ export const ExecutiveBriefing: React.FC<ExecutiveBriefingProps> = ({
                 Executive Spoken Briefing
               </span>
               <span aria-hidden="true" className="text-slate-600">·</span>
-              <span className="text-xs text-slate-400">2027 Sovereign Assessment</span>
+              <span className="text-xs text-slate-400">Illustrative Sample Scenario</span>
             </div>
             <h2 className="text-lg md:text-xl font-bold text-white tracking-tight mt-0.5">
               {briefing.headline}
@@ -120,7 +120,7 @@ export const ExecutiveBriefing: React.FC<ExecutiveBriefingProps> = ({
             </p>
           </div>
           <div className="mt-3 pt-2 border-t border-white/5 text-[10px] font-mono text-cyan-300/70">
-            Real-Time State: Active Multi-Center Clinical Execution
+            Sample state: fictional values, not live data
           </div>
         </div>
 
@@ -136,7 +136,7 @@ export const ExecutiveBriefing: React.FC<ExecutiveBriefingProps> = ({
             </p>
           </div>
           <div className="mt-3 pt-2 border-t border-white/5 text-[10px] font-mono text-blue-300/70">
-            Causal Driver: Cohort Velocity Outpacing Protocol Baseline
+            Sample context: no verified source data connected
           </div>
         </div>
 
@@ -152,7 +152,7 @@ export const ExecutiveBriefing: React.FC<ExecutiveBriefingProps> = ({
             </p>
           </div>
           <div className="mt-3 pt-2 border-t border-white/5 text-[10px] font-mono text-indigo-300/70">
-            Trajectory: Milestone Convergence at Day +14
+            Sample trajectory: not a verified forecast
           </div>
         </div>
 
@@ -172,7 +172,7 @@ export const ExecutiveBriefing: React.FC<ExecutiveBriefingProps> = ({
               onClick={() => handleAction('Execute Sovereign Recommendation')}
               className="w-full py-1 text-[11px] font-semibold text-amber-200 bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 rounded transition-colors"
             >
-              Authorize Sovereign Directive
+              Review sample recommendation only
             </button>
           </div>
         </div>

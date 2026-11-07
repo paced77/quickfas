@@ -5,54 +5,54 @@ import { audioEngine } from '../../services/audioEngine.ts';
 
 export const initialAutomations: AutomationRule[] = [
   {
-    id: 'rule-01',
-    name: 'Biostorage Thermal Drift Automated Failover',
-    triggerEvent: 'Sensor drift > 0.3°C on units 1-8',
-    actionExecuted: 'Automate backup compressor switchover + Dispatch courier probe',
-    status: 'active',
-    frequency: 'Continuous Invariant',
-    executionsTotal: 142,
-    successRatePct: 100,
+    id: 'sample-rule-01',
+    name: 'Sample Dependency Review Reminder',
+    triggerEvent: 'An illustrative dependency threshold is reached',
+    actionExecuted: 'Display a local reminder to verify the source record',
+    status: 'paused',
+    frequency: 'Manual demonstration',
+    executionsTotal: 0,
+    successRatePct: 0,
   },
   {
-    id: 'rule-02',
-    name: 'Cohort Velocity Burst Auto-Provisioning',
-    triggerEvent: 'Enrollment velocity > 25 pts/month',
-    actionExecuted: 'Scale Zurich edge FHIR ingress worker pods by +4 instances',
-    status: 'active',
-    frequency: 'Real-Time',
-    executionsTotal: 840,
-    successRatePct: 99.8,
+    id: 'sample-rule-02',
+    name: 'Sample Workstream Status Summary',
+    triggerEvent: 'A fictional workstream status changes',
+    actionExecuted: 'Refresh the illustrative status summary',
+    status: 'paused',
+    frequency: 'Manual demonstration',
+    executionsTotal: 0,
+    successRatePct: 0,
   },
   {
-    id: 'rule-03',
-    name: 'Cryptographic Invariant Quarantine',
-    triggerEvent: 'mTLS handshake signature mismatch on EHR ingestion',
-    actionExecuted: 'Quarantine ingress channel + notify Security Sentinel',
-    status: 'active',
-    frequency: 'Microsecond',
-    executionsTotal: 34,
-    successRatePct: 100,
+    id: 'sample-rule-03',
+    name: 'Sample Access Review Reminder',
+    triggerEvent: 'An example permission change is recorded',
+    actionExecuted: 'Flag the change for an authorized human reviewer',
+    status: 'paused',
+    frequency: 'Manual demonstration',
+    executionsTotal: 0,
+    successRatePct: 0,
   },
   {
-    id: 'rule-04',
-    name: 'Executive Morning Briefing Narration',
-    triggerEvent: 'Daily 08:00 Local / Shift Handover',
-    actionExecuted: 'Synthesize spoken narrative via Gemini 3.8 Flash + Web Audio',
-    status: 'active',
-    frequency: 'Daily Cadence',
-    executionsTotal: 280,
-    successRatePct: 100,
+    id: 'sample-rule-04',
+    name: 'Sample Executive Briefing Preview',
+    triggerEvent: 'A user requests a sample briefing',
+    actionExecuted: 'Render a fictional summary for interface preview',
+    status: 'paused',
+    frequency: 'Manual demonstration',
+    executionsTotal: 0,
+    successRatePct: 0,
   },
   {
-    id: 'rule-05',
-    name: 'Treasury Runway Guard Reallocation',
-    triggerEvent: 'Projected monthly burn variance > 3%',
-    actionExecuted: 'Recalculate dynamic yield reserve and alert Finance Oracle',
-    status: 'active',
-    frequency: 'Hourly Ledger Sync',
-    executionsTotal: 720,
-    successRatePct: 99.5,
+    id: 'sample-rule-05',
+    name: 'Sample Financial Review Reminder',
+    triggerEvent: 'An illustrative variance threshold is reached',
+    actionExecuted: 'Ask a reviewer to verify approved financial source data',
+    status: 'paused',
+    frequency: 'Manual demonstration',
+    executionsTotal: 0,
+    successRatePct: 0,
   },
 ];
 
@@ -69,7 +69,7 @@ export const AutomationEngine: React.FC = () => {
     );
   };
 
-  const handleTestTrigger = (r: AutomationRule) => {
+  const handlePreviewTrigger = (r: AutomationRule) => {
     audioEngine.playPositiveSignal();
     setTriggeringId(r.id);
     setTimeout(() => {
@@ -101,13 +101,13 @@ export const AutomationEngine: React.FC = () => {
               Self-Operating Governance & Event-Driven Autonomous Directives
             </h3>
             <p className="text-xs text-slate-400 mt-0.5">
-              76% Automation Coverage across all operational, clinical, and financial workflows.
+              Fictional automation templates only; no live workflow integrations or executions are connected.
             </p>
           </div>
 
           <div className="text-right">
-            <span className="text-[10px] font-mono text-slate-400 block uppercase">System Automation</span>
-            <span className="text-lg font-bold font-mono text-cyan-400 tabular-nums">76% Coverage</span>
+            <span className="text-[10px] font-mono text-slate-400 block uppercase">Sample Automation</span>
+            <span className="text-lg font-bold font-mono text-cyan-400 tabular-nums">Illustrative only</span>
           </div>
         </div>
 
@@ -115,19 +115,19 @@ export const AutomationEngine: React.FC = () => {
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           <div className="bg-[#050811] p-3 rounded-lg border border-white/5">
             <span className="text-[10px] font-mono text-slate-500 uppercase block">Active Trigger Rules</span>
-            <span className="text-sm font-bold font-mono text-white tabular-nums">{rules.length} Rules Active</span>
+            <span className="text-sm font-bold font-mono text-white tabular-nums">{rules.length} Sample Rules</span>
           </div>
 
           <div className="bg-[#050811] p-3 rounded-lg border border-white/5">
-            <span className="text-[10px] font-mono text-slate-500 uppercase block">Total Executions</span>
+            <span className="text-[10px] font-mono text-slate-500 uppercase block">Sample Trigger Previews</span>
             <span className="text-sm font-bold font-mono text-cyan-300 tabular-nums">
               {rules.reduce((acc, r) => acc + r.executionsTotal, 0).toLocaleString()} Runs
             </span>
           </div>
 
           <div className="bg-[#050811] p-3 rounded-lg border border-white/5">
-            <span className="text-[10px] font-mono text-slate-500 uppercase block">Success Invariance</span>
-            <span className="text-sm font-bold font-mono text-emerald-400 tabular-nums">99.96% Invariant</span>
+            <span className="text-[10px] font-mono text-slate-500 uppercase block">Sample Success Rate</span>
+            <span className="text-sm font-bold font-mono text-emerald-400 tabular-nums">Not measured</span>
           </div>
 
           <div className="bg-[#050811] p-3 rounded-lg border border-white/5">
@@ -171,7 +171,7 @@ export const AutomationEngine: React.FC = () => {
                 </div>
 
                 <button
-                  onClick={() => handleTestTrigger(rule)}
+                  onClick={() => handlePreviewTrigger(rule)}
                   disabled={isTriggering}
                   className="px-2.5 py-1.5 rounded text-xs font-semibold text-cyan-300 bg-cyan-950/60 border border-cyan-800/40 hover:bg-cyan-900/60 transition-colors flex items-center gap-1"
                 >

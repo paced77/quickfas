@@ -13,13 +13,13 @@ export const realmSectors: RealmSector[] = [
     threatLevel: 'Low',
     activeInitiatives: 6,
     coordinates: { x: 250, y: 190 },
-    dependencies: ['Clinical Mesh', 'Treasury Keep', 'Operations Bastion', 'Cyber Sentry Bastion'],
+    dependencies: ['Health Education', 'Treasury Keep', 'Operations Bastion', 'Cyber Sentry Bastion'],
   },
   {
     id: 'sec-clinical',
-    name: 'Clinical Mesh (Northern Dominion)',
+    name: 'Health Education (Northern Dominion)',
     code: 'SEC-02-CLIN',
-    ruler: 'Clinical Director',
+    ruler: 'Education Lead',
     readinessPct: 94,
     threatLevel: 'Guarded',
     activeInitiatives: 8,
@@ -46,7 +46,7 @@ export const realmSectors: RealmSector[] = [
     threatLevel: 'Low',
     activeInitiatives: 7,
     coordinates: { x: 250, y: 310 },
-    dependencies: ['Central Citadel', 'Clinical Mesh'],
+    dependencies: ['Central Citadel', 'Health Education'],
   },
   {
     id: 'sec-cyber',
@@ -78,19 +78,19 @@ export const KingdomMap: React.FC = () => {
             <div className="flex items-center gap-2 mb-1">
               <Compass className="w-4 h-4 text-cyan-400" />
               <span className="text-xs font-mono font-bold tracking-wider text-slate-200 uppercase">
-                Interactive Kingdom Map // Realm Topology
+                Illustrative Kingdom Map // Example Topology
               </span>
             </div>
             <h3 className="text-base font-bold text-white tracking-tight">
               Visualize Systems, Teams, Projects, and Cross-Sector Dependencies
             </h3>
             <p className="text-xs text-slate-400 mt-0.5">
-              5 Sovereign Sectors · 30 Active Initiatives · 100% Invariant Telemetry Interconnect
+              5 sample sectors · illustrative initiatives · no live telemetry connection
             </p>
           </div>
 
           <span className="text-xs font-mono text-emerald-400 bg-emerald-950/40 border border-emerald-800/40 px-2.5 py-1 rounded">
-            All Sectors Synchronized
+            Sample Map Data
           </span>
         </div>
 

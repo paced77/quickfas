@@ -6,82 +6,82 @@ import { audioEngine } from '../../services/audioEngine.ts';
 export const initialMissions: MissionItem[] = [
   {
     id: 'mis-01',
-    codename: 'OPERATION HYPERION',
-    title: 'Phase-III Immunotherapy Cohort Milestone Acceleration',
-    category: 'clinical',
-    leadAgent: 'Clinical Director',
-    readinessPct: 92,
-    status: 'active',
-    deadline: 'Q3 Day +14',
-    impactScore: 96,
+    codename: 'SAMPLE-01',
+    title: 'Example planning workstream',
+    category: 'infrastructure',
+    leadAgent: 'Sample Project Lead',
+    readinessPct: 42,
+    status: 'planning',
+    deadline: 'Not scheduled',
+    impactScore: 0,
     keyOutcomes: [
-      '684 of 720 target patients enrolled and verified in Mayo/Charité nodes',
-      'Zero protocol excursions logged across 140 consecutive samples',
-      'FDA & EMA synchronised interim submission package draft ready',
+      'Illustrative placeholder only',
+      'No connected system or verified project record',
+      'Assign an accountable owner before real use',
     ],
   },
   {
     id: 'mis-02',
-    codename: 'AEGIS CITADEL',
-    title: 'Zero-Trust mTLS Mesh & Invariant Cryptographic Hardening',
+    codename: 'SAMPLE-02',
+    title: 'Example security review workstream',
     category: 'security',
-    leadAgent: 'Security Sentinel',
-    readinessPct: 100,
-    status: 'completed',
-    deadline: 'Day 0 (Invariant)',
-    impactScore: 99,
+    leadAgent: 'Sample Security Reviewer',
+    readinessPct: 25,
+    status: 'planning',
+    deadline: 'Not scheduled',
+    impactScore: 0,
     keyOutcomes: [
-      '14.8M FHIR records sealed with hardware HSM provenance',
-      'Automated penetration probing frequency reduced latency to 14ms',
-      'Full compliance readiness for Title 21 CFR Part 11',
+      'Illustrative security review checklist',
+      'No penetration test has been performed by this sample',
+      'No regulatory or compliance status is asserted',
     ],
   },
   {
     id: 'mis-03',
-    codename: 'TREASURY HORIZON',
-    title: 'Autonomous Capital Rebalancing to Zurich Edge Enclave',
+    codename: 'SAMPLE-03',
+    title: 'Example budget review workstream',
     category: 'capital',
-    leadAgent: 'Finance Oracle',
-    readinessPct: 84,
-    status: 'active',
-    deadline: '48 Hours',
-    impactScore: 91,
+    leadAgent: 'Sample Finance Reviewer',
+    readinessPct: 35,
+    status: 'planning',
+    deadline: 'Not scheduled',
+    impactScore: 0,
     keyOutcomes: [
-      '$850k transferred from dormant EU compute reserves',
-      'Reduces intercontinental genomics transit latency from 140ms to 28ms',
-      'Protects 38.5-month operational runway trajectory',
+      'Illustrative budget review template',
+      'No funds have been transferred',
+      'Replace with approved financial records before use',
     ],
   },
   {
     id: 'mis-04',
-    codename: 'COLD-CHAIN SENTINEL',
-    title: 'Zurich Biostorage Unit 4 Thermal Drift Mitigation',
+    codename: 'SAMPLE-04',
+    title: 'Example dependency resilience review',
     category: 'infrastructure',
-    leadAgent: 'Risk Sentinel',
-    readinessPct: 78,
-    status: 'critical',
-    deadline: 'Immediate (12h)',
-    impactScore: 88,
+    leadAgent: 'Sample Risk Reviewer',
+    readinessPct: 30,
+    status: 'planning',
+    deadline: 'Not scheduled',
+    impactScore: 0,
     keyOutcomes: [
-      'Secondary nitrogen compressor automated failover verified',
-      'On-site courier sensor prober dispatched for physical inspection',
-      'Continuous telemetry streaming at 1-second sample intervals',
+      'Illustrative dependency checklist',
+      'No physical inspection or failover test was performed',
+      'No live telemetry connection is configured',
     ],
   },
   {
     id: 'mis-05',
-    codename: 'EXPANSION PROTOCOL',
-    title: 'Asia-Pacific Multi-Center Site Integration',
+    codename: 'SAMPLE-05',
+    title: 'Example rollout planning workstream',
     category: 'expansion',
-    leadAgent: 'Operations Commander',
-    readinessPct: 65,
+    leadAgent: 'Sample Operations Reviewer',
+    readinessPct: 20,
     status: 'planning',
-    deadline: 'Q4 Day +30',
-    impactScore: 85,
+    deadline: 'Not scheduled',
+    impactScore: 0,
     keyOutcomes: [
-      'Tokyo & Singapore FHIR endpoint integration audit underway',
-      'Assay capacity buffer projected to expand by +450 assays/hr',
-      'Local sovereign data sovereignty covenants drafted',
+      'Illustrative rollout checklist',
+      'No deployment or site integration has occurred',
+      'Validate local requirements before any real rollout',
     ],
   },
 ];
@@ -92,7 +92,7 @@ export const MissionControl: React.FC = () => {
   const [showCreateModal, setShowCreateModal] = useState<boolean>(false);
   const [newTitle, setNewTitle] = useState('');
   const [newCodename, setNewCodename] = useState('');
-  const [newCategory, setNewCategory] = useState<'clinical' | 'capital' | 'infrastructure' | 'security' | 'expansion'>('clinical');
+  const [newCategory, setNewCategory] = useState<'clinical' | 'capital' | 'infrastructure' | 'security' | 'expansion'>('infrastructure');
 
   const filteredMissions = filterCategory === 'all'
     ? missions
@@ -108,11 +108,11 @@ export const MissionControl: React.FC = () => {
       title: newTitle.trim(),
       category: newCategory,
       leadAgent: 'Sovereign Strategist',
-      readinessPct: 50,
-      status: 'active',
-      deadline: 'Day +30',
-      impactScore: 85,
-      keyOutcomes: ['Initial campaign directives drafted', 'Sovereign AI Council consensus pending'],
+      readinessPct: 0,
+      status: 'planning',
+      deadline: 'Not scheduled',
+      impactScore: 0,
+      keyOutcomes: ['Local sample mission created; no external workflow was triggered'],
     };
 
     setMissions([mission, ...missions]);
@@ -139,6 +139,7 @@ export const MissionControl: React.FC = () => {
 
   return (
     <div className="space-y-6">
+      <aside role="note" className="rounded-lg border border-amber-400/30 bg-amber-950/20 px-3 py-2 text-xs text-amber-100">Sample mission board only. Progress changes are local UI examples; no external project, team, or workflow is updated.</aside>
       {/* Header Banner */}
       <div className="glass-panel rounded-xl p-5">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-white/10 mb-4">
@@ -287,9 +288,9 @@ export const MissionControl: React.FC = () => {
       {showCreateModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
           <div className="glass-panel-elevated w-full max-w-lg rounded-xl p-6 border border-cyan-500/30">
-            <h3 className="text-base font-bold text-white mb-1">Deploy New Strategic Mission</h3>
+            <h3 className="text-base font-bold text-white mb-1">Create Sample Mission</h3>
             <p className="text-xs text-slate-400 mb-4">
-              Turn an organizational goal into a measurable, trackable campaign.
+              Add a local planning example. This does not launch a real workflow or change an external system.
             </p>
 
             <form onSubmit={handleCreateMission} className="space-y-3">
@@ -309,7 +310,7 @@ export const MissionControl: React.FC = () => {
                 <input
                   type="text"
                   required
-                  placeholder="e.g. Deploy Continuous FHIR Streaming Ingestion"
+                  placeholder="e.g. Prepare a sample readiness review"
                   value={newTitle}
                   onChange={(e) => setNewTitle(e.target.value)}
                   className="w-full bg-[#050811] border border-white/10 rounded px-3 py-2 text-xs text-white placeholder:text-slate-500"
@@ -323,7 +324,7 @@ export const MissionControl: React.FC = () => {
                   onChange={(e) => setNewCategory(e.target.value as any)}
                   className="w-full bg-[#050811] border border-white/10 rounded px-3 py-2 text-xs text-white"
                 >
-                  <option value="clinical">Clinical Trials</option>
+                  <option value="clinical">Clinical Education Example</option>
                   <option value="capital">Capital & Finance</option>
                   <option value="infrastructure">Infrastructure</option>
                   <option value="security">Zero-Trust Security</option>

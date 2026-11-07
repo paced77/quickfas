@@ -68,17 +68,56 @@ export function AuthGate({ children }: AuthGateProps) {
     if (authError) setError(authError.message);
   };
 
+  const [guestPreview, setGuestPreview] = useState(false);
+
   if (!ready) {
     return <div className="min-h-screen bg-[#070b14] grid place-items-center text-cyan-200 font-mono text-xs">VERIFYING SECURE SESSION…</div>;
   }
 
+  if (guestPreview) {
+    return (
+      <>
+        {children}
+        <div className="fixed bottom-5 right-5 z-[100] flex max-w-[calc(100vw-2rem)] items-center gap-3 rounded-xl border border-amber-400/30 bg-[#0f172a]/95 px-3 py-2 shadow-xl backdrop-blur font-mono text-[11px]">
+          <span className="text-amber-300">GUEST PREVIEW MODE</span>
+          <button
+            type="button"
+            onClick={() => setGuestPreview(false)}
+            className="rounded border border-white/10 px-2 py-1 text-[10px] text-cyan-200 hover:bg-cyan-300/10"
+          >
+            AUTH PANEL
+          </button>
+        </div>
+      </>
+    );
+  }
+
   if (!isSupabaseConfigured || !supabase) {
     return (
-      <div className="min-h-screen bg-[#070b14] text-slate-100 grid place-items-center p-6">
-        <section className="w-full max-w-xl rounded-2xl border border-amber-300/20 bg-[#0f172a] p-8 shadow-2xl">
-          <p className="font-mono text-xs tracking-[0.25em] text-amber-300">PROJECT KINGDOM // AUTH CONFIGURATION</p>
-          <h1 className="mt-4 text-2xl font-semibold">Authentication needs configuration</h1>
-          <p className="mt-3 text-sm leading-6 text-slate-300">Add <code>VITE_SUPABASE_URL</code> and <code>VITE_SUPABASE_PUBLISHABLE_KEY</code> to the Vercel project environment variables, then redeploy. Use the publishable key only; never add a service-role or secret key to browser variables.</p>
+      <div className="min-h-screen bg-[#070b14] bg-grid-pattern text-slate-100 flex items-center justify-center p-6">
+        <section className="w-full max-w-xl rounded-2xl border border-cyan-300/30 bg-[#0f172a]/95 p-8 shadow-[0_0_60px_rgba(34,211,238,0.12)]">
+          <p className="font-mono text-xs tracking-[0.25em] text-cyan-300">PROJECT KINGDOM // COMMAND BRIDGE</p>
+          <h1 className="mt-4 text-3xl font-bold tracking-tight">Project Kingdom is Online</h1>
+          <p className="mt-3 text-sm leading-6 text-slate-300">
+            Welcome to the Sovereign Command Center. You can enter the live interactive dashboard now in Guest Preview Mode, or configure Supabase for persistent role-based access.
+          </p>
+
+          <div className="mt-6 flex flex-col sm:flex-row gap-3">
+            <button
+              type="button"
+              onClick={() => setGuestPreview(true)}
+              className="glow-btn-primary flex-1 rounded-lg py-3 px-4 text-sm font-bold text-center cursor-pointer shadow-lg"
+            >
+              LAUNCH PROJECT KINGDOM →
+            </button>
+          </div>
+
+          <div className="mt-8 pt-6 border-t border-white/10 text-xs text-slate-400 space-y-2">
+            <p className="font-mono text-amber-300">OPTIONAL: PERSISTENT SUPABASE AUTH</p>
+            <p>
+              To enable user registration and database roles, add <code className="text-cyan-300 bg-slate-900 px-1.5 py-0.5 rounded">VITE_SUPABASE_URL</code> and <code className="text-cyan-300 bg-slate-900 px-1.5 py-0.5 rounded">VITE_SUPABASE_PUBLISHABLE_KEY</code> in Vercel Project Settings &gt; Environment Variables.
+            </p>
+          </div>
         </section>
       </div>
     );
@@ -108,6 +147,17 @@ export function AuthGate({ children }: AuthGateProps) {
             {notice && <p role="status" className="rounded-lg border border-emerald-400/20 bg-emerald-400/10 p-3 text-xs text-emerald-200">{notice}</p>}
             <button type="submit" disabled={busy} className="glow-btn-primary w-full rounded-lg py-3 text-sm disabled:cursor-wait disabled:opacity-60">{busy ? 'SECURING SESSION…' : mode === 'signin' ? 'ENTER COMMAND CENTER' : 'CREATE SECURE ACCOUNT'}</button>
           </form>
+
+          <div className="mt-4 text-center">
+            <button
+              type="button"
+              onClick={() => setGuestPreview(true)}
+              className="text-xs text-cyan-300/80 hover:text-cyan-200 underline font-mono tracking-wide"
+            >
+              Or enter as Guest Operator →
+            </button>
+          </div>
+
           <p className="mt-6 text-center text-[10px] leading-5 text-slate-500">Protected by Supabase Auth. Access is verified server-side for every API request.</p>
         </section>
       </main>

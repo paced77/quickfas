@@ -212,7 +212,7 @@ export const DigitalTwin: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
           <div className="bg-[#050811]/60 p-3.5 rounded-lg border border-white/5">
             <span className="text-[10px] font-mono text-slate-500 block uppercase mb-1">
-              Real-Time Node Output
+              Sample Node Output
             </span>
             <p className="text-slate-200 font-medium">{selectedNode.outputMetric}</p>
           </div>
@@ -253,7 +253,7 @@ export const DigitalTwin: React.FC = () => {
                 Digital Twin Scenario Simulator
               </h3>
               <p className="text-xs text-slate-400 mt-0.5">
-                Inject operational perturbations and simulate predicted cascading ripple effects across nodes.
+                Explore an illustrative scenario using sample inputs; the output is not a verified forecast.
               </p>
             </div>
           </div>
@@ -264,7 +264,7 @@ export const DigitalTwin: React.FC = () => {
             className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-xs font-bold text-white bg-gradient-to-r from-indigo-600 via-blue-600 to-cyan-600 hover:from-indigo-500 hover:to-cyan-500 transition-all shadow-[0_0_20px_rgba(99,102,241,0.3)] disabled:opacity-50 shrink-0"
           >
             <Play className={`w-3.5 h-3.5 fill-current ${isSimulating ? 'animate-spin' : ''}`} />
-            <span>{isSimulating ? 'Simulating Cascade...' : 'Run Twin Simulation'}</span>
+            <span>{isSimulating ? 'Generating Example...' : 'Generate Scenario Example'}</span>
           </button>
         </div>
 
@@ -384,7 +384,7 @@ export const DigitalTwin: React.FC = () => {
           </div>
         ) : (
           <div className="text-center py-10 border border-dashed border-white/10 rounded-xl text-slate-500 text-xs">
-            Select a perturbation preset and click "Run Twin Simulation" to project organizational ripple effects.
+            Select a perturbation preset and click "Generate Scenario Example" to project organizational ripple effects.
           </div>
         )}
       </div>

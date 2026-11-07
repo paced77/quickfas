@@ -17,6 +17,7 @@ test('dashboard and AI fallback fixtures do not assert fabricated clinical facts
     '../src/components/AgentCouncil.tsx',
     '../src/components/missions/MissionControl.tsx',
     '../src/components/TelemetryFeed.tsx',
+    '../src/components/automations/AutomationEngine.tsx',
   ];
   const combined = paths.map(source).join('\n');
   const fabricatedClaims = /\bMayo\b|\bCharit[eé]\b|684\s*(?:\/|of)\s*720|28\.5\s*(?:patients|pts)|142\.8\s*FHIR|14\.8M\s*FHIR|\$14\.2M\s*MRR|Phase.?III|Zurich Biostorage|STUDY-ONC-904|STUDY-CARDIO-402|European Medicines Agency priority designation confirmed/i;

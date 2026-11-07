@@ -280,7 +280,8 @@ const requireAuthenticatedUser: express.RequestHandler = async (req, res, next) 
     authenticatedRequest.authRole = profile.role;
     next();
   } catch (error) {
-    console.error('Authentication verification failed:', error);
+    const safeErrorMessage = error instanceof Error ? error.message : 'unknown_error';
+    console.error('Authentication verification failed. code=AUTH_VERIFY_FAILED message=%s', safeErrorMessage);
     res.status(503).json({ error: 'Unable to verify your session right now.' }); return;
   }
 };

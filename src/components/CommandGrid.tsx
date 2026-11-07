@@ -64,7 +64,7 @@ export const initialSubsystems: SubsystemTelemetry[] = [
     dependencies: ['Hardware HSM Cluster', 'Audit Ledger Proofs', 'mTLS Gateway Fabric'],
     output: 'Illustrative sample output; no audit was performed',
     forecast: 'Illustrative sample value',
-    confidence: 'Sample only',
+    confidence: 'High',
     velocityMetric: 'Sample classification only',
     impactSentiment: 'positive',
   },

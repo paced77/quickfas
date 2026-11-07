@@ -59,22 +59,20 @@ export const TelemetryFeed: React.FC = () => {
     audioEngine.playPositiveSignal();
     const validPayload = {
       eventId: `evt-cli-${Date.now().toString(36)}`,
-      eventType: 'Fictional sample — not connected to live data',
-      domain: 'clinical',
+      eventType: 'ops.capacity_update',
+      domain: 'operations',
       severity: 'nominal',
       source: 'synthetic-contract-test',
       correlationId: `corr-${Date.now()}`,
       timestamp: new Date().toISOString(),
       metadata: { dataClassification: 'synthetic_demo', testHarness: 'TEL-003-Valid' },
       payload: {
-        studyId: 'SYNTHETIC-TEST',
-        studyName: 'Synthetic contract test fixture',
-        siteId: 'SYNTHETIC-TEST',
-        currentEnrollment: 692,
-        targetEnrollment: 720,
-        velocityPpm: 29.4,
-        healthPct: 99.1,
-        fhirTransactionsPerSec: 0,
+        subsystem: 'Sample Workstream A',
+        capacityPct: 72,
+        utilizationPct: 64,
+        throughputPerHr: 120,
+        activeTasks: 8,
+        statusSummary: 'Fictional test fixture; no live operational connection',
       },
     };
 
@@ -280,7 +278,7 @@ BaseKingdomEvent = z.object({
   timestamp: z.string().datetime(),
   source: z.string().min(1),
   correlationId: z.string().min(1),
-  domain: z.enum(['Fictional sample — not connected to live data', 'operations', 'finance', 'infrastructure', 'ai']),
+  domain: z.enum(['clinical', 'operations', 'finance', 'infrastructure', 'ai']),
   severity: z.enum(['info', 'nominal', 'warning', 'critical']),
   metadata: z.record(z.string(), z.unknown()),
 })
@@ -346,12 +344,17 @@ RiskEventSchema: category, probability [0..1], impactRating [1..10], mitigationS
 
                 {/* Event Summary rendering */}
                 <div className="text-slate-300 font-mono text-[11px] leading-relaxed">
+                  {evt.eventType === 'ops.capacity_update' && (
+                    <span>
+                      Sample workstream: <span className="text-cyan-300">{(evt as any).payload.subsystem}</span> · Capacity: {(evt as any).payload.capacityPct}% · Active tasks: {(evt as any).payload.activeTasks}
+                    </span>
+                  )}
                   {evt.eventType === 'system.health' && (
                     <span>
                       Latency: <span className="text-cyan-300">{(evt as any).payload.latencyMs}ms</span> · CPU: {(evt as any).payload.cpuUtilization}% · Memory: {(evt as any).payload.memoryUtilization}% · Availability: {(evt as any).payload.availabilityPct}%
                     </span>
                   )}
-                  {evt.eventType === 'Fictional sample — not connected to live data' && (
+                  {evt.eventType === 'clinical.enrollment' && (
                     <span>
                       Study: <span className="text-cyan-300">{(evt as any).payload.studyName}</span> · Enrolled: {(evt as any).payload.currentEnrollment} / {(evt as any).payload.targetEnrollment} · Velocity: {(evt as any).payload.velocityPpm} pts/mo · Ingestion: {(evt as any).payload.fhirTransactionsPerSec} tx/s
                     </span>

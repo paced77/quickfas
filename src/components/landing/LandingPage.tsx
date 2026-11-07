@@ -14,6 +14,7 @@ import {
   Zap,
 } from 'lucide-react';
 import { audioEngine } from '../../services/audioEngine.ts';
+import { StratumLearningHub } from './StratumLearningHub.tsx';
 
 interface LandingPageProps {
   onEnterKingdom: () => void;
@@ -68,6 +69,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onEnterKingdom }) => {
           </button>
         </div>
       </section>
+
+      {/* Integrated Stratum Clinical Edge education experience; Project Kingdom modules remain below. */}
+      <StratumLearningHub />
 
       {/* 2. VALUE PROPOSITION */}
       <section className="max-w-5xl mx-auto px-4">

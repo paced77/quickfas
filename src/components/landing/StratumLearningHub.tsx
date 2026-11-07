@@ -1,4 +1,5 @@
 import React from 'react';
+import { trackAnalyticsEvent } from '../../platform/analytics/analyticsEvents.ts';
 import { BookOpen, HeartPulse, ClipboardList, Pill, Users, ShieldCheck } from 'lucide-react';
 
 const learningTopics = [
@@ -87,7 +88,13 @@ export const StratumLearningHub: React.FC = () => (
       </div>
       <div className="grid gap-4 sm:grid-cols-2">
         {learningTopics.map((topic) => (
-          <details key={topic.title} className="group glass-panel rounded-xl p-5 open:border-emerald-400/40">
+          <details
+            key={topic.title}
+            onToggle={(event) => {
+              if (event.currentTarget.open) void trackAnalyticsEvent('article_opened');
+            }}
+            className="group glass-panel rounded-xl p-5 open:border-emerald-400/40"
+          >
             <summary className="flex cursor-pointer list-none items-start gap-3 rounded-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-emerald-300">
               <span className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-emerald-400/20 bg-emerald-950/50 text-emerald-200">
                 {topic.icon}

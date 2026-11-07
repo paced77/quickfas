@@ -220,7 +220,7 @@ The following items are implemented in code on the current branch:
 - Cross-tab consent synchronization using BroadcastChannel with the browser storage event as a fallback.
 - A visible, keyboard-operable privacy control that allows the visitor to grant or withdraw optional analytics consent.
 - An allow-listed analytics event schema. The client sends only the event name and only after local consent is granted; event properties are rejected.
-- An authenticated analytics intake endpoint that validates the event contract, applies a process-wide request cap, and retains only aggregate counters in process memory. It does not retain account IDs, IP addresses, route strings, topic titles, form contents, health information, or credentials.
+- An anonymous analytics intake endpoint that validates the event contract, applies a process-wide request cap, and retains only aggregate counters in process memory. It does not retain account IDs, IP addresses, route strings, topic titles, form contents, health information, or credentials.
 - Baseline API security headers, disabled Express technology disclosure, and a bounded JSON request body.
 - Synthetic telemetry seeding and random pulse generation are disabled by default. They can be enabled only with the explicit `KINGDOM_DEMO_TELEMETRY=true` environment setting. The interface labels those events as illustrative.
 - A persistent dashboard disclosure that the existing hardcoded charts, map, briefing and AI fallback scenarios are not connected to live clinical, financial, or operational systems.

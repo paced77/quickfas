@@ -20,6 +20,30 @@ export const STORAGE_REGISTRY: readonly StorageRegistryEntry[] = [
     retention: 'Until changed by the visitor or browser storage is cleared.',
     valueSensitivity: 'sensitive_preference',
   },
+  {
+    key: 'analytics-consent',
+    owner: 'platform/privacy',
+    category: 'privacy_preference',
+    purpose: 'Legacy consent choice eligible for one-time migration to the current versioned record.',
+    retention: 'Removed only after a verified migration; otherwise retained for recovery.',
+    valueSensitivity: 'sensitive_preference',
+  },
+  {
+    key: 'consent:v2',
+    owner: 'platform/privacy',
+    category: 'privacy_preference',
+    purpose: 'Legacy versioned consent record eligible for one-time migration.',
+    retention: 'Removed only after a verified migration; otherwise retained for recovery.',
+    valueSensitivity: 'sensitive_preference',
+  },
+  {
+    key: 'consent:version',
+    owner: 'platform/privacy',
+    category: 'privacy_preference',
+    purpose: 'Legacy consent schema marker; never used as a consent decision.',
+    retention: 'Removed only after a verified consent migration; otherwise retained for recovery.',
+    valueSensitivity: 'sensitive_preference',
+  },
 ];
 
 export interface StorageLike {

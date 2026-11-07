@@ -2,7 +2,7 @@ import express, { Request, Response } from 'express';
 import { createClient } from '@supabase/supabase-js';
 import { GoogleGenAI, Type } from '@google/genai';
 import dotenv from 'dotenv';
-import { AnalyticsEventPayloadSchema, AnalyticsEventName } from '../platform/analytics/analyticsEvents.ts';
+import { AnalyticsEventPayloadSchema, type AnalyticsEventName } from '../platform/analytics/analyticsEvents.ts';
 import {
   validateKingdomTelemetry,
   AnyKingdomEvent,

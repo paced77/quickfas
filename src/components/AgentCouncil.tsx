@@ -141,14 +141,14 @@ export const AgentCouncil: React.FC = () => {
           <div>
             <h3 className="text-sm font-bold text-white tracking-wide uppercase font-mono flex items-center gap-2">
               <Users className="w-4 h-4 text-cyan-400" />
-              <span>Permanent AI Council // 7 Sovereign Leaders</span>
+              <span>AI Council Roster // 7 Example Roles</span>
             </h3>
             <p className="text-xs text-slate-400 mt-0.5">
-              Autonomous executive leaders continuously governing strategy, capital, clinical trials, security, and risk.
+              Seven illustrative advisory personas. They do not continuously govern, monitor systems, or execute actions.
             </p>
           </div>
           <div className="text-xs font-mono text-cyan-300 bg-cyan-950/40 border border-cyan-800/40 px-2.5 py-1 rounded">
-            All 7 Leaders Synchronized (Gemini 3.8 Flash Bus)
+            On-demand AI responses; no agents are continuously synchronized
           </div>
         </div>
 
@@ -255,7 +255,7 @@ export const AgentCouncil: React.FC = () => {
               type="text"
               value={agendaInput}
               onChange={(e) => setAgendaInput(e.target.value)}
-              placeholder="Enter custom strategic dilemma, trial crisis, or capital allocation question..."
+              placeholder="Enter custom strategic dilemma, sample planning scenario, or capital allocation question..."
               className="w-full bg-[#050811] border border-white/10 rounded-lg px-3.5 py-2 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-cyan-500/50"
             />
           </div>

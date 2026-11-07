@@ -65,7 +65,7 @@ function seedInitialTelemetry() {
       correlationId: 'sample-correlation-01',
       timestamp: new Date(now.getTime() - 120000).toISOString(),
       metadata: { scenario: 'fictional_demo', dataClassification: 'synthetic' },
-      payload: { status: 'sample', uptimeSeconds: 1200, latencyMs: 120, errorsPerMin: 0, cpuUtilization: 35, memoryUtilization: 48, availabilityPct: 99 },
+      payload: { status: 'optimal', uptimeSeconds: 1200, latencyMs: 120, errorsPerMin: 0, cpuUtilization: 35, memoryUtilization: 48, availabilityPct: 99 },
     },
     {
       eventId: 'sample-ops-002',
@@ -118,7 +118,7 @@ setInterval(() => {
       domain: 'infrastructure',
       severity: 'nominal',
       source: 'fictional-demo-probe',
-      payload: { status: 'sample', uptimeSeconds: 3600, latencyMs: 120, errorsPerMin: 0, cpuUtilization: 34, memoryUtilization: 47, availabilityPct: 99 },
+      payload: { status: 'optimal', uptimeSeconds: 3600, latencyMs: 120, errorsPerMin: 0, cpuUtilization: 34, memoryUtilization: 47, availabilityPct: 99 },
     },
     {
       eventType: 'ops.capacity_update',

@@ -13,14 +13,14 @@ export const initialSubsystems: SubsystemTelemetry[] = [
     name: 'Fictional sample — not connected to live data',
     domain: 'clinical',
     purpose: 'Fictional sample — not connected to live data',
-    currentState: 'Active Multi-Center Ingestion',
+    currentState: 'Sample state — not connected',
     healthPct: 98.4,
     latencyMs: 83,
     dependencies: ['Fictional sample — not connected to live data', 'Fictional sample — not connected to live data', 'Fictional sample — not connected to live data'],
     output: 'Fictional sample — not connected to live data',
     forecast: 'Fictional sample — not connected to live data',
     confidence: 'High',
-    velocityMetric: 'Enrollment Velocity: High (+24%)',
+    velocityMetric: 'Illustrative sample value',
     impactSentiment: 'positive',
   },
   {
@@ -28,7 +28,7 @@ export const initialSubsystems: SubsystemTelemetry[] = [
     name: 'Finance Oracle Engine',
     domain: 'finance',
     purpose: 'Fictional sample — not connected to live data',
-    currentState: 'Predictive Cash Flow Optimization',
+    currentState: 'Sample state — not connected',
     healthPct: 99.1,
     latencyMs: 42,
     dependencies: ['Treasury Wire Gateway', 'ERP Ledger Sync', 'Contract Milestone Index'],
@@ -43,12 +43,12 @@ export const initialSubsystems: SubsystemTelemetry[] = [
     name: 'Operations Command Grid',
     domain: 'operations',
     purpose: 'Real-time workflow orchestration, lab capacity balancing, and reagent supply chain routing',
-    currentState: 'High-Throughput Balanced',
+    currentState: 'Sample state — not connected',
     healthPct: 96.2,
     latencyMs: 64,
     dependencies: ['Fictional sample — not connected to live data', 'Courier Dispatch API', 'Global Cold-Chain Telemetry'],
     output: 'Fictional sample — not connected to live data',
-    forecast: 'Zero critical bottlenecks through Day +60; Buffer capacity: 26%',
+    forecast: 'Illustrative scenario; not a live forecast',
     confidence: 'High',
     velocityMetric: 'Throughput: Nominal',
     impactSentiment: 'nominal',
@@ -58,14 +58,14 @@ export const initialSubsystems: SubsystemTelemetry[] = [
     name: 'Zero-Trust Security Sentinel',
     domain: 'security',
     purpose: 'Fictional sample — not connected to live data',
-    currentState: 'Zero-Trust Guard Enforcing',
+    currentState: 'Sample state — not connected',
     healthPct: 99.9,
     latencyMs: 14,
     dependencies: ['Hardware HSM Cluster', 'Audit Ledger Proofs', 'mTLS Gateway Fabric'],
-    output: '0 Integrity Invariant Breaches · 14.8M tx audited',
+    output: 'Illustrative sample output; no audit was performed',
     forecast: 'Fictional sample — not connected to live data',
     confidence: 'Guaranteed',
-    velocityMetric: 'Threat Level: Baseline Low',
+    velocityMetric: 'Sample classification only',
     impactSentiment: 'positive',
   },
   {
@@ -73,29 +73,29 @@ export const initialSubsystems: SubsystemTelemetry[] = [
     name: 'Kingdom Telemetry Fabric',
     domain: 'infrastructure',
     purpose: 'Fictional sample — not connected to live data',
-    currentState: 'Contract Validation 100% Invariant',
+    currentState: 'Sample state — not connected',
     healthPct: 99.7,
     latencyMs: 28,
     dependencies: ['Event Streaming Mesh', 'Fictional sample — not connected to live data', 'Tracing Collector'],
-    output: '4,280 events/min · 0 Unhandled Exceptions',
-    forecast: 'Cluster auto-scaling headroom at 4.2x baseline traffic spike',
+    output: 'Illustrative sample output; no live events collected',
+    forecast: 'Illustrative infrastructure scenario',
     confidence: 'Very High',
-    velocityMetric: 'Zod Validation: 100% Strict',
+    velocityMetric: 'Schema validation configured; sample value only',
     impactSentiment: 'positive',
   },
   {
     id: 'sub-ai-council',
-    name: 'Sovereign AI Council Bus',
+    name: 'AI Council Example',
     domain: 'infrastructure',
     purpose: 'Multi-agent deliberation orchestrator, strategic recommendation consensus, and executive guidance',
-    currentState: 'Deliberation Standby (34 Agents Active)',
+    currentState: 'Sample state — on-demand AI only',
     healthPct: 97.8,
     latencyMs: 112,
-    dependencies: ['Gemini 3.8 Flash Engine', 'Autonomous Agent Bus', 'Executive Policy Store'],
+    dependencies: ['Configured AI provider', 'Autonomous Agent Bus', 'Executive Policy Store'],
     output: '34 Autonomous Agents Synchronized',
-    forecast: 'Consensus latency under 1.2s across all 7 Permanent Sovereign Leaders',
+    forecast: 'Illustrative council scenario; no autonomous agents are synchronized',
     confidence: 'High',
-    velocityMetric: 'Decision Tempo: Sub-second',
+    velocityMetric: 'Illustrative sample value',
     impactSentiment: 'positive',
   },
 ];
@@ -129,10 +129,10 @@ export const CommandGrid: React.FC<CommandGridProps> = ({ onSelectSubsystem }) =
       <div className="flex items-center justify-between mb-4">
         <div>
           <h3 className="text-sm font-bold text-white tracking-wide uppercase font-mono">
-            Subsystem Live Performance Visibility
+            Subsystem Sample Metrics
           </h3>
           <p className="text-xs text-slate-400 mt-0.5">
-            2027 Sovereign Architecture: Continuous live verification across health, latency, dependencies, and forecast confidence.
+            Illustrative values only; no live health checks, latency probes, integrations, or forecasts are connected.
           </p>
         </div>
       </div>
@@ -181,14 +181,14 @@ export const CommandGrid: React.FC<CommandGridProps> = ({ onSelectSubsystem }) =
                 {/* Performance Metrics */}
                 <div className="space-y-1.5 text-xs">
                   <div className="flex items-center justify-between text-slate-300">
-                    <span className="text-[11px] text-slate-500">Current Output:</span>
+                    <span className="text-[11px] text-slate-500">Sample Output:</span>
                     <span className="font-mono text-slate-200 font-medium text-right text-[11px]">
                       {sub.output}
                     </span>
                   </div>
 
                   <div className="flex items-center justify-between text-slate-300">
-                    <span className="text-[11px] text-slate-500">Confidence:</span>
+                    <span className="text-[11px] text-slate-500">Illustrative Confidence:</span>
                     <span className="font-mono text-cyan-300 font-semibold text-[11px]">
                       {sub.confidence}
                     </span>
@@ -205,7 +205,7 @@ export const CommandGrid: React.FC<CommandGridProps> = ({ onSelectSubsystem }) =
 
                   <div className="pt-2">
                     <span className="text-[10px] font-mono text-slate-500 block uppercase mb-1">
-                      Live Dependencies ({sub.dependencies.length})
+                      Example Dependencies ({sub.dependencies.length})
                     </span>
                     <div className="flex flex-wrap gap-1">
                       {sub.dependencies.map((dep, dIdx) => (

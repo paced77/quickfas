@@ -165,7 +165,11 @@ setInterval(() => {
 const router = express.Router();
 
 
-type AuthenticatedRequest = Request & { authUser?: { id: string; email?: string }; authRole?: string; authClient?: ReturnType<typeof createClient> };
+type AuthenticatedRequest = Request & {
+  authUser?: { id: string; email?: string };
+  authRole?: string;
+  consumeRateLimit?: (bucket: string) => PromiseLike<{ data: unknown; error: { code?: string } | null }>;
+};
 
 const requireAuthenticatedUser: express.RequestHandler = async (req, res, next) => {
   const authUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL;
@@ -200,7 +204,8 @@ const requireAuthenticatedUser: express.RequestHandler = async (req, res, next) 
     const authenticatedRequest = req as AuthenticatedRequest;
     authenticatedRequest.authUser = { id: user.id, email: user.email };
     authenticatedRequest.authRole = profile.role;
-    authenticatedRequest.authClient = authClient;
+    authenticatedRequest.consumeRateLimit = (bucket) =>
+      authClient.rpc('consume_quickfas_api_rate_limit', { p_bucket: bucket });
     next();
   } catch (error) {
     const safeErrorMessage = error instanceof Error ? error.message : 'unknown_error';
@@ -218,12 +223,12 @@ const requireRole = (...allowedRoles: string[]): express.RequestHandler => (req,
 };
 
 const requireDistributedRateLimit = (bucket: string): express.RequestHandler => async (req, res, next) => {
-  const authClient = (req as AuthenticatedRequest).authClient;
-  if (!authClient) {
+  const consumeRateLimit = (req as AuthenticatedRequest).consumeRateLimit;
+  if (!consumeRateLimit) {
     return res.status(503).json({ error: 'Rate limiting is unavailable. This action is temporarily disabled.' });
   }
   try {
-    const { data, error } = await authClient.rpc('consume_quickfas_api_rate_limit', { p_bucket: bucket });
+    const { data, error } = await consumeRateLimit(bucket);
     if (error) {
       console.error('Distributed rate-limit check failed for bucket=%s code=%s', bucket, error.code || 'unknown');
       return res.status(503).json({ error: 'Rate limiting is unavailable. This action is temporarily disabled.' });

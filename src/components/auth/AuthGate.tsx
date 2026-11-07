@@ -48,6 +48,9 @@ export function AuthGate({ children }: AuthGateProps) {
       .then(({ data, error: profileError }) => {
         if (!active) return;
         setProfileRole(profileError ? 'unavailable' : data?.role ?? 'missing');
+      })
+      .catch(() => {
+        if (active) setProfileRole('unavailable');
       });
     return () => { active = false; };
   }, [session?.user.id]);

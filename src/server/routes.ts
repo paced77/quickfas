@@ -57,100 +57,41 @@ function seedInitialTelemetry() {
   const now = new Date();
   const sampleEvents: unknown[] = [
     {
-      eventId: 'evt-hlth-001',
+      eventId: 'sample-system-001',
       eventType: 'system.health',
       domain: 'infrastructure',
       severity: 'nominal',
-      source: 'kingdom-cluster-uswest',
-      correlationId: 'corr-init-01',
+      source: 'fictional-demo-monitor',
+      correlationId: 'sample-correlation-01',
       timestamp: new Date(now.getTime() - 120000).toISOString(),
-      metadata: { cluster: 'omega-1', version: '2027.4' },
-      payload: {
-        status: 'optimal',
-        uptimeSeconds: 849200,
-        latencyMs: 83,
-        errorsPerMin: 0.02,
-        cpuUtilization: 34.2,
-        memoryUtilization: 48.7,
-        availabilityPct: 99.992,
-      },
+      metadata: { scenario: 'fictional_demo', dataClassification: 'synthetic' },
+      payload: { status: 'sample', uptimeSeconds: 1200, latencyMs: 120, errorsPerMin: 0, cpuUtilization: 35, memoryUtilization: 48, availabilityPct: 99 },
     },
     {
-      eventId: 'evt-clin-002',
-      eventType: 'clinical.enrollment',
-      domain: 'clinical',
+      eventId: 'sample-ops-002',
+      eventType: 'ops.capacity_update',
+      domain: 'operations',
       severity: 'nominal',
-      source: 'clinical-mesh-orchestrator',
-      correlationId: 'corr-init-02',
+      source: 'fictional-workstream-monitor',
+      correlationId: 'sample-correlation-02',
       timestamp: new Date(now.getTime() - 90000).toISOString(),
-      metadata: { protocol: 'ONC-904', phase: 'Phase-III' },
-      payload: {
-        studyId: 'STUDY-ONC-904',
-        studyName: 'Neo-Adjuvant Immunotherapy Multi-Center',
-        siteId: 'SITE-MAYO-08',
-        currentEnrollment: 684,
-        targetEnrollment: 720,
-        velocityPpm: 28.5,
-        healthPct: 98.4,
-        fhirTransactionsPerSec: 142.8,
-      },
+      metadata: { scenario: 'fictional_demo', dataClassification: 'synthetic' },
+      payload: { subsystem: 'Sample Workstream A', capacityPct: 72, utilizationPct: 64, throughputPerHr: 120, activeTasks: 8, statusSummary: 'Illustrative values only; not connected to a live system' },
     },
     {
-      eventId: 'evt-fin-003',
-      eventType: 'finance.forecast_update',
-      domain: 'finance',
-      severity: 'nominal',
-      source: 'finance-oracle-stream',
-      correlationId: 'corr-init-03',
-      timestamp: new Date(now.getTime() - 60000).toISOString(),
-      metadata: { quarter: 'Q4', currency: 'USD' },
-      payload: {
-        mrrUsd: 14200000,
-        forecastGrowthPct: 24.8,
-        burnRateUsdPerMonth: 2100000,
-        runwayMonths: 38.5,
-        pipelineValueUsd: 84500000,
-        variancePct: 2.1,
-      },
-    },
-    {
-      eventId: 'evt-risk-004',
+      eventId: 'sample-risk-003',
       eventType: 'risk.detected',
-      domain: 'clinical',
+      domain: 'operations',
       severity: 'warning',
-      source: 'risk-sentinel-daemon',
-      correlationId: 'corr-init-04',
-      timestamp: new Date(now.getTime() - 30000).toISOString(),
-      metadata: { tier: 'tier-2-escalation' },
-      payload: {
-        category: 'clinical',
-        headline: 'Site 14 Zurich: Minor biostorage temperature excursion risk',
-        probability: 0.22,
-        impactRating: 6.2,
-        riskScore: 48.5,
-        mitigationStrategy: 'Automated backup compressor switchover + courier audit dispatch',
-        ownerAgent: 'Risk Sentinel',
-      },
-    },
-    {
-      eventId: 'evt-agent-005',
-      eventType: 'agent.recommendation',
-      domain: 'ai',
-      severity: 'nominal',
-      source: 'sovereign-strategist-engine',
-      correlationId: 'corr-init-05',
-      timestamp: new Date(now.getTime() - 10000).toISOString(),
-      metadata: { confidenceTier: 'high' },
-      payload: {
-        agentName: 'Sovereign Strategist',
-        confidenceScore: 0.96,
-        executionTimeMs: 142,
-        recommendation: 'Advance Phase III clinical endpoint review window by 14 days based on high-velocity Mayo & Charite cohort stabilization.',
-        impact: 'transformative',
-        rationale: 'Telemetry indicates sample integrity confidence above 99.4%, saving approximately 3.2M USD in operational runway.',
-      },
+      source: 'fictional-demo-risk-monitor',
+      correlationId: 'sample-correlation-03',
+      timestamp: new Date(now.getTime() - 60000).toISOString(),
+      metadata: { scenario: 'fictional_demo', dataClassification: 'synthetic' },
+      payload: { category: 'operations', headline: 'Example dependency review needed', probability: 0.2, impactRating: 3, riskScore: 20, mitigationStrategy: 'Review the fictional dependency and document an owner', ownerAgent: 'Sample Risk Reviewer' },
     },
   ];
+
+  for (const raw of sampleEvents)  ];
 
   for (const raw of sampleEvents) {
     validationStats.totalReceived++;
@@ -176,62 +117,26 @@ setInterval(() => {
       eventType: 'system.health',
       domain: 'infrastructure',
       severity: 'nominal',
-      source: 'infra-telemetry-probe',
-      payload: {
-        status: 'optimal',
-        uptimeSeconds: Math.floor(849200 + Date.now() / 1000),
-        latencyMs: Math.floor(75 + Math.random() * 18),
-        errorsPerMin: +(Math.random() * 0.05).toFixed(3),
-        cpuUtilization: +(30 + Math.random() * 12).toFixed(1),
-        memoryUtilization: +(46 + Math.random() * 8).toFixed(1),
-        availabilityPct: 99.992,
-      },
-    },
-    {
-      eventType: 'clinical.fhir_tx',
-      domain: 'clinical',
-      severity: 'nominal',
-      source: 'fhir-gateway-v4',
-      payload: {
-        studyId: 'STUDY-CARDIO-402',
-        studyName: 'Vascular Biomarker Continuous Ingestion',
-        siteId: 'SITE-JOHNS-HOPKINS-02',
-        currentEnrollment: 412,
-        targetEnrollment: 450,
-        velocityPpm: +(22 + Math.random() * 8).toFixed(1),
-        healthPct: +(97 + Math.random() * 2.5).toFixed(1),
-        fhirTransactionsPerSec: +(130 + Math.random() * 40).toFixed(1),
-      },
+      source: 'fictional-demo-probe',
+      payload: { status: 'sample', uptimeSeconds: 3600, latencyMs: 120, errorsPerMin: 0, cpuUtilization: 34, memoryUtilization: 47, availabilityPct: 99 },
     },
     {
       eventType: 'ops.capacity_update',
       domain: 'operations',
       severity: 'nominal',
-      source: 'ops-controller-daemon',
-      payload: {
-        subsystem: 'Clinical Assay Processing Core',
-        capacityPct: +(82 + Math.random() * 8).toFixed(1),
-        utilizationPct: +(74 + Math.random() * 9).toFixed(1),
-        throughputPerHr: Math.floor(1800 + Math.random() * 300),
-        activeTasks: Math.floor(34 + Math.random() * 8),
-        statusSummary: 'Nominal queue throughput with sub-90ms job dispatch',
-      },
+      source: 'fictional-workstream-monitor',
+      payload: { subsystem: 'Sample Workstream B', capacityPct: 76, utilizationPct: 68, throughputPerHr: 140, activeTasks: 6, statusSummary: 'Synthetic demonstration event; no live operational connection' },
     },
     {
-      eventType: 'agent.recommendation',
-      domain: 'ai',
-      severity: 'nominal',
-      source: 'council-dispatcher',
-      payload: {
-        agentName: 'Finance Oracle',
-        confidenceScore: +(0.94 + Math.random() * 0.05).toFixed(2),
-        executionTimeMs: Math.floor(110 + Math.random() * 60),
-        recommendation: 'Reallocate 850k USD from static EU hosting to high-density edge compute for direct Zurich genomics pipeline.',
-        impact: 'high',
-        rationale: 'Reduces transit latency from 140ms to 28ms while preserving 22% margin expansion.',
-      },
+      eventType: 'risk.detected',
+      domain: 'operations',
+      severity: 'warning',
+      source: 'fictional-demo-risk-monitor',
+      payload: { category: 'operations', headline: 'Example review item', probability: 0.15, impactRating: 2, riskScore: 12, mitigationStrategy: 'Validate this example against an approved source before acting', ownerAgent: 'Sample Risk Reviewer' },
     },
   ];
+
+  const pick =  ];
 
   const pick = sources[Math.floor(Math.random() * sources.length)];
   const rawEvent = {
@@ -438,96 +343,33 @@ router.post('/api/telemetry/inject', requireRole('admin', 'operator'), handleTel
 function generateFallbackDeliberation(agendaTopic: string) {
   return {
     agenda: agendaTopic,
-    consensusScorePct: 94.6,
-    impactTier: 'Transformative',
-    executiveDirective: `Consensus directive: Accelerate Phase-III clinical endpoint closure by 14 days; reallocate $850k into Zurich edge inference nodes to eliminate FHIR verification latency.`,
+    consensusScorePct: 0,
+    impactTier: 'Illustrative only',
+    executiveDirective: 'This is a fictional demonstration response. Do not treat it as a verified assessment or operational instruction.',
     coreAnswers: {
-      whatIsHappeningNow: `Cross-site patient enrollment has achieved 684/720 targets with ingestion velocity of 28.5 patients/month across Mayo and Charite nodes.`,
-      whyIsItHappening: `Automated zero-trust FHIR ingestion eliminated manual site validation delays, causing site velocity to exceed original protocol assumptions by 32%.`,
-      whatHappensNext: `Without edge compute rebalancing, intercontinental transit latency will exceed 110ms as secondary European cohorts commence genomics upload.`,
-      whatShouldIDo: `Authorize the Sovereign AI Council directive to pre-deploy high-density edge compute in Zurich and advance regulatory dossier synchronization.`,
+      whatIsHappeningNow: 'Sample scenario: a fictional team is reviewing three workstreams and a small set of example tasks.',
+      whyIsItHappening: 'The response demonstrates how the council format organizes context, trade-offs, and possible next steps.',
+      whatHappensNext: 'Replace this example with approved source data and a named accountable reviewer before using the workflow.',
+      whatShouldIDo: 'Use this output to explore the interface only. Do not make clinical, financial, legal, regulatory, or operational decisions from synthetic content.',
     },
     agentDeliberations: [
-      {
-        agentName: 'Sovereign Strategist',
-        role: 'Executive Strategy',
-        verdict: 'Accelerate',
-        argument: 'Advancing the milestone provides an uncontested first-to-file window before global oncology congress reviews.',
-        confidence: 0.96,
-      },
-      {
-        agentName: 'Finance Oracle',
-        role: 'Capital & Treasury',
-        verdict: 'Endorse',
-        argument: 'Reallocating $850k from idle hosting reserves reduces total burn by $3.2M over the clinical trial lifecycle.',
-        confidence: 0.98,
-      },
-      {
-        agentName: 'Clinical Director',
-        role: 'Clinical Mesh',
-        verdict: 'Endorse',
-        argument: 'Sample integrity confidence is at 99.4% with zero protocol deviations logged across the last 140 patients.',
-        confidence: 0.94,
-      },
-      {
-        agentName: 'Risk Sentinel',
-        role: 'Threat Posture',
-        verdict: 'Caution',
-        argument: 'Must ensure backup nitrogen compressor in Zurich maintains continuous telemetry during computational load spike.',
-        confidence: 0.92,
-      },
-      {
-        agentName: 'Operations Commander',
-        role: 'Throughput',
-        verdict: 'Accelerate',
-        argument: 'Assay pipeline queue capacity sits at 74%, well within safe operational limits for the 35% velocity increase.',
-        confidence: 0.97,
-      },
-      {
-        agentName: 'Compliance Guardian',
-        role: 'Regulatory Invariants',
-        verdict: 'Endorse',
-        argument: 'Automated cryptographic audit proof package generation satisfies FDA 21 CFR Part 11 and EMA requirements.',
-        confidence: 0.99,
-      },
-      {
-        agentName: 'Security Sentinel',
-        role: 'Zero-Trust Defense',
-        verdict: 'Endorse',
-        argument: 'mTLS certificate pinning and HSM key rotation confirmed across all Mayo and Zurich ingestion points.',
-        confidence: 0.99,
-      },
+      { agentName: 'Sample Strategy Lead', role: 'Strategy', verdict: 'Review', argument: 'Confirm the objective and evidence before choosing a course of action.', confidence: 0 },
+      { agentName: 'Sample Operations Lead', role: 'Operations', verdict: 'Review', argument: 'Check ownership, dependencies, and capacity using current authorized records.', confidence: 0 },
+      { agentName: 'Sample Risk Reviewer', role: 'Risk', verdict: 'Caution', argument: 'The scenario contains fictional values and no verified source evidence.', confidence: 0 },
     ],
     actionableInterventions: [
-      {
-        id: 'ACT-01',
-        title: 'Deploy Zurich High-Density Genomics Edge Enclave',
-        timeframe: 'Immediate (24h)',
-        projectedGain: '+3.2M USD Runway',
-        riskRating: 'Low (Compensated)',
-      },
-      {
-        id: 'ACT-02',
-        title: 'Synchronize EMA Dossier Protocol Addendum',
-        timeframe: 'Day +3',
-        projectedGain: '14 Days Fast-Track',
-        riskRating: 'Minimal',
-      },
-      {
-        id: 'ACT-03',
-        title: 'Dispatch On-Site Zurich Biostorage Sensor Audit',
-        timeframe: 'Day +5',
-        projectedGain: 'Risk Zeroed',
-        riskRating: 'Nominal',
-      },
+      { id: 'SAMPLE-01', title: 'Validate the source data', timeframe: 'Before use', projectedGain: 'Not estimated', riskRating: 'Unassessed' },
+      { id: 'SAMPLE-02', title: 'Assign an accountable reviewer', timeframe: 'Before use', projectedGain: 'Not estimated', riskRating: 'Unassessed' },
     ],
   };
 }
 
+// 4. AI Council Deliberation Chamber}
+
 // 4. AI Council Deliberation Chamber
 const handleCouncilDeliberation = async (req: Request, res: Response) => {
   const { agendaTopic, contextData } = req.body;
-  const promptAgenda = agendaTopic || 'Phase III Oncology Study Site Bottleneck vs Q3 Global Milestone Acceleration';
+  const promptAgenda = agendaTopic || 'Review a fictional multi-workstream planning scenario';
 
   if (!apiKey) {
     return res.json(generateFallbackDeliberation(promptAgenda));
@@ -538,13 +380,13 @@ const handleCouncilDeliberation = async (req: Request, res: Response) => {
 You embody the 7 permanent Sovereign AI leaders:
 1. Sovereign Strategist: Executive guidance, existential positioning, strategic horizon.
 2. Finance Oracle: Cash flow, capital efficiency, revenue trajectory, valuation leverage.
-3. Clinical Director: Patient safety, study integrity, enrollment velocity, FHIR ingestion.
+3. Education Steward: educational quality, source provenance, and clear boundaries between education and care.
 4. Risk Sentinel: Unmitigated exposures, vulnerabilities, operational shock tolerance.
 5. Operations Commander: Execution tempo, workflow friction, capacity bottlenecks.
-6. Compliance Guardian: Regulatory audit posture, FDA/EMA rigor, data governance.
+6. Compliance Guardian: policy alignment, evidence quality, and data governance.
 7. Security Sentinel: Cybersecurity, cryptographic provenance, zero-trust integrity.
 
-Analyze the strategic agenda with realistic domain tension.
+Treat all supplied context as unverified unless it includes an approved source and timestamp. Never invent institutions, patient counts, clinical outcomes, regulatory approvals, financial results, or operational facts. If source data is missing, label every example as fictional and illustrative. Analyze the strategic agenda with realistic domain tension.
 Formulate a decisive consensus resolution answering the 4 Sovereign Questions:
 - whatIsHappeningNow
 - whyIsItHappening
@@ -646,42 +488,24 @@ const handleExecutiveBriefing = async (req: Request, res: Response) => {
   const greeting = timeOfDay || 'Good morning';
 
   const fallbackBriefing = {
-    headline: 'All Kingdom Systems Nominal · Clinical Endpoint Acceleration Approved',
-    statusSummary: 'Multi-center clinical trial velocity exceeds protocol baseline by 32%. Revenue trajectory tracks at $14.2M MRR with 38.5 months runway. Two strategic risks actively monitored with automated failover.',
-    spokenScript: `${greeting}. Kingdom systems online. Clinical operations stable. Revenue forecast increased. Two strategic risks require review. Overall system health remains above target.`,
+    headline: 'Illustrative Project Briefing · Sample Scenario',
+    statusSummary: 'This response uses fictional examples to demonstrate the briefing format. No live clinical, financial, institutional, or operational data is connected.',
+    spokenScript: `${greeting}. This is an illustrative workspace using fictional sample information. Verify approved source data before relying on any report.`,
     coreAnswers: {
-      whatIsHappeningNow: 'Multi-center clinical operations are executing with sub-90ms ingestion across Mayo and Charite nodes. Cohort enrollment is at 684 out of 720 patients.',
-      whyIsItHappening: 'Automated FHIR pipelines have removed manual site verification lag, increasing monthly patient intake velocity to 28.5 patients per month.',
-      whatHappensNext: 'Phase III protocol milestone will be achieved 14 calendar days ahead of schedule, enabling expedited submission package generation.',
-      whatShouldIDo: 'Authorize the Sovereign AI Council directive to pre-allocate $850k into Zurich edge genomics processing to maintain real-time analysis parity.',
+      whatIsHappeningNow: 'Sample scenario: three fictional workstreams are being reviewed. These entries do not describe real organizations, people, projects, or outcomes.',
+      whyIsItHappening: 'The figures are static examples used to demonstrate how status summaries and decision-support views may be presented.',
+      whatHappensNext: 'Replace the examples with validated, authorized source data only after integrations, access controls, and data-quality checks are reviewed.',
+      whatShouldIDo: 'Explore the interface only. Do not make clinical, financial, regulatory, staffing, or operational decisions from sample content.',
     },
     keySignals: [
-      {
-        metric: 'REVENUE / MRR',
-        delta: '$14.2M',
-        sentiment: 'positive',
-        context: '+24.8% YoY Growth',
-      },
-      {
-        metric: 'CLINICAL VELOCITY',
-        delta: '28.5 / mo',
-        sentiment: 'positive',
-        context: '684 / 720 Enrolled',
-      },
-      {
-        metric: 'SYSTEM LATENCY',
-        delta: '83ms',
-        sentiment: 'nominal',
-        context: '142.8 FHIR tx/s',
-      },
-      {
-        metric: 'STRATEGIC RISKS',
-        delta: '2 Active',
-        sentiment: 'warning',
-        context: 'Zurich Biostorage & EMA',
-      },
+      { metric: 'SAMPLE WORKSTREAMS', delta: '3', sentiment: 'nominal', context: 'Fictional interface example' },
+      { metric: 'SAMPLE TASKS', delta: '8', sentiment: 'nominal', context: 'Not connected to a live project' },
+      { metric: 'SAMPLE COMPLETION', delta: '60%', sentiment: 'nominal', context: 'Illustrative value only' },
+      { metric: 'SAMPLE REVIEW ITEMS', delta: '2', sentiment: 'warning', context: 'Fictional training scenario' },
     ],
   };
+
+  if (!apiKey)  };
 
   if (!apiKey) {
     return res.json(fallbackBriefing);
@@ -700,7 +524,7 @@ The spoken narrative must be designed for audio playback: starting with "${greet
 
     const apiCall = ai.models.generateContent({
       model: 'gemini-3.8-flash',
-      contents: `Generate Sovereign Executive Briefing. Domain: ${focusDomain || 'all'}. Status: Clinical stable 98.4%, Revenue $14.2M MRR (+24.8%), 2 strategic risks monitored.`,
+      contents: `Generate an illustrative executive briefing for domain ${focusDomain || 'all'}. Use only facts explicitly present in the supplied context. No verified source data is attached, so do not invent metrics or real-world claims; label any example as fictional and illustrative.`,
       config: {
         systemInstruction,
         responseMimeType: 'application/json',
@@ -758,73 +582,21 @@ const handleSimulation = async (req: Request, res: Response) => {
   const { scenarioTitle, perturbationType, magnitudePct } = req.body;
 
   const fallbackSimulation = {
-    scenarioTitle: scenarioTitle || 'Accelerated Multi-Center Patient Enrollment Surge',
-    simulationDurationWeeks: 8,
-    overallSystemStabilityScore: 92.4,
-    executiveSummary: `Simulation projects a 35% surge in clinical patient volume. Clinical Intelligence absorbs the influx without protocol deviations, while Operations capacity tightens to 88%. Net financial outcome remains accretive (+18% valuation leverage).`,
+    scenarioTitle: scenarioTitle || 'Fictional Workstream Capacity Scenario',
+    simulationDurationWeeks: 4,
+    overallSystemStabilityScore: 0,
+    executiveSummary: 'Illustrative simulation only. The values below are fictional placeholders and are not a forecast, clinical assessment, financial estimate, or operational recommendation.',
     nodesImpacted: [
-      {
-        nodeName: 'Clinical Intelligence',
-        healthDelta: 1.8,
-        costDeltaUsd: '+$140k/mo',
-        riskShift: 'Nominal',
-        outputForecast: 'Cohort completion accelerated by 18 days',
-        primaryDependencyConcern: 'Requires +40 FHIR gateway worker threads',
-      },
-      {
-        nodeName: 'Operations Commander',
-        healthDelta: -4.2,
-        costDeltaUsd: '+$85k/mo',
-        riskShift: 'Elevated',
-        outputForecast: 'Assay capacity utilization reaches 88%',
-        primaryDependencyConcern: 'Reagent buffer drops to 14 days stock',
-      },
-      {
-        nodeName: 'Finance Oracle',
-        healthDelta: 0.6,
-        costDeltaUsd: '-$120k/mo',
-        riskShift: 'Decreased',
-        outputForecast: 'Runway expands to 41.2 months via earlier trial wrap',
-        primaryDependencyConcern: 'None (Self-sustaining)',
-      },
-      {
-        nodeName: 'Technology Fabric',
-        healthDelta: -0.8,
-        costDeltaUsd: '+$35k/mo',
-        riskShift: 'Nominal',
-        outputForecast: 'Latency maintains 88ms with autoscaling',
-        primaryDependencyConcern: 'Zurich edge node CPU peak at 62%',
-      },
-      {
-        nodeName: 'Sovereign Core (CEO)',
-        healthDelta: 2.4,
-        costDeltaUsd: '$0',
-        riskShift: 'Decreased',
-        outputForecast: 'First-to-file regulatory advantage secured',
-        primaryDependencyConcern: 'Executive alignment with EMA dossier review',
-      },
+      { nodeName: 'Sample Workstream A', healthDelta: 0, costDeltaUsd: 'Not estimated', riskShift: 'Unassessed', outputForecast: 'No forecast available from verified data', primaryDependencyConcern: 'Confirm dependencies using approved source records' },
+      { nodeName: 'Sample Workstream B', healthDelta: 0, costDeltaUsd: 'Not estimated', riskShift: 'Unassessed', outputForecast: 'No forecast available from verified data', primaryDependencyConcern: 'Confirm ownership and capacity before use' },
     ],
     counterMeasures: [
-      {
-        action: 'Pre-order 60-day reagent buffer from primary Swiss supplier',
-        targetNode: 'Operations Commander',
-        costToDeploy: '$45,000',
-        riskReductionPct: 78,
-      },
-      {
-        action: 'Spin up 4 additional zero-trust FHIR worker pods in Zurich',
-        targetNode: 'Technology Fabric',
-        costToDeploy: '$8,500/mo',
-        riskReductionPct: 92,
-      },
-      {
-        action: 'Lock in milestone payment disbursement with clinical sponsor',
-        targetNode: 'Finance Oracle',
-        costToDeploy: '$0',
-        riskReductionPct: 85,
-      },
+      { action: 'Validate scenario assumptions', targetNode: 'Sample Workstream A', costToDeploy: 'Not estimated', riskReductionPct: 0 },
+      { action: 'Assign a qualified reviewer', targetNode: 'Sample Workstream B', costToDeploy: 'Not estimated', riskReductionPct: 0 },
     ],
   };
+
+  if (!apiKey)  };
 
   if (!apiKey) {
     return res.json(fallbackSimulation);
@@ -832,12 +604,12 @@ const handleSimulation = async (req: Request, res: Response) => {
 
   try {
     const systemInstruction = `You are the Digital Twin Simulation Engine of Project Kingdom.
-Cascading ripple effects across: Sovereign Core (CEO), Clinical Intelligence, Finance Oracle, Operations Commander, Technology Fabric.
+Model illustrative dependencies across strategy, finance, operations, technology, and risk. Do not invent real-world metrics or outcomes.
 Return strict JSON.`;
 
     const userPrompt = `SCENARIO TO SIMULATE:
-Title: ${scenarioTitle || 'Accelerated Multi-Center Patient Enrollment Surge'}
-Perturbation: ${perturbationType || 'clinical_velocity_surge'}
+Title: ${scenarioTitle || 'Fictional Workstream Capacity Scenario'}
+Perturbation: ${perturbationType || 'sample_capacity_change'}
 Magnitude: ${magnitudePct || 35}%`;
 
     const apiCall = ai.models.generateContent({
@@ -918,20 +690,20 @@ const handleVoiceQuery = async (req: Request, res: Response) => {
   const queryLower = query.toLowerCase();
   let fallbackIntent = 'sovereign_answer';
   let fallbackTarget = 'war-room';
-  let fallbackResponse = `Processing directive "${query}". System health is 98% and all 24 missions are progressing nominally.`;
+  let fallbackResponse = `Processing directive "${query}". This is a demonstration response; no verified live data is connected.`;
 
   if (queryLower.includes('risk')) {
     fallbackIntent = 'view_risks';
     fallbackTarget = 'war-room';
-    fallbackResponse = 'Displaying strategic risks. Two items monitored: Zurich biostorage micro-drift and EU-US cross-border FHIR surveillance.';
+    fallbackResponse = 'Displaying the sample risk view. Example review items are fictional and must be validated against approved records.';
   } else if (queryLower.includes('clinical') || queryLower.includes('patient') || queryLower.includes('enrollment')) {
     fallbackIntent = 'view_clinical';
     fallbackTarget = 'war-room';
-    fallbackResponse = 'Opening Clinical Command. Mayo and Charite cohorts are tracking at 28.5 patients per month, 32% above baseline.';
+    fallbackResponse = 'Opening the educational information view. This workspace does not contain patient records or verified clinical operations data.';
   } else if (queryLower.includes('finance') || queryLower.includes('revenue') || queryLower.includes('forecast')) {
     fallbackIntent = 'explain_finance';
     fallbackTarget = 'war-room';
-    fallbackResponse = 'Revenue trajectory stands at 14.2 million MRR with 38.5 months of runway. Gross margin expanded to 78.4%.';
+    fallbackResponse = 'Opening the sample finance view. No verified financial data is connected; do not rely on illustrative figures.';
   } else if (queryLower.includes('simulation') || queryLower.includes('twin')) {
     fallbackIntent = 'run_simulation';
     fallbackTarget = 'digital-twin';
@@ -939,7 +711,7 @@ const handleVoiceQuery = async (req: Request, res: Response) => {
   } else if (queryLower.includes('briefing') || queryLower.includes('executive')) {
     fallbackIntent = 'generate_briefing';
     fallbackTarget = 'war-room';
-    fallbackResponse = 'Good morning. Kingdom systems online. Clinical operations stable. Revenue forecast increased. Overall health remains optimal.';
+    fallbackResponse = 'Good morning. Project Kingdom demonstration workspace online. Sample information only; verify connected sources before relying on any report.';
   }
 
   if (!apiKey) {

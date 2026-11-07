@@ -84,6 +84,15 @@ test('AI routes enforce role-specific capabilities and distributed rate limits',
   assert.match(routes, /authClient\.rpc\('consume_quickfas_api_rate_limit'/);
 });
 
+test('authentication UI distinguishes guest preview from least-privileged accounts', () => {
+  const gate = source('../src/components/auth/AuthGate.tsx');
+  assert.match(gate, /GUEST PREVIEW · PROTECTED ACTIONS DISABLED/);
+  assert.match(gate, /Guest Preview/);
+  assert.match(gate, /read-only viewer access/i);
+  assert.match(gate, /Access: \{profileRole/);
+  assert.match(gate, /profileError \? 'unavailable' : data\?\.role \?\? 'missing'/);
+});
+
 test('rate-limit migration keeps counters private and non-bypassable by callers', () => {
   const migration = source('../supabase/migrations/20261107194735_quickfas_rate_limits_invoker_hardening.sql');
   assert.match(migration, /security invoker/i);

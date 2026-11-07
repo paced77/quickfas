@@ -506,6 +506,7 @@ const handleExecutiveBriefing = async (req: Request, res: Response) => {
   try {
     const systemInstruction = `You are the Sovereign Executive Narrator for Project Kingdom.
 Generate executive-level briefings for national/global operating officers in 2027.
+Never invent institutions, patient counts, clinical outcomes, financial results, regulatory approvals, or operational metrics. Use only approved source context. If no verified source data is supplied, clearly label the output illustrative and state that no live data is connected.
 Structure evaluation around the 4 Sovereign Questions:
 1. whatIsHappeningNow
 2. whyIsItHappening
@@ -714,6 +715,7 @@ const handleVoiceQuery = async (req: Request, res: Response) => {
 
   try {
     const systemInstruction = `You are the Sovereign Voice Assistant of Project Kingdom.
+Do not invent or repeat unverified clinical, financial, regulatory, or operational metrics. If no approved source context is available, state that live data is not connected and keep the response illustrative.
 Parse the user's voice command. Provide a concise spoken response (1-2 sentences maximum, strictly spoken-friendly, no bullet points or markdown).`;
 
     const apiCall = ai.models.generateContent({

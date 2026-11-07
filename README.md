@@ -36,7 +36,7 @@ Use synthetic fixtures only in demos and tests. Never place real patient data, p
 
 ## Privacy, analytics, and telemetry safeguards
 
-The current branch includes a versioned local analytics-consent preference with cross-tab synchronization, an accessible consent control, an allow-listed event contract, and authenticated analytics intake that accepts event names only. Event totals are aggregate and process-local; they reset when the API process restarts. No route, topic title, account identifier, age band, health information, form content, or credentials are sent in analytics events.
+The current branch includes a versioned local analytics-consent preference with cross-tab synchronization, an accessible consent control, an allow-listed event contract, and anonymous analytics intake that accepts event names only. Event totals are aggregate and process-local; they reset when the API process restarts. No route, topic title, account identifier, age band, health information, form content, or credentials are sent in analytics events.
 
 Synthetic telemetry is disabled by default. To intentionally enable the legacy illustrative stream in a non-production demonstration environment, set `KINGDOM_DEMO_TELEMETRY=true`. The interface identifies this mode as synthetic. Without that setting, the telemetry feed waits for authenticated event ingestion and reports that the current in-memory feed is not a durable audit log.
 

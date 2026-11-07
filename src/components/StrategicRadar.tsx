@@ -22,7 +22,7 @@ export const initialRadarItems: StrategicRadarItem[] = [
     distance: 65,
     angleDeg: 68,
     severityOrImpact: 'high',
-    summary: 'European Medicines Agency priority designation eligibility confirmed based on interim biomarker signal.',
+    summary: 'Illustrative opportunity placeholder; no regulatory designation or approval is represented.',
     recommendedAction: 'Engage Compliance Guardian to draft dossier synchronization package.',
     ownerAgent: 'Compliance Guardian',
   },

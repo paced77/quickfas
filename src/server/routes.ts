@@ -2,7 +2,7 @@ import express, { Request, Response } from 'express';
 import { createClient } from '@supabase/supabase-js';
 import { GoogleGenAI, Type } from '@google/genai';
 import dotenv from 'dotenv';
-import { z } from 'zod';
+import { CouncilRequestSchema, BriefingRequestSchema, SimulationRequestSchema, VoiceRequestSchema } from './requestSchemas.ts';
 import { AnalyticsEventPayloadSchema, type AnalyticsEventName } from '../platform/analytics/analyticsEvents.ts';
 import {
   validateKingdomTelemetry,
@@ -238,21 +238,6 @@ const requireDistributedRateLimit = (bucket: string): express.RequestHandler => 
     return res.status(503).json({ error: 'Rate limiting is unavailable. This action is temporarily disabled.' });
   }
 };
-
-const CouncilRequestSchema = z.object({
-  agendaTopic: z.string().trim().min(1).max(500).optional(),
-  contextData: z.record(z.string(), z.unknown()).optional(),
-}).strict().refine((value) => Buffer.byteLength(JSON.stringify(value.contextData ?? {}), 'utf8') <= 16_384);
-const BriefingRequestSchema = z.object({
-  timeOfDay: z.string().trim().min(1).max(40).optional(),
-  focusDomain: z.string().trim().min(1).max(80).optional(),
-}).strict();
-const SimulationRequestSchema = z.object({
-  scenarioTitle: z.string().trim().min(1).max(160).optional(),
-  perturbationType: z.string().trim().min(1).max(80).optional(),
-  magnitudePct: z.number().finite().min(0).max(100).optional(),
-}).strict();
-const VoiceRequestSchema = z.object({ query: z.string().trim().min(1).max(1000) }).strict();
 
 // 1. Health Status endpoint
 const handleHealth = (req: Request, res: Response) => {

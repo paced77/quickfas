@@ -16,6 +16,7 @@ import {
   Wallet,
 } from 'lucide-react';
 import { trackAnalyticsEvent } from '../../platform/analytics/analyticsEvents.ts';
+import { ReadAloudButton } from '../stratum/ReadAloudButton.tsx';
 
 type LearningTopic = {
   id: string;
@@ -279,7 +280,8 @@ export const StratumLearningHub: React.FC = () => {
               <ul className="mt-4 space-y-2 border-t border-white/10 pt-4 pl-5 text-xs leading-5 text-slate-300 list-disc">
                 {topic.points.map((point) => <li key={point}>{point}</li>)}
               </ul>
-              <div className="mt-4 flex flex-wrap gap-2 border-t border-white/10 pt-3">
+              <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-white/10 pt-3">
+                <ReadAloudButton text={`${topic.title}. ${topic.summary} ${topic.points.join(' ')}`} />
                 <button
                   type="button"
                   onClick={() => toggleSaved(topic.id)}

@@ -62,11 +62,11 @@ test('telemetry rejects direct identifiers and obvious personal data', () => {
   assert.equal(validateKingdomTelemetry({ ...event, metadata: { region: 'test-region' } }).success, false);
   assert.equal(validateKingdomTelemetry({
     ...event,
-    metadata: { patientName: 'Example Person' },
+    metadata: { dataClassification: 'synthetic_demo', patientName: 'Example Person' },
   }).success, false);
   assert.equal(validateKingdomTelemetry({
     ...event,
-    metadata: { operatorContact: 'operator@example.com' },
+    metadata: { dataClassification: 'synthetic_demo', operatorContact: 'operator@example.com' },
   }).success, false);
 });
 

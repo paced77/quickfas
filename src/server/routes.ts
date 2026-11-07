@@ -10,7 +10,19 @@ import {
 dotenv.config();
 
 export const app = express();
-app.use(express.json());
+app.disable('x-powered-by');
+app.use((req, res, next) => {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'DENY');
+  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+  res.setHeader('Permissions-Policy', 'camera=(), geolocation=(), payment=()');
+  res.setHeader('Content-Security-Policy', "frame-ancestors 'none'");
+  if (process.env.NODE_ENV === 'production') {
+    res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+  }
+  next();
+});
+app.use(express.json({ limit: '256kb' }));
 
 // Initialize Server-Side Google GenAI client
 const apiKey = process.env.GEMINI_API_KEY || '';
@@ -26,6 +38,7 @@ const ai = new GoogleGenAI({
 // Telemetry Event Store
 const MAX_STORED_EVENTS = 120;
 const eventHistory: AnyKingdomEvent[] = [];
+const demoTelemetryEnabled = process.env.KINGDOM_DEMO_TELEMETRY === 'true';
 let validationStats = {
   totalReceived: 0,
   validCount: 0,
@@ -146,9 +159,11 @@ function seedInitialTelemetry() {
   }
 }
 
-seedInitialTelemetry();
+// Synthetic fixtures are disabled unless an operator explicitly opts into demo mode.
+if (demoTelemetryEnabled) seedInitialTelemetry();
 
 // Background Telemetry Pulse Generator
+if (demoTelemetryEnabled) {
 setInterval(() => {
   const sources = [
     {
@@ -221,7 +236,7 @@ setInterval(() => {
     source: pick.source,
     correlationId: `corr-${Date.now()}`,
     timestamp: new Date().toISOString(),
-    metadata: { synthesized: true, environment: 'production-sovereign' },
+    metadata: { synthesized: true, dataClassification: 'synthetic_demo', environment: 'explicit-demo' },
     payload: pick.payload,
   };
 
@@ -238,6 +253,7 @@ setInterval(() => {
     validationStats.lastRejectedReason = val.error || 'Failed schema parse';
   }
 }, 4500);
+}
 
 // Helper router support: supports routes both with and without "/api" prefix (for Vercel rewrites)
 const router = express.Router();
@@ -302,6 +318,8 @@ const handleHealth = (req: Request, res: Response) => {
     timestamp: new Date().toISOString(),
     eventBusActive: true,
     geminiConfigured: !!apiKey,
+    telemetryMode: demoTelemetryEnabled ? 'synthetic_demo' : 'awaiting_ingestion',
+    telemetryPersistence: 'process_memory_only',
   });
 };
 router.get('/health', handleHealth);
@@ -326,6 +344,8 @@ const handleTelemetryEvents = (req: Request, res: Response) => {
   res.json({
     events: filtered.slice(0, 50),
     stats: validationStats,
+    dataMode: demoTelemetryEnabled ? 'synthetic_demo' : 'awaiting_ingestion',
+    persistence: 'process_memory_only',
     timestamp: new Date().toISOString(),
   });
 };

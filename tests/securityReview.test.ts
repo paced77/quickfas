@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { CouncilRequestSchema, BriefingRequestSchema, SimulationRequestSchema, VoiceRequestSchema } from '../src/server/requestSchemas.ts';
+import { DomainSchema, validateKingdomTelemetry } from '../src/schemas/events.ts';
 
 const source = (relativePath: string) =>
   readFileSync(new URL(relativePath, import.meta.url), 'utf8');
@@ -25,6 +26,31 @@ test('dashboard and AI fallback fixtures do not assert fabricated clinical facts
   assert.doesNotMatch(combined, fabricatedClaims);
   assert.match(source('../src/App.tsx'), /Illustrative workspace/);
   assert.match(source('../src/server/routes.ts'), /fictional demonstration response/i);
+});
+
+test('clinical and FHIR telemetry ingestion is rejected', () => {
+  assert.equal(DomainSchema.safeParse('clinical').success, false);
+  const clinicalEvent = {
+    eventId: 'sample-clinical-event',
+    timestamp: new Date().toISOString(),
+    source: 'synthetic-test',
+    correlationId: 'sample-correlation',
+    domain: 'clinical',
+    severity: 'info',
+    eventType: 'clinical.fhir_tx',
+    metadata: { dataClassification: 'synthetic_demo' },
+    payload: {
+      studyId: 'sample-study',
+      studyName: 'Synthetic study',
+      siteId: 'sample-site',
+      currentEnrollment: 0,
+      targetEnrollment: 1,
+      velocityPpm: 0,
+      healthPct: 0,
+      fhirTransactionsPerSec: 0,
+    },
+  };
+  assert.equal(validateKingdomTelemetry(clinicalEvent).success, false);
 });
 
 test('opt-in telemetry fixtures use generic synthetic workstream data', () => {

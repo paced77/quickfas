@@ -109,6 +109,15 @@ test('API request schemas reject oversized, malformed, and unexpected input', ()
   assert.equal(VoiceRequestSchema.safeParse({ query: 'x'.repeat(1001) }).success, false);
 });
 
+test('analytics events are authenticated and quota-limited in the applied migration', () => {
+  const migration = source('../supabase/migrations/20261107195234_quickfas_authenticated_analytics_events.sql');
+  const routes = source('../src/server/routes.ts');
+  assert.match(migration, /'analytics-event'/);
+  assert.match(migration, /when 'analytics-event' then v_limit := 120/);
+  assert.match(routes, /router\.post\('\/api\/analytics\/event', requireDistributedRateLimit\('analytics-event'\), handleAnalyticsEvent/);
+  assert.doesNotMatch(routes, /app\.post\('\/analytics\/event'/);
+});
+
 test('rate-limit migration keeps counters private and non-bypassable by callers', () => {
   const migration = source('../supabase/migrations/20261107194735_quickfas_rate_limits_invoker_hardening.sql');
   assert.match(migration, /security invoker/i);

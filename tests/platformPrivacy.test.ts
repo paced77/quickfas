@@ -6,6 +6,7 @@ import {
   parseConsentRecord,
   consentFromRecord,
 } from '../src/platform/consent/consentModel.ts';
+import { validateKingdomTelemetry } from '../src/schemas/events.ts';
 import {
   AnalyticsEventNameSchema,
   AnalyticsEventPayloadSchema,
@@ -31,4 +32,36 @@ test('analytics accepts only the defined event names and rejects extra propertie
   assert.equal(AnalyticsEventNameSchema.safeParse('patient_diagnosis_viewed').success, false);
   assert.equal(AnalyticsEventPayloadSchema.safeParse({ event: 'page_view' }).success, true);
   assert.equal(AnalyticsEventPayloadSchema.safeParse({ event: 'page_view', email: 'person@example.com' }).success, false);
+});
+
+
+test('telemetry rejects direct identifiers and obvious personal data', () => {
+  const event = {
+    eventId: 'evt-test',
+    eventType: 'system.health',
+    domain: 'infrastructure',
+    severity: 'nominal',
+    source: 'unit-test',
+    correlationId: 'corr-test',
+    timestamp: new Date('2026-11-07T12:00:00.000Z').toISOString(),
+    metadata: { region: 'test-region' },
+    payload: {
+      status: 'optimal',
+      uptimeSeconds: 60,
+      latencyMs: 10,
+      errorsPerMin: 0,
+      cpuUtilization: 10,
+      memoryUtilization: 20,
+      availabilityPct: 99.9,
+    },
+  };
+  assert.equal(validateKingdomTelemetry(event).success, true);
+  assert.equal(validateKingdomTelemetry({
+    ...event,
+    metadata: { patientName: 'Example Person' },
+  }).success, false);
+  assert.equal(validateKingdomTelemetry({
+    ...event,
+    metadata: { operatorContact: 'operator@example.com' },
+  }).success, false);
 });

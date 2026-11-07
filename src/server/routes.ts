@@ -2,6 +2,7 @@ import express, { Request, Response } from 'express';
 import { createClient } from '@supabase/supabase-js';
 import { GoogleGenAI, Type } from '@google/genai';
 import dotenv from 'dotenv';
+import { AnalyticsEventPayloadSchema, AnalyticsEventName } from '../platform/analytics/analyticsEvents.ts';
 import {
   validateKingdomTelemetry,
   AnyKingdomEvent,
@@ -39,6 +40,9 @@ const ai = new GoogleGenAI({
 const MAX_STORED_EVENTS = 120;
 const eventHistory: AnyKingdomEvent[] = [];
 const demoTelemetryEnabled = process.env.KINGDOM_DEMO_TELEMETRY === 'true';
+const analyticsEventCounts: Partial<Record<AnalyticsEventName, number>> = {};
+let analyticsWindowStartedAt = Date.now();
+let analyticsEventsInWindow = 0;
 let validationStats = {
   totalReceived: 0,
   validCount: 0,
@@ -327,6 +331,41 @@ router.get('/api/health', handleHealth);
 
 // All application APIs below this point require a verified Supabase user.
 router.use(requireAuthenticatedUser);
+
+// Privacy-safe product analytics: allow-listed event names only; no event properties,
+// account IDs, IP addresses, route strings, health details, or form contents are retained.
+const handleAnalyticsEvent = (req: Request, res: Response) => {
+  const parsed = AnalyticsEventPayloadSchema.safeParse(req.body);
+  if (!parsed.success) {
+    return res.status(422).json({ error: 'Event is not part of the approved analytics contract.' });
+  }
+
+  const now = Date.now();
+  if (now - analyticsWindowStartedAt >= 60_000) {
+    analyticsWindowStartedAt = now;
+    analyticsEventsInWindow = 0;
+  }
+  if (analyticsEventsInWindow >= 300) {
+    return res.status(429).json({ error: 'Analytics event rate limit reached.' });
+  }
+
+  analyticsEventsInWindow += 1;
+  const eventName = parsed.data.event;
+  analyticsEventCounts[eventName] = (analyticsEventCounts[eventName] ?? 0) + 1;
+  return res.status(202).json({ accepted: true });
+};
+router.post('/analytics/event', handleAnalyticsEvent);
+router.post('/api/analytics/event', handleAnalyticsEvent);
+
+const handleAnalyticsSummary = (_req: Request, res: Response) => {
+  return res.json({
+    counts: analyticsEventCounts,
+    retention: 'process_lifetime_aggregate',
+    containsPersonalData: false,
+  });
+};
+router.get('/analytics/summary', requireRole('admin', 'executive'), handleAnalyticsSummary);
+router.get('/api/analytics/summary', requireRole('admin', 'executive'), handleAnalyticsSummary);
 
 // 2. Telemetry Stream & Status
 const handleTelemetryEvents = (req: Request, res: Response) => {

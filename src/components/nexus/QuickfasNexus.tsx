@@ -93,11 +93,11 @@ export const QuickfasNexus: React.FC = () => {
     }
   }, []);
 
+  useEffect(() => { void refresh(DEFAULT_REPOSITORY); }, [refresh]);
   useEffect(() => {
-    void refresh(DEFAULT_REPOSITORY);
-    const interval = window.setInterval(() => { void refresh(input); }, 6 * 60 * 60 * 1000);
+    const interval = window.setInterval(() => { void refresh(repo?.full_name || DEFAULT_REPOSITORY); }, 6 * 60 * 60 * 1000);
     return () => window.clearInterval(interval);
-  }, [refresh]);
+  }, [refresh, repo?.full_name]);
 
   const formatDate = (value: string) => new Date(value).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
 

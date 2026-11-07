@@ -40,4 +40,15 @@ After verifying the first trusted operator's Auth user UUID, promote that accoun
 4. Run end-to-end tests with dedicated `viewer`, `analyst`, `operator`, `executive`, and `admin` accounts.
 5. Verify telemetry injection is rejected for `viewer` and `analyst` accounts and allowed only for `admin` and `operator`.
 
-The application API routes other than `/api/health` require a verified Supabase access token. The telemetry write route additionally checks the server-loaded profile role. The Gemini key remains server-side.
+All router-mounted application APIs require a verified Supabase access token. The public exceptions are `GET /health` and the two aliases for `POST /analytics/event`; analytics accepts only a strict allow-listed event name and stores aggregate counts, with no user ID or event properties. Its current throttle is process-local and is not a distributed edge rate limiter.
+
+The API role matrix is:
+- `admin`, `executive`, `analyst`: council deliberation.
+- `admin`, `executive`: executive briefing.
+- `admin`, `executive`, `analyst`, `operator`: simulation and voice query.
+- `admin`, `operator`: telemetry injection.
+- `viewer`: authenticated read-only telemetry access; no AI-generation or telemetry-write capability.
+
+AI and telemetry-write routes validate strict bounded request schemas and consume a Supabase-backed per-user rolling one-minute quota. Limits are 8 council calls, 8 briefings, 5 simulations, 15 voice queries, and 120 telemetry injections per user per minute. If the database rate-limit check is unavailable, these operations fail closed with HTTP 503. The rate-limit table is RLS-protected, caller-scoped, has no delete privilege, and a trigger prevents callers from resetting or rewriting their own counter. The RPC function is SECURITY INVOKER; the Supabase security advisor currently reports no findings.
+
+The health endpoint returns only `{ status: "ok" }`. The Gemini key remains server-side. These code and database controls still require authenticated end-to-end tests against dedicated role accounts before public launch.

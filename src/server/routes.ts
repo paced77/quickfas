@@ -2,6 +2,7 @@ import express, { Request, Response } from 'express';
 import { createClient } from '@supabase/supabase-js';
 import { GoogleGenAI, Type } from '@google/genai';
 import dotenv from 'dotenv';
+import { z } from 'zod';
 import { AnalyticsEventPayloadSchema, type AnalyticsEventName } from '../platform/analytics/analyticsEvents.ts';
 import {
   validateKingdomTelemetry,
@@ -166,7 +167,7 @@ setInterval(() => {
 const router = express.Router();
 
 
-type AuthenticatedRequest = Request & { authUser?: { id: string; email?: string }; authRole?: string };
+type AuthenticatedRequest = Request & { authUser?: { id: string; email?: string }; authRole?: string; authClient?: ReturnType<typeof createClient> };
 
 const requireAuthenticatedUser: express.RequestHandler = async (req, res, next) => {
   const authUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL;
@@ -201,6 +202,7 @@ const requireAuthenticatedUser: express.RequestHandler = async (req, res, next) 
     const authenticatedRequest = req as AuthenticatedRequest;
     authenticatedRequest.authUser = { id: user.id, email: user.email };
     authenticatedRequest.authRole = profile.role;
+    authenticatedRequest.authClient = authClient;
     next();
   } catch (error) {
     const safeErrorMessage = error instanceof Error ? error.message : 'unknown_error';
@@ -217,17 +219,44 @@ const requireRole = (...allowedRoles: string[]): express.RequestHandler => (req,
   next();
 };
 
+const requireDistributedRateLimit = (bucket: string): express.RequestHandler => async (req, res, next) => {
+  const authClient = (req as AuthenticatedRequest).authClient;
+  if (!authClient) {
+    return res.status(503).json({ error: 'Rate limiting is unavailable. This action is temporarily disabled.' });
+  }
+  try {
+    const { data, error } = await authClient.rpc('consume_quickfas_api_rate_limit', { p_bucket: bucket });
+    if (error) {
+      console.error('Distributed rate-limit check failed for bucket=%s code=%s', bucket, error.code || 'unknown');
+      return res.status(503).json({ error: 'Rate limiting is unavailable. This action is temporarily disabled.' });
+    }
+    if (data !== true) {
+      return res.status(429).json({ error: 'Request limit reached. Please wait before trying again.' });
+    }
+    return next();
+  } catch {
+    return res.status(503).json({ error: 'Rate limiting is unavailable. This action is temporarily disabled.' });
+  }
+};
+
+const CouncilRequestSchema = z.object({
+  agendaTopic: z.string().trim().min(1).max(500).optional(),
+  contextData: z.record(z.string(), z.unknown()).optional(),
+}).strict().refine((value) => Buffer.byteLength(JSON.stringify(value.contextData ?? {}), 'utf8') <= 16_384);
+const BriefingRequestSchema = z.object({
+  timeOfDay: z.string().trim().min(1).max(40).optional(),
+  focusDomain: z.string().trim().min(1).max(80).optional(),
+}).strict();
+const SimulationRequestSchema = z.object({
+  scenarioTitle: z.string().trim().min(1).max(160).optional(),
+  perturbationType: z.string().trim().min(1).max(80).optional(),
+  magnitudePct: z.number().finite().min(0).max(100).optional(),
+}).strict();
+const VoiceRequestSchema = z.object({ query: z.string().trim().min(1).max(1000) }).strict();
+
 // 1. Health Status endpoint
 const handleHealth = (req: Request, res: Response) => {
-  res.json({
-    status: 'online',
-    version: '2027.Sovereign.OS',
-    timestamp: new Date().toISOString(),
-    eventBusActive: true,
-    geminiConfigured: !!apiKey,
-    telemetryMode: demoTelemetryEnabled ? 'synthetic_demo' : 'awaiting_ingestion',
-    telemetryPersistence: 'process_memory_only',
-  });
+  res.json({ status: 'ok' });
 };
 router.get('/health', handleHealth);
 router.get('/api/health', handleHealth);
@@ -332,8 +361,8 @@ const handleTelemetryInject = (req: Request, res: Response) => {
     });
   }
 };
-router.post('/telemetry/inject', requireRole('admin', 'operator'), handleTelemetryInject);
-router.post('/api/telemetry/inject', requireRole('admin', 'operator'), handleTelemetryInject);
+router.post('/telemetry/inject', requireRole('admin', 'operator'), requireDistributedRateLimit('telemetry-ingest'), handleTelemetryInject);
+router.post('/api/telemetry/inject', requireRole('admin', 'operator'), requireDistributedRateLimit('telemetry-ingest'), handleTelemetryInject);
 
 // Fallback Council Deliberation generator
 function generateFallbackDeliberation(agendaTopic: string) {
@@ -362,7 +391,9 @@ function generateFallbackDeliberation(agendaTopic: string) {
 
 // 4. AI Council Deliberation Chamber
 const handleCouncilDeliberation = async (req: Request, res: Response) => {
-  const { agendaTopic, contextData } = req.body;
+  const request = CouncilRequestSchema.safeParse(req.body);
+  if (!request.success) return res.status(422).json({ error: 'Invalid council request. Check field types and size limits.' });
+  const { agendaTopic, contextData } = request.data;
   const promptAgenda = agendaTopic || 'Review a fictional multi-workstream planning scenario';
 
   if (!apiKey) {
@@ -473,12 +504,14 @@ Context: ${JSON.stringify(contextData || {})}`;
     res.json(generateFallbackDeliberation(promptAgenda));
   }
 };
-router.post('/gemini/council-deliberation', handleCouncilDeliberation);
-router.post('/api/gemini/council-deliberation', handleCouncilDeliberation);
+router.post('/gemini/council-deliberation', requireRole('admin', 'executive', 'analyst'), requireDistributedRateLimit('ai-council'), handleCouncilDeliberation);
+router.post('/api/gemini/council-deliberation', requireRole('admin', 'executive', 'analyst'), requireDistributedRateLimit('ai-council'), handleCouncilDeliberation);
 
 // 5. Executive Spoken Briefing
 const handleExecutiveBriefing = async (req: Request, res: Response) => {
-  const { timeOfDay, focusDomain } = req.body;
+  const request = BriefingRequestSchema.safeParse(req.body);
+  if (!request.success) return res.status(422).json({ error: 'Invalid briefing request. Check field types and size limits.' });
+  const { timeOfDay, focusDomain } = request.data;
   const greeting = timeOfDay || 'Good morning';
 
   const fallbackBriefing = {
@@ -567,12 +600,14 @@ The spoken narrative must be designed for audio playback: starting with "${greet
     res.json(fallbackBriefing);
   }
 };
-router.post('/gemini/executive-briefing', handleExecutiveBriefing);
-router.post('/api/gemini/executive-briefing', handleExecutiveBriefing);
+router.post('/gemini/executive-briefing', requireRole('admin', 'executive'), requireDistributedRateLimit('ai-briefing'), handleExecutiveBriefing);
+router.post('/api/gemini/executive-briefing', requireRole('admin', 'executive'), requireDistributedRateLimit('ai-briefing'), handleExecutiveBriefing);
 
 // 6. Enterprise Digital Twin Scenario Simulation
 const handleSimulation = async (req: Request, res: Response) => {
-  const { scenarioTitle, perturbationType, magnitudePct } = req.body;
+  const request = SimulationRequestSchema.safeParse(req.body);
+  if (!request.success) return res.status(422).json({ error: 'Invalid simulation request. Check field types and size limits.' });
+  const { scenarioTitle, perturbationType, magnitudePct } = request.data;
 
   const fallbackSimulation = {
     scenarioTitle: scenarioTitle || 'Fictional Workstream Capacity Scenario',
@@ -668,15 +703,14 @@ Magnitude: ${magnitudePct || 35}%`;
     res.json(fallbackSimulation);
   }
 };
-router.post('/gemini/simulation', handleSimulation);
-router.post('/api/gemini/simulation', handleSimulation);
+router.post('/gemini/simulation', requireRole('admin', 'executive', 'analyst', 'operator'), requireDistributedRateLimit('ai-simulation'), handleSimulation);
+router.post('/api/gemini/simulation', requireRole('admin', 'executive', 'analyst', 'operator'), requireDistributedRateLimit('ai-simulation'), handleSimulation);
 
 // 7. Voice Command & Strategic Query Engine
 const handleVoiceQuery = async (req: Request, res: Response) => {
-  const { query } = req.body;
-  if (!query) {
-    return res.status(400).json({ error: 'Query is required' });
-  }
+  const request = VoiceRequestSchema.safeParse(req.body);
+  if (!request.success) return res.status(422).json({ error: 'Invalid voice query. Enter up to 1,000 characters.' });
+  const { query } = request.data;
 
   const queryLower = query.toLowerCase();
   let fallbackIntent = 'sovereign_answer';
@@ -751,8 +785,8 @@ Parse the user's voice command. Provide a concise spoken response (1-2 sentences
     });
   }
 };
-router.post('/gemini/voice-query', handleVoiceQuery);
-router.post('/api/gemini/voice-query', handleVoiceQuery);
+router.post('/gemini/voice-query', requireRole('admin', 'executive', 'analyst', 'operator'), requireDistributedRateLimit('ai-voice'), handleVoiceQuery);
+router.post('/api/gemini/voice-query', requireRole('admin', 'executive', 'analyst', 'operator'), requireDistributedRateLimit('ai-voice'), handleVoiceQuery);
 
 // Mount router on app
 app.use(router);

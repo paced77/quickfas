@@ -9,9 +9,9 @@ export const ChartsSection: React.FC = () => {
   // Data specified directly from the spec:
   // Kingdom Health (Mon 82, Tue 88, Wed 90, Thu 93, Fri 98)
   const healthData = [
-    { day: 'Mon', score: 82, events: 'Cohort Ingestion Init' },
-    { day: 'Tue', score: 88, events: 'Zurich Failover Tested' },
-    { day: 'Wed', score: 90, events: 'FHIR Gateway Scaled' },
+    { day: 'Mon', score: 82, events: 'Fictional sample — not connected to live data' },
+    { day: 'Tue', score: 88, events: 'Fictional sample — not connected to live data' },
+    { day: 'Wed', score: 90, events: 'Fictional sample — not connected to live data' },
     { day: 'Thu', score: 93, events: 'Audit Proof Invariant' },
     { day: 'Fri', score: 98, events: 'Endpoint Milestone Day -14' },
   ];
@@ -19,9 +19,9 @@ export const ChartsSection: React.FC = () => {
   // Strategic Forecast (Jan 72, Feb 78, Mar 84, Apr 91, May 95)
   const forecastData = [
     { month: 'Jan', value: 72, label: 'Phase II Wrap' },
-    { month: 'Feb', value: 78, label: 'EHR Mesh Live' },
+    { month: 'Feb', value: 78, label: 'Fictional sample — not connected to live data' },
     { month: 'Mar', value: 84, label: 'CapEx Optimized' },
-    { month: 'Apr', value: 91, label: 'Zurich Edge Enclave' },
+    { month: 'Apr', value: 91, label: 'Fictional sample — not connected to live data' },
     { month: 'May', value: 95, label: 'Full Autonomy Target' },
   ];
 

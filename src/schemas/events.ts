@@ -65,7 +65,10 @@ export const AgentEventSchema = BaseKingdomEventSchema.extend({
 });
 export type AgentEvent = z.infer<typeof AgentEventSchema>;
 
-// Clinical and FHIR telemetry ingestion is intentionally not part of this product.\n// Stratum Clinical Edge is an educational experience, not an EHR integration.\n\n// 4. Risk Event
+// Clinical and FHIR telemetry ingestion is intentionally not part of this product.
+// Stratum Clinical Edge is an educational experience, not an EHR integration.
+
+// 4. Risk Event
 export const RiskEventSchema = BaseKingdomEventSchema.extend({
   eventType: z.enum(['risk.detected', 'risk.mitigated', 'risk.escalated']),
   domain: DomainSchema,

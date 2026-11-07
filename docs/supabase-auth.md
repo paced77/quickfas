@@ -40,7 +40,7 @@ After verifying the first trusted operator's Auth user UUID, promote that accoun
 4. Run end-to-end tests with dedicated `viewer`, `analyst`, `operator`, `executive`, and `admin` accounts.
 5. Verify telemetry injection is rejected for `viewer` and `analyst` accounts and allowed only for `admin` and `operator`.
 
-All router-mounted application APIs require a verified Supabase access token. The public exceptions are `GET /health` and the two aliases for `POST /analytics/event`; analytics accepts only a strict allow-listed event name and stores aggregate counts, with no user ID or event properties. Its current throttle is process-local and is not a distributed edge rate limiter.
+All router-mounted application APIs require a verified Supabase access token. The only public exception is `GET /health`, which returns status only. Analytics event submission requires a verified Supabase session, accepts only a strict allow-listed event name, and stores aggregate counts without user ID or event properties.
 
 The API role matrix is:
 - `admin`, `executive`, `analyst`: council deliberation.

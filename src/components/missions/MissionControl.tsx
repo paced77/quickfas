@@ -139,6 +139,7 @@ export const MissionControl: React.FC = () => {
 
   return (
     <div className="space-y-6">
+      <aside role="note" className="rounded-lg border border-amber-400/30 bg-amber-950/20 px-3 py-2 text-xs text-amber-100">Sample mission board only. Progress changes are local UI examples; no external project, team, or workflow is updated.</aside>
       {/* Header Banner */}
       <div className="glass-panel rounded-xl p-5">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-white/10 mb-4">

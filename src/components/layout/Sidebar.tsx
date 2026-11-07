@@ -14,6 +14,7 @@ import {
   ArrowUpRight,
   Radio,
   ExternalLink,
+  Landmark,
 } from 'lucide-react';
 
 export type KingdomNavTab =
@@ -25,6 +26,7 @@ export type KingdomNavTab =
   | 'automations'
   | 'reports'
   | 'council'
+  | 'strategy'
   | 'governance';
 
 interface SidebarProps {
@@ -93,6 +95,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
       label: 'AI Council',
       icon: <Users className="w-4 h-4" />,
       badge: '7',
+    },
+    {
+      id: 'strategy',
+      label: 'Investor Deck & Master',
+      icon: <Landmark className="w-4 h-4 text-emerald-400" />,
+      badge: 'Deck',
     },
     {
       id: 'governance',

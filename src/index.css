@@ -107,3 +107,86 @@ code, kbd, samp, pre, .font-mono {
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(56, 189, 248, 0.4);
 }
+
+/* =========================================================
+   CLEAN PDF & PRINT ENGINE (Imperial Cyber Executive Print)
+   ========================================================= */
+@media print {
+  body, html {
+    background: #ffffff !important;
+    color: #0f172a !important;
+    font-size: 11pt !important;
+    line-height: 1.5 !important;
+  }
+
+  /* Hide app navigation, chrome, sidebars, topbars, toasts, floating tools */
+  aside,
+  header,
+  footer,
+  .no-print,
+  button,
+  .fixed,
+  input[type="range"] {
+    display: none !important;
+  }
+
+  /* Expand print container to full width with clean border */
+  .print-document {
+    background: #ffffff !important;
+    color: #0f172a !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+  }
+
+  /* Headings & Text in Print */
+  h1, h2, h3, h4 {
+    color: #0284c7 !important;
+    page-break-after: avoid;
+    break-after: avoid;
+  }
+
+  h1 {
+    font-size: 24pt !important;
+    color: #0f172a !important;
+  }
+
+  p, li, span, td, th {
+    color: #1e293b !important;
+  }
+
+  /* Tables in Print */
+  table {
+    border-collapse: collapse !important;
+    width: 100% !important;
+    margin: 12pt 0 !important;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  th {
+    background-color: #f1f5f9 !important;
+    color: #0f172a !important;
+    border-bottom: 2pt solid #0284c7 !important;
+    font-weight: 700 !important;
+  }
+
+  td {
+    border-bottom: 1pt solid #e2e8f0 !important;
+  }
+
+  /* Callout boxes */
+  .p-4, .p-5, .p-6 {
+    background: #f8fafc !important;
+    border: 1pt solid #cbd5e1 !important;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  @page {
+    margin: 1.5cm;
+    size: letter portrait;
+  }
+}

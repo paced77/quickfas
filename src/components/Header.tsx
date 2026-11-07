@@ -92,6 +92,16 @@ export const Header: React.FC<HeaderProps> = ({
           >
             Kingdom Map
           </button>
+          <button
+            onClick={() => onSelectTab('strategy')}
+            className={`px-3 py-1.5 rounded transition-colors whitespace-nowrap shrink-0 ${
+              activeTab === 'strategy' && !isLandingView
+                ? 'text-emerald-300 bg-[#0f172a] border border-emerald-400/40 shadow-[0_0_12px_rgba(52,211,153,0.2)]'
+                : 'text-slate-400 hover:text-slate-200'
+            }`}
+          >
+            Investor Deck
+          </button>
         </nav>
 
         {/* Zone 3: Audio Suite & Voice Console Action */}

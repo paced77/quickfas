@@ -22,9 +22,13 @@ test('dashboard and AI fallback fixtures do not assert fabricated clinical facts
     '../src/components/automations/AutomationEngine.tsx',
   ];
   const combined = paths.map(source).join('\n');
-  const fabricatedClaims = /\bMayo\b|\bCharit[eé]\b|684\s*(?:\/|of)\s*720|28\.5\s*(?:patients|pts)|142\.8\s*FHIR|14\.8M\s*FHIR|\$14\.2M\s*MRR|Phase.?III|Zurich Biostorage|STUDY-ONC-904|STUDY-CARDIO-402|European Medicines Agency priority designation confirmed/i;
+  const fabricatedClaims = /\bMayo\b|\bCharit[eé]\b|684\s*(?:\/|of)\s*720|28\.5\s*(?:patients|pts)|142\.8\s*FHIR|14\.8M\s*FHIR|\$14\.2M\s*MRR|Phase.?III|Zurich Biostorage|STUDY-ONC-904|STUDY-CARDIO-402|European Medicines Agency priority designation confirmed|\$850k transferred|140 consecutive samples|Full compliance readiness for Title 21|Automated penetration probing frequency reduced latency|34 Autonomous Agents Synchronized|All Sectors Synchronized|100% Invariant Telemetry Interconnect/i;
   assert.doesNotMatch(combined, fabricatedClaims);
   assert.match(source('../src/App.tsx'), /Illustrative workspace/);
+  assert.match(source('../src/components/strategy/InvestorPortal.tsx'), /Illustrative planning model only/);
+  assert.match(source('../src/components/missions/MissionControl.tsx'), /Sample mission board only/);
+  assert.match(source('../src/components/CommandGrid.tsx'), /Illustrative values only/);
+  assert.match(source('../src/components/DigitalTwin.tsx'), /Illustrative topology and sample metrics only/);
   assert.match(source('../src/server/routes.ts'), /fictional demonstration response/i);
 });
 

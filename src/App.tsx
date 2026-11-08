@@ -14,6 +14,7 @@ import { TelemetryFeed } from './components/TelemetryFeed.tsx';
 import { LandingPage } from './components/landing/LandingPage.tsx';
 import { VoiceConsole } from './components/VoiceConsole.tsx';
 import { InvestorPortal } from './components/strategy/InvestorPortal.tsx';
+import { QuickfasNexus } from './components/nexus/QuickfasNexus.tsx';
 import { ExecutiveBriefingData } from './types/kingdom.ts';
 import { audioEngine } from './services/audioEngine.ts';
 import { CheckCircle2, ShieldAlert } from 'lucide-react';
@@ -284,6 +285,13 @@ export default function App() {
                 <div>
                   <DigitalTwin />
                   <StorageAuditPanel />
+                </div>
+              )}
+
+              {/* Quickfas Nexus: public project-network intelligence */}
+              {activeTab === 'nexus' && (
+                <div>
+                  <QuickfasNexus />
                 </div>
               )}
             </>

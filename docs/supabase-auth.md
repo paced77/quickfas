@@ -1,54 +1,45 @@
 # Supabase authentication setup
 
-Quickfas (including the Project Kingdom workspace and Stratum Clinical Edge learning experience) uses the existing Supabase project **seventeen-pockets** in the Simplemn organization.
+Quickfas (including the Project Kingdom workspace and Stratum Clinical Edge learning experience) uses the existing Supabase project **seventeen-pockets**.
 
 - Project ref: `babdeawtwaoorsmdnxip`
 - API URL: `https://babdeawtwaoorsmdnxip.supabase.co`
 - Region: `us-east-1`
 
+## QuickFas sign-in method
+
+QuickFas presents Google OAuth as its only sign-in and account-creation option. The application does not display email/password registration or password sign-in. This is an app-level UI choice: it does not disable the Email provider at the shared Supabase project level, because other applications may use the same Supabase Auth tenant.
+
+Configure Google once in Supabase Authentication → Providers → Google using the OAuth Client ID and Client Secret from the Google Cloud OAuth client. Do not put the client secret in Vercel, source control, or browser environment variables.
+
+Set the Supabase Site URL to the production QuickFas origin and add each approved production/preview callback origin to Authentication → URL Configuration → Redirect URLs. In Google Cloud Console, add the Supabase callback URL shown in the Supabase Google provider settings as an authorized redirect URI. The app requests a post-login redirect to the current application origin.
+
+Google OAuth must be enabled and its client credentials valid before the button can complete sign-in. Existing Supabase Auth users and profile rows are not deleted or changed by this UI update. Users must sign in with a Google identity that Supabase can associate with their existing account; do not create a second account if identity linking is not automatic.
+
 ## Vercel environment variables
 
-The Quickfas Vercel project has the following app-specific variables configured for production, preview, and development:
+The Quickfas Vercel project uses app-specific variables for production, preview, and development:
 
 - `VITE_SUPABASE_URL`: the project URL above
 - `VITE_SUPABASE_PUBLISHABLE_KEY`: the active Supabase publishable key
 
-The `VITE_` values are bundled into the browser. Only a Supabase publishable key belongs there. Never use a Supabase secret or service-role key in a `VITE_` variable or commit any secret to Git. Existing integration-managed Vercel variables were left untouched.
+Only a Supabase publishable key belongs in browser-visible `VITE_` variables. Never use a Supabase secret or service-role key there or commit secrets to Git.
 
-## Database schema
+## Database schema and access
 
-The migration [20261107192045_quickfas_profiles_least_privilege.sql](../supabase/migrations/20261107192045_quickfas_profiles_least_privilege.sql) has been applied to the target project.
+The least-privilege profiles migration creates `public.profiles`, enables RLS, allows authenticated users to read only their own profile, and creates a profile for each new Auth user with the least-privileged `viewer` role. Existing profile roles are not modified by the Google sign-in UI change. No account is automatically granted an elevated role.
 
-It creates `public.profiles`, enables RLS, allows authenticated users to read only their own profile, and creates a profile for each new Auth user with the least-privileged `viewer` role. Anonymous users have no table SELECT grant. No account is automatically granted an elevated role.
+Promote trusted operators only through a controlled administrative process. Never grant admin based on user-editable `user_metadata` or an email supplied at signup.
 
-The migration was verified in Supabase: the table and profile-creation trigger exist, the own-profile policy exists, RLS is enabled, authenticated SELECT is granted, and anon SELECT is not granted. Security and performance advisors returned no findings.
-
-After verifying the first trusted operator's Auth user UUID, promote that account manually using a controlled SQL session. Never grant admin based on user-editable `user_metadata` or an email supplied at signup.
-
-## Auth settings still to verify
-
-- Enable Email / Password in Supabase Authentication → Providers if that is the selected sign-in method.
-- Set the Site URL to the deployed Vercel origin.
-- Add the Vercel production and preview origins to allowed redirect URLs.
-- Decide whether email confirmation is required. If enabled, configure the confirmation email redirect to return users to the application origin.
+All router-mounted application APIs require a verified Supabase access token. Role checks and distributed rate limits remain server-side. The Google-only UI does not change API authorization, RLS, database schema, Vercel deployment protection, or other applications sharing this Supabase project.
 
 ## Release verification
 
-1. Confirm the Vercel variables are available to the target deployment.
-2. Review and approve the security/accessibility pull request before deploying.
-3. Test signup, email confirmation (if enabled), login, logout, expired sessions, and direct API requests without a bearer token.
-4. Run end-to-end tests with dedicated `viewer`, `analyst`, `operator`, `executive`, and `admin` accounts.
-5. Verify telemetry injection is rejected for `viewer` and `analyst` accounts and allowed only for `admin` and `operator`.
+1. Verify the Google provider is enabled and its OAuth Client ID/Secret are configured in Supabase.
+2. Verify the Supabase callback URL in Google Cloud Console and approved application origins in Supabase URL Configuration.
+3. Test Google sign-in, returning-user sign-in, logout, expired sessions, and denied/cancelled OAuth.
+4. Test dedicated viewer, analyst, operator, executive, and admin accounts against the existing API role matrix.
+5. Confirm direct API requests without a bearer token are rejected and that role restrictions remain enforced.
+6. Confirm Vercel production and preview deployment protection remains enabled.
 
-All router-mounted application APIs require a verified Supabase access token. The only public exception is `GET /health`, which returns status only. Analytics event submission requires a verified Supabase session, accepts only a strict allow-listed event name, and stores aggregate counts without user ID or event properties.
-
-The API role matrix is:
-- `admin`, `executive`, `analyst`: council deliberation.
-- `admin`, `executive`: executive briefing.
-- `admin`, `executive`, `analyst`, `operator`: simulation and voice query.
-- `admin`, `operator`: telemetry injection.
-- `viewer`: authenticated read-only telemetry access; no AI-generation or telemetry-write capability.
-
-AI and telemetry-write routes validate strict bounded request schemas and consume a Supabase-backed per-user rolling one-minute quota. Analytics events are also authenticated and quota-limited. Limits are 8 council calls, 8 briefings, 5 simulations, 15 voice queries, 120 telemetry injections, and 120 analytics events per user per minute. If the database rate-limit check is unavailable, these operations fail closed with HTTP 503. The rate-limit table is RLS-protected, caller-scoped, has no delete privilege, and a trigger prevents callers from resetting or rewriting their own counter. The RPC function is SECURITY INVOKER; the Supabase security advisor currently reports no findings.
-
-The health endpoint returns only `{ status: "ok" }`. The Gemini key remains server-side. These code and database controls still require authenticated end-to-end tests against dedicated role accounts before public launch.
+Do not disable Email/Password at the shared Supabase project level as part of this QuickFas-only UI change. A project-wide provider change could affect other applications using the same Auth tenant.

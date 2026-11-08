@@ -25,6 +25,10 @@ The platform also includes versioned analytics-consent handling, cross-tab conse
 
 **These safeguards are a foundation, not proof of production readiness.** Analytics aggregates and telemetry history are process-local, not durable audit records. The current product does not have an EHR connection and must not receive real patient data. Clinical-looking operational scenarios and AI fallback content are synthetic examples, not real clinical, financial, or operational measurements.
 
+## Quickfas Nexus
+
+Quickfas Nexus is an additive project-intelligence module for public GitHub repositories, with repository metrics, recent activity, contributor signals, and a fork relationship snapshot. Its first version does not require GitLab or store GitHub credentials in the browser. See [Quickfas Nexus scope, metric definitions, and safeguards](docs/quickfas-nexus.md).
+
 ## Deployment
 
 **Vercel is the only configured deployment platform for this project.** GitHub Actions runs the repository quality gates (tests, TypeScript validation, and production build). No Okteto account, token, manifest, or deployment workflow is required.
@@ -35,6 +39,8 @@ A passing automated build does not replace browser-level smoke tests, a manual k
 
 See:
 - [Unified architecture and phased roadmap](docs/stratum-clinical-edge-integration.md)
+
+- [Clinical intelligence, trials, saved views, folders, and authorization architecture](docs/architecture/clinical-intelligence-and-saved-views.md)
 - [Security and accessibility review status](docs/audits/security-accessibility-review.md)
 - [Supabase authentication setup](docs/supabase-auth.md)
 

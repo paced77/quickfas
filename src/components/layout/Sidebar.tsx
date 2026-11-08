@@ -15,6 +15,7 @@ import {
   Radio,
   ExternalLink,
   Landmark,
+  Network,
 } from 'lucide-react';
 
 export type KingdomNavTab =
@@ -27,7 +28,8 @@ export type KingdomNavTab =
   | 'reports'
   | 'council'
   | 'strategy'
-  | 'governance';
+  | 'governance'
+  | 'nexus';
 
 interface SidebarProps {
   activeTab: KingdomNavTab;
@@ -101,6 +103,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
       label: 'Investor Deck & Master',
       icon: <Landmark className="w-4 h-4 text-emerald-400" />,
       badge: 'Deck',
+    },
+    {
+      id: 'nexus',
+      label: 'Quickfas Nexus',
+      icon: <Network className="w-4 h-4 text-cyan-300" />,
+      badge: 'GitHub',
     },
     {
       id: 'governance',

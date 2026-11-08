@@ -69,9 +69,10 @@ test('opt-in telemetry fixtures use generic synthetic workstream data', () => {
 
 test('API router mounts Supabase authentication before protected route registration', () => {
   const routes = source('../src/server/routes.ts');
-  const authMount = routes.indexOf('router.use(requireAuthenticatedUser)');
+  const authMount = routes.indexOf('router.use(apiAuthGuard)');
   const routerMount = routes.indexOf('app.use(router)');
-  assert.ok(authMount >= 0 && routerMount > authMount, 'auth middleware must precede router mounting');
+  assert.ok(authMount >= 0 && routerMount > authMount, 'API auth guard must precede router mounting');
+  assert.match(routes, /return requireAuthenticatedUser\(req, res, next\)/);
 
   const registrations = [...routes.matchAll(/^\s*router\.(?:get|post|put|patch|delete)\(([^\n]+)$/gm)];
   assert.ok(registrations.length > 0);
@@ -121,6 +122,7 @@ test('authentication UI uses Google OAuth only and keeps protected access contro
   const gate = source('../src/components/auth/AuthGate.tsx');
   assert.match(gate, /signInWithOAuth/);
   assert.match(gate, /provider: 'google'/);
+  assert.match(gate, /redirectTo: 'https:\/\/quickfas-tawny\.vercel\.app\/'/);
   assert.match(gate, /CONTINUE WITH GOOGLE/);
   assert.doesNotMatch(gate, /signInWithPassword|\.auth\.signUp|type="password"|Create account|Password/);
   assert.match(gate, /GUEST PREVIEW · PROTECTED ACTIONS DISABLED/);

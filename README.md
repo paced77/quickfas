@@ -25,15 +25,19 @@ The platform also includes versioned analytics-consent handling, cross-tab conse
 
 **These safeguards are a foundation, not proof of production readiness.** Analytics aggregates and telemetry history are process-local, not durable audit records. The current product does not have an EHR connection and must not receive real patient data. Clinical-looking operational scenarios and AI fallback content are synthetic examples, not real clinical, financial, or operational measurements.
 
+## Architecture and roadmap
+
+- [Unified architecture and phased roadmap](docs/stratum-clinical-edge-integration.md)
+- [Clinical intelligence, trials, saved views, folders, and authorization architecture](docs/architecture/clinical-intelligence-and-saved-views.md)
+- [Security and accessibility review status](docs/audits/security-accessibility-review.md)
+
+The clinical intelligence document is a target architecture, not a statement that trials, patient dossiers, FHIR connectivity, team permissions, or the proposed database schema are already implemented.
+
 ## Release status
 
 The current production deployment is intentionally restricted by Vercel SSO while security, privacy, clinical-content, and accessibility reviews continue. Do not disable SSO or expose the deployment publicly until the release gates are signed off.
 
 The latest recorded quality workflow passed tests, TypeScript validation, and a production build. That does not replace browser-level smoke tests, a manual keyboard/screen-reader review, WCAG 2.2 AA evaluation, security testing, or clinical-content review.
-
-See:
-- [Unified architecture and phased roadmap](docs/stratum-clinical-edge-integration.md)
-- [Security and accessibility review status](docs/audits/security-accessibility-review.md)
 
 ## Development
 

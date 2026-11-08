@@ -14,14 +14,16 @@ import {
   Layers,
   ArrowRight,
   ExternalLink,
+  Cpu,
 } from 'lucide-react';
+import { SeventeenPocketsView } from './SeventeenPocketsView.tsx';
 
 interface InvestorPortalProps {
   onNotify?: (msg: string) => void;
 }
 
 export const InvestorPortal: React.FC<InvestorPortalProps> = ({ onNotify }) => {
-  const [activeView, setActiveView] = useState<'teaser' | 'master' | 'calculator'>('teaser');
+  const [activeView, setActiveView] = useState<'teaser' | 'master' | 'calculator' | 'seventeen-pockets'>('teaser');
   const [copied, setCopied] = useState(false);
 
   // Interactive Calculator State
@@ -44,16 +46,25 @@ export const InvestorPortal: React.FC<InvestorPortalProps> = ({ onNotify }) => {
   };
 
   const handleCopyMarkdown = () => {
-    const textToCopy = activeView === 'teaser' ? SHORT_INVESTOR_MARKDOWN : MASTER_DOCUMENT_MARKDOWN;
+    let textToCopy = MASTER_DOCUMENT_MARKDOWN;
+    if (activeView === 'teaser') textToCopy = SHORT_INVESTOR_MARKDOWN;
+    else if (activeView === 'seventeen-pockets') textToCopy = SEVENTEEN_POCKETS_MARKDOWN;
     navigator.clipboard.writeText(textToCopy);
     setCopied(true);
-    if (onNotify) onNotify('Master Document copied to clipboard in clean Gemini Markdown format.');
+    if (onNotify) onNotify('Document copied to clipboard in clean Gemini Markdown format.');
     setTimeout(() => setCopied(false), 2500);
   };
 
   const handleDownloadMarkdown = () => {
-    const textToDownload = activeView === 'teaser' ? SHORT_INVESTOR_MARKDOWN : MASTER_DOCUMENT_MARKDOWN;
-    const filename = activeView === 'teaser' ? 'PROJECT_KINGDOM_INVESTOR_TEASER.md' : 'PROJECT_KINGDOM_MASTER_STRATEGY.md';
+    let textToDownload = MASTER_DOCUMENT_MARKDOWN;
+    let filename = 'PROJECT_KINGDOM_MASTER_STRATEGY.md';
+    if (activeView === 'teaser') {
+      textToDownload = SHORT_INVESTOR_MARKDOWN;
+      filename = 'PROJECT_KINGDOM_INVESTOR_TEASER.md';
+    } else if (activeView === 'seventeen-pockets') {
+      textToDownload = SEVENTEEN_POCKETS_MARKDOWN;
+      filename = 'SEVENTEEN_POCKETS_ARCHITECTURE_INVESTOR.md';
+    }
     const blob = new Blob([textToDownload], { type: 'text/markdown;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
@@ -154,6 +165,18 @@ export const InvestorPortal: React.FC<InvestorPortalProps> = ({ onNotify }) => {
         >
           <DollarSign className="w-3.5 h-3.5" />
           <span>Interactive Cap Table & Return Model</span>
+        </button>
+
+        <button
+          onClick={() => setActiveView('seventeen-pockets')}
+          className={`px-4 py-2 rounded-lg text-xs font-medium transition-colors flex items-center gap-2 shrink-0 cursor-pointer ${
+            activeView === 'seventeen-pockets'
+              ? 'bg-emerald-500/15 text-emerald-300 border border-emerald-400/40 shadow-[0_0_12px_rgba(52,211,153,0.2)]'
+              : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
+          }`}
+        >
+          <Cpu className="w-3.5 h-3.5 text-emerald-400" />
+          <span>Seventeen Pockets (5-Tier Architecture & Series A)</span>
         </button>
       </div>
 
@@ -802,6 +825,11 @@ export const InvestorPortal: React.FC<InvestorPortalProps> = ({ onNotify }) => {
             </div>
           </div>
         )}
+
+        {/* VIEW 4: Seventeen Pockets Decentralized Architecture & Series A Deck */}
+        {activeView === 'seventeen-pockets' && (
+          <SeventeenPocketsView onNotify={onNotify} />
+        )}
       </div>
     </div>
   );
@@ -939,3 +967,119 @@ const MASTER_DOCUMENT_MARKDOWN = `# PROJECT KINGDOM: MASTER STRATEGY — ILLUSTR
 
 ---
 *One Platform. Complete Visibility. Smarter Execution.*`;
+
+const SEVENTEEN_POCKETS_MARKDOWN = `# SEVENTEEN POCKETS - COMPLETE INVESTOR & ARCHITECTURE DOCUMENT
+*Decentralized Clinical Intelligence Platform • Version 1.0*
+*Attributed to: ODell Anderson, Chief Architect*
+*Principle: "Cloud Optional. Care Continuous."*
+
+---
+
+### Executive Summary
+Seventeen Pockets is an offline-first, decentralized clinical intelligence platform engineered for healthcare environments where cloud connectivity is unreliable, privacy requirements are strict, and operational resilience is critical.
+
+The platform combines:
+- Local AI inference
+- Edge computing
+- Behavioral health research
+- Clinical decision support
+- Privacy-preserving architecture
+- Optional cloud synchronization
+
+Its vision is to become the operating system for decentralized healthcare intelligence, enabling clinics and healthcare organizations to deploy AI-assisted workflows directly at the point of care.
+
+### Manifesto
+> "We build systems that connect humanity. Not through promises, but through precision. Not through capital, but through intelligence. Every number proves competence. Every system operates with zero error tolerance. This is how the future is built."
+> — ODell Anderson, Chief Architect
+
+### Core Platform Components
+1. **Mental Health Coping Lab**: Researches emotional regulation through Polyvagal breathwork, Sensory grounding, CBT decatastrophizing, and live SUDS measurement.
+2. **17 Pockets Atlas**: Directory containing Pocket 0 (Oracle), Pockets 1–15 (Micro-Services), and Pocket 16 (Edge OS Appliance).
+3. **One-Command Edge Installer**: Deployment automation (\`deploy-pocket3-auto.sh\`) featuring local SQLite provisioning and self-healing systemd services.
+4. **Soul Auditor & Composer**: Continuous invariant verification, pre-production bug detection, and clinical correspondence generation.
+
+---
+
+### Five-Tier Architecture
+\`\`\`text
+CLINICIANS
+│
+▼
+┌─────────────────────────────────────┐
+│ TIER 5                              │
+│ Clinical Experience                 │
+│ Patient + Provider Applications     │
+└─────────────────────────────────────┘
+│
+▼
+┌─────────────────────────────────────┐
+│ TIER 4                              │
+│ Clinical Intelligence               │
+│ CBT • SUDS • Decision Support       │
+└─────────────────────────────────────┘
+│
+▼
+┌─────────────────────────────────────┐
+│ TIER 3                              │
+│ Local Data Fabric                   │
+│ Records • Audit Logs • Encryption   │
+└─────────────────────────────────────┘
+│
+▼
+┌─────────────────────────────────────┐
+│ TIER 2                              │
+│ Edge Runtime                        │
+│ AI Models • Security • Automation   │
+└─────────────────────────────────────┘
+│
+▼
+┌─────────────────────────────────────┐
+│ TIER 1                              │
+│ Hybrid Cloud Mesh                   │
+│ Backup • Sync • Fleet Management    │
+└─────────────────────────────────────┘
+\`\`\`
+
+- **Tier 5 (Clinical Experience Layer)**: Clinician Dashboard, Mental Health Coping Lab, Patient Interface, Reporting, Communication.
+- **Tier 4 (Clinical Intelligence Layer)**: Emotional Regulation Analytics, CBT Guidance, SUDS Tracking, Behavioral Monitoring, Decision Support, Soul Auditor.
+- **Tier 3 (Local Data Fabric)**: SQLite Databases, Audit Logs, Event Journals, Clinical Records, At-Rest Encryption.
+- **Tier 2 (Edge Runtime Layer)**: Local AI Models, Runtime Services, Device Management, Security Controls, Self-Healing Services.
+- **Tier 1 (Hybrid Cloud Mesh)**: Backup Storage, Nightly Synchronization, Archive Management, Fleet Coordination, Disaster Recovery.
+
+---
+
+### Clinical & Privacy Claims Assessment
+| Claim Category | Item | Assessment |
+| :--- | :--- | :--- |
+| **Clinical** | CBT Decatastrophizing | ✅ Strong evidence base. Widely accepted therapeutic technique. |
+| **Clinical** | SUDS Measurement | ✅ Established standard clinical practice for distress evaluation. |
+| **Clinical** | Behavioral Health Tracking | ✅ Plausible. Standard practice across modern platforms. |
+| **Clinical** | Polyvagal Breathwork | ⚠ Emerging physiological evidence with HRV correlation. |
+| **Clinical** | Sensory Grounding | ⚠ Generally accepted somatic distress interruption tool. |
+| **Clinical** | Zero Error Tolerance | ❌ Engineering goal; software always retains residual risk. |
+| **Privacy** | Local Data Storage | ✅ Significant privacy advantage. Data remains on facility hardware. |
+| **Privacy** | Reduced Cloud Exposure | ✅ Credible. Less data movement means fewer remote attack surfaces. |
+| **Privacy** | Data Sovereignty | ✅ Credible. Conforms to local multi-jurisdiction storage mandates. |
+| **Privacy** | HIPAA / GDPR | ⚠ Requires operational policies, training, and facility audits. |
+
+---
+
+### Five Revenue Layers & Series A Fundraising
+1. **Layer 1: Platform Licensing** ($5,000–$25,000 / site / year).
+2. **Layer 2: Managed Edge Infrastructure** ($500–$1,500 / month recurring fleet management).
+3. **Layer 3: Clinical Intelligence Modules** (Outcome dashboards, behavioral analytics, AI documentation).
+4. **Layer 4: Compliance Services** ($25,000–$75,000 / year Soul Auditor certification).
+5. **Layer 5: Privacy-Preserving Intelligence Network** (Federated clinical benchmarking).
+
+**Series A Financing Ask**: **$5,000,000**
+- 30% Clinical Validation & Pilot Studies
+- 30% Product Engineering & Edge Runtime
+- 15% Security Audits & Compliance Tooling
+- 15% Sales & Provider Partnerships
+- 10% Operations & Fleet Logistics
+
+**Taglines**:
+- *Clinical Intelligence at the Edge*
+- *Healthcare AI Without Connectivity Limits*
+- *The Decentralized Operating System for Healthcare*
+- *Cloud Optional. Care Continuous.*`;

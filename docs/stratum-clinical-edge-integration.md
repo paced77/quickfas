@@ -242,3 +242,10 @@ The current telemetry event store and analytics aggregates are process-local and
 The source changes are committed to this branch. The quality workflow has passed tests, TypeScript validation, and a production build on an earlier head; the current head must complete the same checks again after the latest changes. Accessibility, clinical-content review, security testing, and deployment preview are separate release gates. Keep the pull request in draft until those checks pass and the Okteto preview credential dependency is resolved or the preview workflow is intentionally changed.
 
 The Stratum learning hub has expanded to ten searchable, category-filtered health-literacy topics. Save and reading-progress state is session-only and is not sent to analytics; only the generic event name is sent when analytics consent is granted. The existing Governance workspace now contains a browser-storage registry audit with JSON and RFC4180 CSV export. The audit enumerates namespaced keys and presence only; it never reads or exports stored values.
+
+
+## 12. Clinical intelligence, trials, saved views, and collaboration
+
+The detailed target architecture for the Clinical Trials Explorer, URL-backed filters, CSV export, Saved Views, team collaboration, folder organization, per-view RBAC, RLS, ownership immutability, last-admin concurrency protection, and future FHIR/patient dossier safeguards is maintained in [Clinical Intelligence and Saved Views Architecture](architecture/clinical-intelligence-and-saved-views.md).
+
+This extension is deliberately adapted to the repository's existing React/Vite + Express stack; it does not introduce Next.js or a second application. It also separates global Project Kingdom roles from per-view permissions. The proposed clinical modules and schema are not yet implemented. In particular, FHIR connectivity and real patient dossiers remain gated on approved data sources, privacy/compliance review, security testing, and explicit release approval. Do not accept PHI or run the proposed database migrations as part of this documentation-only change.

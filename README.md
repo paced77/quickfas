@@ -39,6 +39,8 @@ A passing automated build does not replace browser-level smoke tests, a manual k
 
 See:
 - [Unified architecture and phased roadmap](docs/stratum-clinical-edge-integration.md)
+
+- [Clinical intelligence, trials, saved views, folders, and authorization architecture](docs/architecture/clinical-intelligence-and-saved-views.md)
 - [Security and accessibility review status](docs/audits/security-accessibility-review.md)
 - [Supabase authentication setup](docs/supabase-auth.md)
 

@@ -13,7 +13,18 @@ export function AuthGate({ children }: AuthGateProps) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
+  const [confirmationRecoveryAvailable, setConfirmationRecoveryAvailable] = useState(false);
+  const [resendingConfirmation, setResendingConfirmation] = useState(false);
   const [profileRole, setProfileRole] = useState<string | null>(null);
+
+  useEffect(() => {
+    const authError = new URLSearchParams(window.location.hash.slice(1));
+    if (authError.get('error_code') === 'otp_expired') {
+      setConfirmationRecoveryAvailable(true);
+      setError('This confirmation link expired or was already used. Enter your signup email and request a fresh link.');
+      window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}`);
+    }
+  }, []);
 
   useEffect(() => {
     if (!supabase) {
@@ -70,6 +81,7 @@ export function AuthGate({ children }: AuthGateProps) {
         const { data, error: authError } = await supabase.auth.signUp({ email, password });
         if (authError) throw authError;
         if (!data.session) {
+          setConfirmationRecoveryAvailable(true);
           setNotice('Check your email to confirm your account. New accounts start with read-only viewer access.');
         } else {
           setNotice('Account created with read-only viewer access. An administrator must grant additional permissions.');
@@ -82,6 +94,28 @@ export function AuthGate({ children }: AuthGateProps) {
       setError(authError instanceof Error ? authError.message : 'Authentication failed. Please try again.');
     } finally {
       setBusy(false);
+    }
+  };
+
+  const resendConfirmation = async () => {
+    if (!supabase || !email.trim()) {
+      setError('Enter your email address first.');
+      return;
+    }
+    setResendingConfirmation(true);
+    setError('');
+    setNotice('');
+    try {
+      const { error: resendError } = await supabase.auth.resend({
+        type: 'signup',
+        email: email.trim(),
+      });
+      if (resendError) throw resendError;
+      setNotice('If this address has an unconfirmed account, a fresh confirmation email is on its way. Use the newest link and open it once.');
+    } catch (resendError) {
+      setError(resendError instanceof Error ? resendError.message : 'Unable to resend the confirmation email. Please try again shortly.');
+    } finally {
+      setResendingConfirmation(false);
     }
   };
 
@@ -170,6 +204,19 @@ export function AuthGate({ children }: AuthGateProps) {
             {notice && <p role="status" className="rounded-lg border border-emerald-400/20 bg-emerald-400/10 p-3 text-xs text-emerald-200">{notice}</p>}
             <button type="submit" disabled={busy} className="glow-btn-primary w-full rounded-lg py-3 text-sm disabled:cursor-wait disabled:opacity-60">{busy ? 'SECURING SESSION…' : mode === 'signin' ? 'ENTER COMMAND CENTER' : 'CREATE SECURE ACCOUNT'}</button>
           </form>
+          {confirmationRecoveryAvailable && (
+            <div className="mt-3 space-y-2">
+              <button
+                type="button"
+                onClick={() => void resendConfirmation()}
+                disabled={busy || resendingConfirmation || !email.trim()}
+                className="w-full rounded-lg border border-cyan-300/30 px-3 py-2 text-sm text-cyan-200 hover:bg-cyan-300/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-200 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {resendingConfirmation ? 'SENDING…' : 'RESEND CONFIRMATION EMAIL'}
+              </button>
+              <p className="text-center text-[11px] leading-5 text-slate-400">Confirmation links expire and work once. If you requested another email, use its newest link.</p>
+            </div>
+          )}
 
           <div className="mt-4 text-center">
             <button

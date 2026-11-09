@@ -18,13 +18,14 @@ import {
 } from 'lucide-react';
 import { SeventeenPocketsView } from './SeventeenPocketsView.tsx';
 import { VendorScorecard } from './VendorScorecard.tsx';
+import { UnifiedMasterExecutivePortal } from './UnifiedMasterExecutivePortal.tsx';
 
 interface InvestorPortalProps {
   onNotify?: (msg: string) => void;
 }
 
 export const InvestorPortal: React.FC<InvestorPortalProps> = ({ onNotify }) => {
-  const [activeView, setActiveView] = useState<'teaser' | 'master' | 'calculator' | 'seventeen-pockets' | 'vendor-scorecard'>('teaser');
+  const [activeView, setActiveView] = useState<'teaser' | 'master' | 'calculator' | 'seventeen-pockets' | 'vendor-scorecard' | 'unified-master'>('unified-master');
   const [copied, setCopied] = useState(false);
 
   // Interactive Calculator State
@@ -184,6 +185,18 @@ export const InvestorPortal: React.FC<InvestorPortalProps> = ({ onNotify }) => {
         >
           <Cpu className="w-3.5 h-3.5 text-emerald-400" />
           <span>Seventeen Pockets (5-Tier Architecture & Series A)</span>
+        </button>
+
+        <button
+          onClick={() => setActiveView('unified-master')}
+          className={`px-4 py-2 rounded-lg text-xs font-medium transition-colors flex items-center gap-2 shrink-0 cursor-pointer ${
+            activeView === 'unified-master'
+              ? 'bg-gradient-to-r from-cyan-500/20 to-blue-500/20 text-cyan-300 border border-cyan-400/50 shadow-[0_0_15px_rgba(6,182,212,0.25)] font-bold'
+              : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
+          }`}
+        >
+          <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+          <span>Unified Master Portal (SPI &amp; Go/No-Go)</span>
         </button>
 
         <button
@@ -853,6 +866,11 @@ export const InvestorPortal: React.FC<InvestorPortalProps> = ({ onNotify }) => {
         {/* VIEW 5: 10-Pillar Vendor Ranking Matrix & Scorecard */}
         {activeView === 'vendor-scorecard' && (
           <VendorScorecard />
+        )}
+
+        {/* VIEW 6: Unified Master Executive Architecture & SPI Portal */}
+        {activeView === 'unified-master' && (
+          <UnifiedMasterExecutivePortal />
         )}
       </div>
     </div>

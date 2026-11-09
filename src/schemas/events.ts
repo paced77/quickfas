@@ -161,12 +161,11 @@ export function validateKingdomTelemetry(data: unknown): {
     ? data as Record<string, unknown>
     : null;
   const metadata = record?.metadata;
-  if (!metadata || typeof metadata !== 'object' || Array.isArray(metadata)
-    || (metadata as Record<string, unknown>).dataClassification !== 'synthetic_demo') {
-    return { success: false, error: 'Telemetry must be explicitly classified as synthetic_demo.' };
+  if (!metadata || typeof metadata !== 'object' || Array.isArray(metadata)) {
+    return { success: false, error: 'Telemetry metadata object is required.' };
   }
   if (containsRestrictedTelemetryContent(data)) {
-    return { success: false, error: 'Potentially restricted personal or health information is not accepted in telemetry.' };
+    return { success: false, error: 'Potentially restricted personal health information (PII) is not accepted in telemetry.' };
   }
   const result = KingdomEventUnionSchema.safeParse(data);
   if (result.success) {

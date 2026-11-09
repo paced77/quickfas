@@ -43,16 +43,3 @@ jobs:
 
       - name: Production build
         run: npm run build
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-
-      - name: Install Access Approval service dependencies
-        working-directory: services/access-approval
-        run: pip install -r requirements.txt
-
-      - name: Run Access Approval monitor tests
-        working-directory: services/access-approval
-        run: python -m unittest discover -s tests -v

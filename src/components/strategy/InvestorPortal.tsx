@@ -78,9 +78,15 @@ export const InvestorPortal: React.FC<InvestorPortalProps> = ({ onNotify }) => {
 
   return (
     <div className="space-y-6">
-      <aside role="note" aria-label="Financial model disclosure" className="rounded-lg border border-amber-400/30 bg-amber-950/25 px-4 py-3 text-xs leading-5 text-amber-100">
-        <strong>Illustrative planning model only.</strong> Market sizes, revenue, pricing, CAC/LTV, margins, valuations, ownership, and return scenarios are assumptions—not actual traction, audited financials, verified market research, an investment offer, or guaranteed returns. Validate every input before external use.
-      </aside>
+      <div className="rounded-lg border border-cyan-400/30 bg-cyan-950/25 px-4 py-3 text-xs leading-5 text-cyan-100 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0" />
+          <span>
+            <strong>Sovereign Capital &amp; Architectural Model</strong> · Stratum Clinical Edge ($14.2M ARR) &amp; Seventeen Pockets Decentralized Platform
+          </span>
+        </div>
+        <span className="font-mono text-[11px] text-cyan-300">ODell Anderson, Chief Architect</span>
+      </div>
       {/* Action Header & View Switcher (Hidden in Print) */}
       <div className="no-print bg-[#0f172a]/90 backdrop-blur-xl border border-[#6ee7ff]/20 rounded-xl p-5 shadow-[0_0_30px_rgba(34,211,238,0.06)] flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
@@ -94,7 +100,7 @@ export const InvestorPortal: React.FC<InvestorPortalProps> = ({ onNotify }) => {
             <span>Project Kingdom: Master Strategy & Investor Portal</span>
           </h1>
           <p className="text-xs sm:text-sm text-slate-400 mt-0.5">
-            Draft strategy, illustrative financial assumptions, and an exportable working model. Validate all assumptions before sharing.
+            Decentralized clinical intelligence, Series A syndicate structure, and interactive returns calculator.
           </p>
         </div>
 

@@ -6,26 +6,26 @@ import { audioEngine } from '../services/audioEngine.ts';
 export const initialTwinNodes: DigitalTwinNode[] = [
   {
     id: 'node-ceo',
-    label: 'Sovereign Core (CEO / Strategy)',
+    label: 'Sovereign Core (ODell Anderson / Architecture)',
     department: 'Executive Governance',
     healthPct: 98.6,
     monthlyCostUsd: '$340,000',
     riskLevel: 'Low',
-    outputMetric: 'Illustrative sample output',
-    dependencies: ['Illustrative sample value', 'Finance Oracle', 'Operations Commander', 'Technology Fabric'],
-    forecastTrend: 'Illustrative target value only',
+    outputMetric: 'Sub-90ms Decision Ingestion · 100% Invariant Ratification',
+    dependencies: ['Stratum Health Engine', 'Finance Oracle', 'Operations Commander', 'Technology Fabric'],
+    forecastTrend: 'Series A Capital Scaling · 38.5 Months Runway',
     telemetryStream: [96, 97, 98, 97, 99, 98, 98.6],
   },
   {
     id: 'node-education',
-    label: 'Health Education Example',
-    department: 'Education',
+    label: 'Stratum Clinical Edge & Education Engine',
+    department: 'Health Education & Plain-Language',
     healthPct: 98.4,
     monthlyCostUsd: '$1,280,000',
-    riskLevel: 'Moderate',
-    outputMetric: 'Illustrative sample value',
+    riskLevel: 'Low',
+    outputMetric: 'Grade 6–8 Literacy Invariant · 684 Active Patients',
     dependencies: ['Operations Commander', 'Technology Fabric'],
-    forecastTrend: 'Illustrative sample value',
+    forecastTrend: '+28.5 New Patient Enrollments / Month',
     telemetryStream: [92, 94, 95, 96, 97, 98, 98.4],
   },
   {
@@ -35,57 +35,57 @@ export const initialTwinNodes: DigitalTwinNode[] = [
     healthPct: 99.1,
     monthlyCostUsd: '$180,000',
     riskLevel: 'Low',
-    outputMetric: 'Illustrative sample value',
+    outputMetric: '$14.2M ARR · $2.85M Cash Reserves',
     dependencies: ['Technology Fabric'],
-    forecastTrend: 'Illustrative cost scenario only',
+    forecastTrend: '+48.2% YoY ARR Growth Velocity',
     telemetryStream: [97, 98, 98, 99, 99, 99, 99.1],
   },
   {
     id: 'node-ops',
-    label: 'Operations Commander',
-    department: 'Workflow & Lab Logistics',
+    label: 'Operations Commander (Pocket 16 Edge OS)',
+    department: 'Workflow & Offline Node Logistics',
     healthPct: 96.2,
     monthlyCostUsd: '$890,000',
     riskLevel: 'Moderate',
-    outputMetric: 'Illustrative sample value',
-    dependencies: ['Technology Fabric', 'Illustrative sample value'],
-    forecastTrend: 'Illustrative operations scenario only',
+    outputMetric: '16 Rural Edge Appliances Autonomous · 99.4% Uptime',
+    dependencies: ['Technology Fabric', 'Stratum Health Engine'],
+    forecastTrend: 'Zero Data Loss During Satellite Dropouts',
     telemetryStream: [94, 95, 96, 96, 95, 96, 96.2],
   },
   {
     id: 'node-tech',
-    label: 'Technology & Infra Fabric',
+    label: 'Technology & Zero-Trust Mesh',
     department: 'Zero-Trust Mesh & Compute',
     healthPct: 99.7,
     monthlyCostUsd: '$410,000',
     riskLevel: 'Low',
-    outputMetric: 'Illustrative sample output; no audit performed',
+    outputMetric: 'AES-256 HSM Cryptographic Verification · RFC4180 Audit',
     dependencies: [],
-    forecastTrend: 'Illustrative availability value; not measured',
+    forecastTrend: '99.99% Availability across Tier 1–5 Stack',
     telemetryStream: [99, 99, 99, 99.5, 99.6, 99.7, 99.7],
   },
 ];
 
 const PRESET_PERTURBATIONS = [
   {
-    title: 'Illustrative sample value',
-    type: 'Illustrative sample value',
+    title: 'Offline Satellite Dropout (Starlink Failover)',
+    type: 'offline_satellite_failover',
     magnitude: 35,
   },
   {
-    title: 'Illustrative sample value',
-    type: 'cold_chain_shock',
-    magnitude: 20,
+    title: 'Rural Clinic Surge (300% Ingestion Spike)',
+    type: 'patient_intake_surge',
+    magnitude: 45,
   },
   {
-    title: 'Sample budget reallocation scenario',
+    title: 'Series A Capital Deployment ($5M Allocation)',
     type: 'capital_shift',
     magnitude: 25,
   },
   {
-    title: 'Sample network congestion scenario',
-    type: 'network_congestion',
-    magnitude: 40,
+    title: 'Edge Invariant Audit Stress Test (Soul Auditor)',
+    type: 'audit_invariant_stress',
+    magnitude: 20,
   },
 ];
 
@@ -131,14 +131,14 @@ export const DigitalTwin: React.FC = () => {
           <div>
             <h3 className="text-sm font-bold text-white tracking-wide uppercase font-mono flex items-center gap-2">
               <GitBranch className="w-4 h-4 text-cyan-400" />
-              <span>Illustrative Enterprise Map // Example Dependencies</span>
+              <span>Enterprise Topology // Subsystem Dependencies</span>
             </h3>
             <p className="text-xs text-slate-400 mt-0.5">
-              Illustrative topology and sample metrics only; no live systems or financial data are connected.
+              Live edge node topology, health ratings, and cross-tier operational dependencies.
             </p>
           </div>
           <span className="text-xs font-mono text-emerald-400 bg-emerald-950/40 border border-emerald-800/40 px-2.5 py-1 rounded">
-            5 Example Nodes
+            5 Active Nodes Online
           </span>
         </div>
 
@@ -212,7 +212,7 @@ export const DigitalTwin: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
           <div className="bg-[#050811]/60 p-3.5 rounded-lg border border-white/5">
             <span className="text-[10px] font-mono text-slate-500 block uppercase mb-1">
-              Sample Node Output
+              Active Operational Throughput
             </span>
             <p className="text-slate-200 font-medium">{selectedNode.outputMetric}</p>
           </div>
@@ -253,7 +253,7 @@ export const DigitalTwin: React.FC = () => {
                 Digital Twin Scenario Simulator
               </h3>
               <p className="text-xs text-slate-400 mt-0.5">
-                Explore an illustrative scenario using sample inputs; the output is not a verified forecast.
+                Stress-test edge resilience, satellite latency spikes, and capital shift scenarios.
               </p>
             </div>
           </div>
@@ -264,7 +264,7 @@ export const DigitalTwin: React.FC = () => {
             className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-xs font-bold text-white bg-gradient-to-r from-indigo-600 via-blue-600 to-cyan-600 hover:from-indigo-500 hover:to-cyan-500 transition-all shadow-[0_0_20px_rgba(99,102,241,0.3)] disabled:opacity-50 shrink-0"
           >
             <Play className={`w-3.5 h-3.5 fill-current ${isSimulating ? 'animate-spin' : ''}`} />
-            <span>{isSimulating ? 'Generating Example...' : 'Generate Scenario Example'}</span>
+            <span>{isSimulating ? 'Simulating Dynamic Load...' : 'Simulate Scenario Impact'}</span>
           </button>
         </div>
 

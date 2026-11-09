@@ -118,6 +118,20 @@ test('AI routes enforce role-specific capabilities and distributed rate limits',
   assert.match(routes, /authClient\.rpc\('consume_quickfas_api_rate_limit'/);
 });
 
+test('authentication UI uses Google OAuth only and keeps protected access controls', () => {
+  const gate = source('../src/components/auth/AuthGate.tsx');
+  assert.match(gate, /signInWithOAuth/);
+  assert.match(gate, /provider: 'google'/);
+  assert.match(gate, /redirectTo: 'https:\/\/quickfas-tawny\.vercel\.app\//);
+  assert.match(gate, /CONTINUE WITH GOOGLE/);
+  assert.doesNotMatch(gate, /signInWithPassword|\.auth\.signUp|type="password"|Create account|Password/);
+  assert.match(gate, /GUEST PREVIEW · PROTECTED ACTIONS DISABLED/);
+  assert.match(gate, /Guest Preview/);
+  assert.match(gate, /read-only viewer access/i);
+  assert.match(gate, /Access: \{profileRole/);
+  assert.match(gate, /profileError \? 'unavailable' : data\?\.role \?\? 'missing'/);
+});
+
 
 test('API request schemas reject oversized, malformed, and unexpected input', () => {
   assert.equal(CouncilRequestSchema.safeParse({ agendaTopic: 'Review priorities', contextData: { sourceStatus: 'not_connected' } }).success, true);

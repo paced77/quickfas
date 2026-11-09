@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>QuickFAS · Access Approval Monitor</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root{color-scheme:dark;font-family:Inter,system-ui,sans-serif;background:#07111f;color:#e5eefb}
+    body{margin:0;padding:32px;max-width:1200px;margin-inline:auto}
+    header{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+    .muted{color:#91a4bd}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin:24px 0}
+    .card{background:#101f33;border:1px solid #263c57;border-radius:14px;padding:20px}
+    .value{font-size:28px;font-weight:700;margin-top:8px}.chart{height:300px}
+    pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#091626;padding:16px;border-radius:10px}
+    button{background:#1d6a91;color:white;border:0;border-radius:8px;padding:10px 14px;cursor:pointer}
+  </style>
+</head>
+<body>
+  <header><div><h1>QuickFAS Access Approval</h1><div class="muted">Google Cloud configuration audit · read-only monitoring</div></div><button onclick="refresh()">Refresh now</button></header>
+  <section class="grid">
+    <article class="card"><div class="muted">Monitoring state</div><div class="value" id="state">Loading</div></article>
+    <article class="card"><div class="muted">Configured notification recipients</div><div class="value" id="recipients">—</div></article>
+    <article class="card"><div class="muted">Snapshots retained</div><div class="value" id="snapshots">—</div></article>
+    <article class="card"><div class="muted">Detected changes in history</div><div class="value" id="changes">—</div></article>
+  </section>
+  <section class="card"><h2>Configuration history</h2><div class="chart"><canvas id="historyChart" aria-label="Access Approval configuration change history"></canvas></div></section>
+  <section class="card" style="margin-top:16px"><h2>Latest settings snapshot</h2><div class="muted" id="observed">No snapshot yet</div><pre id="settings">Waiting for the first scheduled check.</pre></section>
+  <script>
+    let chart;
+    async function refresh(){
+      const [currentRes, historyRes]=await Promise.all([fetch('/api/current'),fetch('/api/history?limit=100')]);
+      if(!currentRes.ok||!historyRes.ok){document.getElementById('state').textContent='Unavailable';return;}
+      const current=await currentRes.json(), history=await historyRes.json();
+      document.getElementById('state').textContent=current.settings?'Connected':'Awaiting snapshot';
+      document.getElementById('recipients').textContent=(current.settings?.enrolledServices||[]).length;
+      document.getElementById('snapshots').textContent=history.length;
+      document.getElementById('changes').textContent=history.filter(x=>x.changed).length;
+      document.getElementById('observed').textContent=current.observedAt||'No snapshot yet';
+      document.getElementById('settings').textContent=JSON.stringify(current.settings||current,null,2);
+      const ordered=history.slice().reverse();
+      const labels=ordered.map(x=>new Date(x.observedAt).toLocaleString());
+      const data=ordered.map(x=>x.changed?1:0);
+      if(chart)chart.destroy();
+      chart=new Chart(document.getElementById('historyChart'),{type:'line',data:{labels,datasets:[{label:'Configuration changes',data,stepped:true,borderColor:'#5dd6c8',backgroundColor:'#5dd6c833',fill:true}]},options:{responsive:true,maintainAspectRatio:false,scales:{y:{beginAtZero:true,ticks:{stepSize:1}}}}});
+    }
+    refresh();setInterval(refresh,30000);
+  </script>
+</body>
+</html>

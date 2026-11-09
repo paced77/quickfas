@@ -17,13 +17,14 @@ import {
   Cpu,
 } from 'lucide-react';
 import { SeventeenPocketsView } from './SeventeenPocketsView.tsx';
+import { VendorScorecard } from './VendorScorecard.tsx';
 
 interface InvestorPortalProps {
   onNotify?: (msg: string) => void;
 }
 
 export const InvestorPortal: React.FC<InvestorPortalProps> = ({ onNotify }) => {
-  const [activeView, setActiveView] = useState<'teaser' | 'master' | 'calculator' | 'seventeen-pockets'>('teaser');
+  const [activeView, setActiveView] = useState<'teaser' | 'master' | 'calculator' | 'seventeen-pockets' | 'vendor-scorecard'>('teaser');
   const [copied, setCopied] = useState(false);
 
   // Interactive Calculator State
@@ -183,6 +184,18 @@ export const InvestorPortal: React.FC<InvestorPortalProps> = ({ onNotify }) => {
         >
           <Cpu className="w-3.5 h-3.5 text-emerald-400" />
           <span>Seventeen Pockets (5-Tier Architecture & Series A)</span>
+        </button>
+
+        <button
+          onClick={() => setActiveView('vendor-scorecard')}
+          className={`px-4 py-2 rounded-lg text-xs font-medium transition-colors flex items-center gap-2 shrink-0 cursor-pointer ${
+            activeView === 'vendor-scorecard'
+              ? 'bg-cyan-500/15 text-cyan-300 border border-cyan-400/40 shadow-[0_0_12px_rgba(6,182,212,0.2)]'
+              : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
+          }`}
+        >
+          <Layers className="w-3.5 h-3.5 text-cyan-400" />
+          <span>10-Pillar Vendor Ranking Matrix</span>
         </button>
       </div>
 
@@ -835,6 +848,11 @@ export const InvestorPortal: React.FC<InvestorPortalProps> = ({ onNotify }) => {
         {/* VIEW 4: Seventeen Pockets Decentralized Architecture & Series A Deck */}
         {activeView === 'seventeen-pockets' && (
           <SeventeenPocketsView onNotify={onNotify} />
+        )}
+
+        {/* VIEW 5: 10-Pillar Vendor Ranking Matrix & Scorecard */}
+        {activeView === 'vendor-scorecard' && (
+          <VendorScorecard />
         )}
       </div>
     </div>

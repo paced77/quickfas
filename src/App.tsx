@@ -15,7 +15,6 @@ import { LandingPage } from './components/landing/LandingPage.tsx';
 import { VoiceConsole } from './components/VoiceConsole.tsx';
 import { InvestorPortal } from './components/strategy/InvestorPortal.tsx';
 import { QuickfasNexus } from './components/nexus/QuickfasNexus.tsx';
-import { GeminiHealthcareHub } from './components/healthcare/GeminiHealthcareHub.tsx';
 import { ExecutiveBriefingData } from './types/kingdom.ts';
 import { audioEngine } from './services/audioEngine.ts';
 import { CheckCircle2, ShieldAlert } from 'lucide-react';
@@ -227,12 +226,6 @@ export default function App() {
                 </div>
               )}
 
-              {/* Tab: Gemini for Healthcare Sovereign Integration */}
-              {activeTab === 'gemini-healthcare' && (
-                <div>
-                  <GeminiHealthcareHub />
-                </div>
-              )}
 
               {/* Tab 2: Mission Control */}
               {activeTab === 'missions' && (

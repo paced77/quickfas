@@ -70,6 +70,11 @@ export function AuthGate({ children }: AuthGateProps) {
     setBusy(true);
     setError('');
     try {
+      // Do not silently link a pre-existing password session to Google; require a fresh Google sign-in.
+      if (session && session.user.app_metadata?.provider !== 'google') {
+        const { error: signOutError } = await supabase.auth.signOut();
+        if (signOutError) throw signOutError;
+      }
       const { error: authError } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: { redirectTo: 'https://quickfas-tawny.vercel.app/' },
@@ -105,7 +110,7 @@ export function AuthGate({ children }: AuthGateProps) {
     );
   }
 
-  if (!session) {
+  if (!session || session.user.app_metadata?.provider !== 'google') {
     return (
       <main className="min-h-screen bg-[#070b14] bg-grid-pattern text-slate-100 flex items-center justify-center p-5">
         <section className="w-full max-w-md rounded-2xl border border-cyan-300/20 bg-[#0f172a]/95 p-8 shadow-[0_0_60px_rgba(34,211,238,0.10)]">

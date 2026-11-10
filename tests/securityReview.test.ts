@@ -89,6 +89,7 @@ test('API router mounts Supabase authentication before protected route registrat
   }
 
   assert.match(routes, /authClient\.auth\.getUser\(token\)/);
+  assert.match(routes, /user\.app_metadata\?\.provider !== 'google'/);
   assert.doesNotMatch(routes, /684 active cohort participants|\$14\.2M ARR|Current \$2\.85M cash position|16 autonomous edge appliances|satisfy all 21 CFR Part 11 requirements|over 650 active cohort participants|99\.4% aggregate health|34\.2% mean downregulation|38\.5 months runway/);
   assert.match(routes, /No verified project metrics or live operational status are available/);
   assert.match(routes, /No simulation has been run/);
@@ -131,6 +132,7 @@ test('authentication UI uses Google OAuth only and keeps protected access contro
   const gate = source('../src/components/auth/AuthGate.tsx');
   assert.match(gate, /signInWithOAuth/);
   assert.match(gate, /provider: 'google'/);
+  assert.match(gate, /session\.user\.app_metadata\?\.provider !== 'google'/);
   assert.match(gate, /redirectTo: 'https:\/\/quickfas-tawny\.vercel\.app\/'/);
   assert.match(gate, /CONTINUE WITH GOOGLE/);
   assert.doesNotMatch(gate, /signInWithPassword|\.auth\.signUp|type="password"|Create account|Password/);

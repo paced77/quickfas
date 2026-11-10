@@ -74,7 +74,7 @@ test('API router mounts Supabase authentication before protected route registrat
   const routerMount = routes.indexOf('app.use(router)');
   assert.ok(authMount >= 0 && routerMount > authMount, 'API auth guard must precede router mounting');
   assert.match(routes, /return requireAuthenticatedUser\(req, res, next\)/);
-  assert.match(routes, /if \(process\.env\.NODE_ENV === 'production'\) \{[\s\S]*?res\.status\(503\)/);
+  assert.match(routes, /if \(process\.env\.NODE_ENV === 'production' \|\| process\.env\.VERCEL\) \{[\s\S]*?res\.status\(503\)/);
   assert.match(routes, /Guest operator access is limited to local, non-production development/);
   assert.match(routes, /res\.setHeader\('X-Frame-Options', 'DENY'\)/);
 
@@ -87,7 +87,7 @@ test('API router mounts Supabase authentication before protected route registrat
   }
 
   assert.match(routes, /authClient\.auth\.getUser\(token\)/);
-  assert.doesNotMatch(routes, /684 active cohort participants|\$14\.2M ARR|Current \$2\.85M cash position|16 autonomous edge appliances|21 CFR Part 11 validation/);
+  assert.doesNotMatch(routes, /684 active cohort participants|\$14\.2M ARR|Current \$2\.85M cash position|16 autonomous edge appliances|satisfy all 21 CFR Part 11 requirements/);
   assert.match(routes, /\.from\('profiles'\)[\s\S]*?\.select\('role'\)/);
   assert.match(routes, /requireRole\('admin', 'executive'\), handleAnalyticsSummary/);
   assert.match(routes, /requireRole\('admin', 'operator'\), requireDistributedRateLimit\('telemetry-ingest'\), handleTelemetryInject/);

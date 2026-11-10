@@ -2,7 +2,7 @@
 
 **Repository:** `paced77/quickfas`  
 **Review date:** 2026-11-07  
-**Status:** In progress — production remains SSO-restricted.  
+**Status:** In progress — live Vercel project currently reports SSO, password, and trusted-IP protection disabled; production access must not be considered restricted until corrected and verified.  
 **Scope:** Existing Quickfas application, including Project Kingdom and Stratum Clinical Edge.
 
 This is an engineering review, not a penetration-test report, compliance certification, clinical validation, or WCAG conformance statement.
@@ -17,9 +17,9 @@ This is an engineering review, not a penetration-test report, compliance certifi
 - The Supabase security advisor returned no findings after the final rate-limit hardening migration. Verified privileges: RLS enabled; three policies present; anonymous SELECT and RPC execute denied; authenticated DELETE denied; authenticated RPC execute allowed; rate-limit function and trigger function are not SECURITY DEFINER.
 - AI and telemetry-write API routes enforce a role matrix and strict bounded Zod request schemas. AI, telemetry-write, and analytics-event routes use a distributed per-user rolling one-minute limit. A failed rate-limit database check fails closed with HTTP 503.
 - The public health response has been reduced to `{ status: "ok" }`.
-- Express sets `X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`, `Permissions-Policy`, HSTS in production, disables `X-Powered-By`, and limits JSON request bodies to 256 KB.
+- Express sets `X-Content-Type-Options`, `X-Frame-Options: DENY`, `Referrer-Policy`, `Permissions-Policy`, HSTS in production, disables `X-Powered-By`, and limits JSON request bodies to 256 KB.
 - Product analytics requires a verified Supabase session and accepts only strict allow-listed event names. It does not retain account IDs, event properties, IP addresses, route strings, health details, or form contents.
-- Every telemetry event must explicitly declare `metadata.dataClassification = 'synthetic_demo'`; unclassified events are rejected. The schema rejects clinical-domain and FHIR event types, and the clinical risk category is disabled. Stratum Clinical Edge is an educational experience and has no EHR integration.
+- Every telemetry event must explicitly declare a synthetic classification; unclassified events are rejected. Demo seed and pulse events now run only when `KINGDOM_DEMO_TELEMETRY=true`, are labelled `synthetic_demo`, and use generic illustrative workload values. The schema rejects clinical-domain and FHIR event types. Stratum Clinical Edge is an educational experience and has no EHR integration.
 - Vercel SSO remains enabled for the restricted production deployment. Okteto workflow and manifest are removed from PR #4; Vercel is the only configured deployment platform.
 
 ## API authorization matrix
@@ -74,18 +74,18 @@ The rate-limit migration files are tracked in this branch under `supabase/migrat
 - App-specific Vercel `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` variables were created for production, preview, and development. The publishable key is safe for browser use; no service-role key is exposed.
 - The browser client also supports the existing `NEXT_PUBLIC_SUPABASE_*` variable names. Existing integration-managed variables were not overwritten.
 - Supabase Auth provider enablement, Site URL, redirect allowlist, email confirmation behavior, and end-to-end signup/login/logout have not yet been verified with dedicated test users.
-- Production remains SSO-restricted. Do not disable SSO or treat a preview deployment as public production access.
+- The live Vercel project configuration was rechecked on 2026-11-10 and reports SSO, password, and trusted-IP protection disabled. Do not describe production as SSO-restricted until the dashboard configuration is changed and independently re-read. Vercel deployment protection is not a substitute for Supabase application authentication.
 - Cleanup PR #6 is merged; `.github/workflows/okteto.yml` and `okteto.yml` are deleted from `main`, and the repository tree contains no Okteto paths.
 - The last successful Vercel preview is READY at `https://quickfas-no9xdiuhs-quickfas.vercel.app` for code revision `86f8313ffe0b88d85bd98f38d1124493ea6077ca`. The later code head `fffe1cc278dd9b5a2d85bddba2c6b13841228a38` includes a small TypeScript enum compatibility correction; Vercel rate-limited its deployment (`retry in 24 hours`). The preview is protected by Vercel SSO, so browser smoke testing remains outstanding.
 
 ## Remaining security work
 
-1. Run real integration tests with dedicated `viewer`, `analyst`, `operator`, `executive`, and `admin` accounts. Cover missing, malformed, expired, and revoked tokens; missing profiles; profile-query failures; self-role escalation attempts; and every route's expected 401/403/2xx behavior.
+1. Enable the approved Supabase Auth password-compromise protection and MFA factors, then run real integration tests with dedicated `viewer`, `analyst`, `operator`, `executive`, and `admin` accounts. Cover missing, malformed, expired, and revoked tokens; missing profiles; profile-query failures; self-role escalation attempts; and every route's expected 401/403/2xx behavior.
 2. Verify that the new rate-limit RPC behaves correctly under authenticated concurrency and that a caller cannot reset or delete their own counter. The SQL grants, RLS, function security mode, trigger, and advisor findings have been inspected; an authenticated end-to-end exercise is still outstanding.
 3. Complete a repository-wide audit of every API route, static chart/map, AI response schema, and future generated content. Primary dashboard, mission, map, telemetry, and investor-model displays now carry explicit illustrative/sample disclosures; keep all figures visibly labelled and never present them as live clinical, financial, regulatory, or operational results.
 4. Complete logging review to confirm tokens, prompts, user content, and provider responses cannot leak through runtime logs.
 5. Review whether the event-only analytics aggregate needs durable storage; it is currently process-local and should not be presented as a durable or cross-instance metric.
-6. Complete a full Content Security Policy based on the actual Vite, Supabase, Gemini, asset, font, and media requirements. The current policy only sets `frame-ancestors 'none'`; do not apply a stricter policy without browser regression testing.
+6. Complete a full Content Security Policy based on the actual Vite, Supabase, Gemini, asset, font, and media requirements. `X-Frame-Options: DENY` is now set at the Express layer; do not apply a stricter CSP without browser regression testing.
 7. Complete secret scanning, dependency advisory review, lockfile consistency, and build provenance review.
 8. Conduct input fuzzing, rate-limit concurrency tests, role-escalation tests, and an independent penetration test before public access.
 
@@ -114,10 +114,10 @@ No WCAG 2.2 AA conformance claim should be made until manual and automated evide
 | API role guards and bounded AI request schemas | Implemented on PR branch; fresh CI required |
 | Distributed per-user AI and telemetry quotas | Implemented and live; SQL privilege/RLS/advisor checks verified; authenticated concurrency test pending |
 | Analytics event access and quota | Authenticated-only with distributed per-user quota; live schema and advisor checks verified |
-| Supabase security advisor | Clear after latest migrations |
+| Supabase security advisor | Two Auth warnings remain: leaked-password protection disabled and insufficient MFA options |
 | Auth provider, Site URL, redirects, real role-account tests | Pending |
 | TypeScript, tests, production build, CodeQL | Previous branch head passed; rerun after latest changes |
-| Vercel preview for latest head | Latest head rate-limited by Vercel; prior code revision READY behind SSO; browser smoke test pending |
+| Vercel production protection | Live project API reports SSO/password/trusted-IP protection disabled; access policy decision and re-verification required |
 | Complete CSP and runtime validation | Pending |
 | Synthetic-content and clinical telemetry boundary | Clinical/FHIR event ingestion disabled; all telemetry requires explicit synthetic_demo marker; key dashboards and investor model carry illustrative disclosures; final visual review pending |
 | Automated accessibility scan | Pending |

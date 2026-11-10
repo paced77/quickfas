@@ -188,3 +188,16 @@ test('RLS event-trigger function execution is restricted in a tracked migration'
   assert.doesNotMatch(migration, /WHEN OTHERS THEN/i);
   assert.match(migration, /GRANT EXECUTE ON FUNCTION public\.rls_auto_enable\(\) TO service_role/i);
 });
+
+
+test('public landing remains open while the command workspace requires Google-authenticated access', () => {
+  const app = source('../src/App.tsx');
+  const gate = source('../src/components/auth/AuthGate.tsx');
+  assert.match(app, /const \[isLandingView, setIsLandingView\] = useState<boolean>\(true\)/);
+  assert.match(app, /import \{ AuthGate \} from '\.\/components\/auth\/AuthGate\.tsx'/);
+  assert.match(app, /isLandingView \? \([\s\S]*?<LandingPage[\s\S]*?\) : \([\s\S]*?<AuthGate>[\s\S]*?ExecutiveBriefing[\s\S]*?<\/AuthGate>/);
+  assert.match(app, /!isLandingView && \(\s*<Sidebar/);
+  assert.match(app, /!isLandingView && \(\s*<Header/);
+  assert.match(gate, /configureAuthenticatedFetch\(\)/);
+  assert.match(gate, /provider: 'google'/);
+});

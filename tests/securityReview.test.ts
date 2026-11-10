@@ -174,3 +174,12 @@ test('rate-limit migration keeps counters private and non-bypassable by callers'
   assert.match(migration, /revoke delete, truncate, references, trigger/i);
   assert.doesNotMatch(migration, /security definer/i);
 });
+
+
+test('RLS event-trigger function execution is restricted in a tracked migration', () => {
+  const migration = source('../supabase/migrations/20261110210500_restrict_rls_auto_enable_execute.sql');
+  assert.match(migration, /REVOKE ALL ON FUNCTION public\.rls_auto_enable\(\) FROM PUBLIC/i);
+  assert.match(migration, /REVOKE ALL ON FUNCTION public\.rls_auto_enable\(\) FROM anon/i);
+  assert.match(migration, /REVOKE ALL ON FUNCTION public\.rls_auto_enable\(\) FROM authenticated/i);
+  assert.match(migration, /GRANT EXECUTE ON FUNCTION public\.rls_auto_enable\(\) TO service_role/i);
+});

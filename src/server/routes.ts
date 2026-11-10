@@ -113,6 +113,10 @@ const requireAuthenticatedUser: express.RequestHandler = async (req, res, next) 
     });
     const { data: { user }, error: authError } = await authClient.auth.getUser(token);
     if (authError || !user) { res.status(401).json({ error: 'Your session is invalid or expired.' }); return; }
+    if (user.app_metadata?.provider !== 'google') {
+      res.status(403).json({ error: 'Sign in with Google to access QuickFAS.' });
+      return;
+    }
 
     const { data: profile, error: profileError } = await authClient
       .from('profiles')

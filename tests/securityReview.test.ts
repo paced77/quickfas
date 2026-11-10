@@ -87,7 +87,9 @@ test('API router mounts Supabase authentication before protected route registrat
   }
 
   assert.match(routes, /authClient\.auth\.getUser\(token\)/);
-  assert.doesNotMatch(routes, /684 active cohort participants|\$14\.2M ARR|Current \$2\.85M cash position|16 autonomous edge appliances|satisfy all 21 CFR Part 11 requirements/);
+  assert.doesNotMatch(routes, /684 active cohort participants|\$14\.2M ARR|Current \$2\.85M cash position|16 autonomous edge appliances|satisfy all 21 CFR Part 11 requirements|over 650 active cohort participants|99\.4% aggregate health|34\.2% mean downregulation|38\.5 months runway/);
+  assert.match(routes, /No verified project metrics or live operational status are available/);
+  assert.match(routes, /No simulation has been run/);
   assert.match(routes, /\.from\('profiles'\)[\s\S]*?\.select\('role'\)/);
   assert.match(routes, /requireRole\('admin', 'executive'\), handleAnalyticsSummary/);
   assert.match(routes, /requireRole\('admin', 'operator'\), requireDistributedRateLimit\('telemetry-ingest'\), handleTelemetryInject/);

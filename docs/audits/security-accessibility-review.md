@@ -20,7 +20,7 @@ This is an engineering review, not a penetration-test report, compliance certifi
 - Express sets `X-Content-Type-Options`, `X-Frame-Options: DENY`, `Referrer-Policy`, `Permissions-Policy`, HSTS in production, disables `X-Powered-By`, and limits JSON request bodies to 256 KB.
 - Product analytics requires a verified Supabase session and accepts only strict allow-listed event names. It does not retain account IDs, event properties, IP addresses, route strings, health details, or form contents.
 - Every telemetry event must explicitly declare a synthetic classification; unclassified events are rejected. Demo seed and pulse events now run only when `KINGDOM_DEMO_TELEMETRY=true`, are labelled `synthetic_demo`, and use generic illustrative workload values. The schema rejects clinical-domain and FHIR event types. Stratum Clinical Edge is an educational experience and has no EHR integration.
-- Vercel SSO remains enabled for the restricted production deployment. Okteto workflow and manifest are removed from PR #4; Vercel is the only configured deployment platform.
+- Vercel deployment protection is currently disabled according to the live project configuration; application-level Supabase authentication is a separate control. Okteto workflow and manifest are removed from PR #4; Vercel is the only configured deployment platform.
 
 ## API authorization matrix
 
@@ -76,7 +76,7 @@ The rate-limit migration files are tracked in this branch under `supabase/migrat
 - Supabase Auth provider enablement, Site URL, redirect allowlist, email confirmation behavior, and end-to-end signup/login/logout have not yet been verified with dedicated test users.
 - The live Vercel project configuration was rechecked on 2026-11-10 and reports SSO, password, and trusted-IP protection disabled. Do not describe production as SSO-restricted until the dashboard configuration is changed and independently re-read. Vercel deployment protection is not a substitute for Supabase application authentication.
 - Cleanup PR #6 is merged; `.github/workflows/okteto.yml` and `okteto.yml` are deleted from `main`, and the repository tree contains no Okteto paths.
-- The last successful Vercel preview is READY at `https://quickfas-no9xdiuhs-quickfas.vercel.app` for code revision `86f8313ffe0b88d85bd98f38d1124493ea6077ca`. The later code head `fffe1cc278dd9b5a2d85bddba2c6b13841228a38` includes a small TypeScript enum compatibility correction; Vercel rate-limited its deployment (`retry in 24 hours`). The preview is protected by Vercel SSO, so browser smoke testing remains outstanding.
+- The last successful Vercel preview is READY at `https://quickfas-no9xdiuhs-quickfas.vercel.app` for code revision `86f8313ffe0b88d85bd98f38d1124493ea6077ca`. The later code head `fffe1cc278dd9b5a2d85bddba2c6b13841228a38` includes a small TypeScript enum compatibility correction; Vercel rate-limited its deployment (`retry in 24 hours`). The preview's current Vercel protection configuration must be verified before browser smoke testing.
 
 ## Remaining security work
 
@@ -130,4 +130,4 @@ No WCAG 2.2 AA conformance claim should be made until manual and automated evide
 
 ## Operating decision
 
-Keep the existing production deployment restricted. Do not disable Vercel SSO, connect EHR/patient data, or claim public launch readiness until the outstanding gates have evidence and explicit approval. The application may be prepared for a controlled, authenticated test deployment once the latest code checks and Vercel preview are confirmed; unrestricted production remains blocked.
+Keep public release approval blocked until the intended Vercel access policy is selected, applied, and verified. Do not connect EHR/patient data or claim public launch readiness until the outstanding gates have evidence and explicit approval. The application may be prepared for a controlled, authenticated test deployment once the latest code checks and Vercel preview are confirmed; unrestricted production remains blocked.

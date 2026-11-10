@@ -99,8 +99,8 @@ export interface CouncilDeliberationResult {
 
 export interface SimulationResult {
   scenarioTitle: string;
-  simulationDurationWeeks: number;
-  overallSystemStabilityScore: number;
+  simulationDurationWeeks: number | null;
+  overallSystemStabilityScore: number | null;
   executiveSummary: string;
   nodesImpacted: Array<{
     nodeName: string;

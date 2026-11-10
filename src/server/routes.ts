@@ -15,6 +15,7 @@ export const app = express();
 app.disable('x-powered-by');
 app.use((req, res, next) => {
   res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'DENY');
   res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
   res.setHeader('Permissions-Policy', 'camera=(), geolocation=(), payment=()');
   if (process.env.NODE_ENV === 'production' && process.env.VERCEL) {
@@ -49,113 +50,32 @@ let validationStats = {
   lastRejectedReason: null as string | null,
 };
 
-// Seed initial validated events
-function seedInitialTelemetry() {
-  const now = new Date();
+// Demo telemetry is strictly opt-in. Production defaults to an empty feed until approved sources are connected.
+if (demoTelemetryEnabled) {
   const sampleEvents: unknown[] = [
-    {
-      eventId: 'edge-system-001',
-      eventType: 'system.health',
-      domain: 'infrastructure',
-      severity: 'nominal',
-      source: 'pocket16-edge-os-appliance',
-      correlationId: 'edge-correlation-01',
-      timestamp: new Date(now.getTime() - 120000).toISOString(),
-      metadata: { scenario: 'seventeen_pockets_runtime', dataClassification: 'synthetic' },
-      payload: { status: 'optimal', uptimeSeconds: 72000, latencyMs: 78, errorsPerMin: 0, cpuUtilization: 24, memoryUtilization: 42, availabilityPct: 99.8 },
-    },
-    {
-      eventId: 'edge-ops-002',
-      eventType: 'ops.capacity_update',
-      domain: 'operations',
-      severity: 'nominal',
-      source: 'stratum-clinical-edge-engine',
-      correlationId: 'edge-correlation-02',
-      timestamp: new Date(now.getTime() - 90000).toISOString(),
-      metadata: { scenario: 'seventeen_pockets_runtime', dataClassification: 'synthetic' },
-      payload: { subsystem: 'Pocket 16 Edge OS Appliance', capacityPct: 88, utilizationPct: 62, throughputPerHr: 340, activeTasks: 16, statusSummary: '16 rural clinic edge nodes autonomous; zero data loss during satellite failover' },
-    },
-    {
-      eventId: 'edge-risk-003',
-      eventType: 'risk.detected',
-      domain: 'operations',
-      severity: 'warning',
-      source: 'satellite-uplink-monitor',
-      correlationId: 'edge-correlation-03',
-      timestamp: new Date(now.getTime() - 60000).toISOString(),
-      metadata: { scenario: 'seventeen_pockets_runtime', dataClassification: 'synthetic' },
-      payload: { category: 'operations', headline: 'Rural Clinic Beta Starlink uplink jitter', probability: 0.18, impactRating: 3, riskScore: 18, mitigationStrategy: 'Local Tier 3 SQLite WAL store buffering active; 14,200 events staged for batch burst sync', ownerAgent: 'Risk Sentinel' },
-    },
+    { eventId: 'demo-system-001', eventType: 'system.health', domain: 'infrastructure', severity: 'nominal', source: 'sample-system-monitor', correlationId: 'demo-correlation-01', timestamp: new Date().toISOString(), metadata: { scenario: 'illustrative_workspace', dataClassification: 'synthetic_demo', environment: 'demo' }, payload: { status: 'optimal', uptimeSeconds: 3600, latencyMs: 50, errorsPerMin: 0, cpuUtilization: 25, memoryUtilization: 40, availabilityPct: 99 } },
+    { eventId: 'demo-ops-002', eventType: 'ops.capacity_update', domain: 'operations', severity: 'nominal', source: 'sample-workstream-monitor', correlationId: 'demo-correlation-02', timestamp: new Date().toISOString(), metadata: { scenario: 'illustrative_workspace', dataClassification: 'synthetic_demo', environment: 'demo' }, payload: { subsystem: 'Sample workstream', capacityPct: 75, utilizationPct: 55, throughputPerHr: 20, activeTasks: 4, statusSummary: 'Illustrative workload only; not connected to a live operational system' } },
   ];
-
   for (const raw of sampleEvents) {
     validationStats.totalReceived++;
     const val = validateKingdomTelemetry(raw);
-    if (val.success && val.event) {
-      eventHistory.unshift(val.event);
-      validationStats.validCount++;
-    } else {
-      validationStats.rejectedCount++;
-      validationStats.lastRejectedReason = val.error || 'Unknown validation failure';
-    }
+    if (val.success && val.event) { eventHistory.unshift(val.event); validationStats.validCount++; }
+    else { validationStats.rejectedCount++; validationStats.lastRejectedReason = val.error || 'Unknown synthetic fixture validation failure'; }
   }
+  // Synthetic pulse generation is confined to explicitly enabled demo environments.
+  setInterval(() => {
+    const sources = [
+      { eventType: 'system.health', domain: 'infrastructure', severity: 'nominal', source: 'sample-system-monitor', payload: { status: 'optimal', uptimeSeconds: 3600, latencyMs: 50, errorsPerMin: 0, cpuUtilization: 25, memoryUtilization: 40, availabilityPct: 99 } },
+      { eventType: 'ops.capacity_update', domain: 'operations', severity: 'nominal', source: 'sample-workstream-monitor', payload: { subsystem: 'Sample workstream', capacityPct: 75, utilizationPct: 55, throughputPerHr: 20, activeTasks: 4, statusSummary: 'Illustrative workload only; not connected to a live operational system' } },
+    ] as const;
+    const pick = sources[Math.floor(Math.random() * sources.length)];
+    const rawEvent = { ...pick, eventId: 'demo-' + Date.now().toString(36), correlationId: 'demo-correlation-' + Date.now(), timestamp: new Date().toISOString(), metadata: { synthesized: true, dataClassification: 'synthetic_demo', environment: 'demo' } };
+    validationStats.totalReceived++;
+    const val = validateKingdomTelemetry(rawEvent);
+    if (val.success && val.event) { eventHistory.unshift(val.event); if (eventHistory.length > MAX_STORED_EVENTS) eventHistory.pop(); validationStats.validCount++; }
+    else { validationStats.rejectedCount++; validationStats.lastRejectedReason = val.error || 'Unknown synthetic pulse validation failure'; }
+  }, 4500);
 }
-
-// Ensure telemetry fabric has active operational edge state
-seedInitialTelemetry();
-
-// Background Telemetry Pulse Generator
-setInterval(() => {
-  const sources = [
-    {
-      eventType: 'system.health',
-      domain: 'infrastructure',
-      severity: 'nominal',
-      source: 'pocket16-edge-os-appliance',
-      payload: { status: 'optimal', uptimeSeconds: 86400, latencyMs: 74, errorsPerMin: 0, cpuUtilization: 26, memoryUtilization: 44, availabilityPct: 99.9 },
-    },
-    {
-      eventType: 'ops.capacity_update',
-      domain: 'operations',
-      severity: 'nominal',
-      source: 'stratum-clinical-edge-engine',
-      payload: { subsystem: 'Mental Health Coping Lab', capacityPct: 84, utilizationPct: 65, throughputPerHr: 280, activeTasks: 12, statusSummary: 'Polyvagal and CBT pacing sessions streaming telemetry with sub-90ms ingestion latency' },
-    },
-    {
-      eventType: 'risk.detected',
-      domain: 'operations',
-      severity: 'warning',
-      source: 'soul-auditor-daemon',
-      payload: { category: 'operations', headline: 'Scheduled RFC4180 audit ledger verification checkpoint', probability: 0.12, impactRating: 2, riskScore: 10, mitigationStrategy: 'Soul Auditor verifying zero PII invariant across edge stores', ownerAgent: 'Compliance Guardian' },
-    },
-  ];
-
-  const pick = sources[Math.floor(Math.random() * sources.length)];
-  const rawEvent = {
-    eventId: `evt-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`,
-    eventType: pick.eventType,
-    domain: pick.domain,
-    severity: pick.severity,
-    source: pick.source,
-    correlationId: `corr-${Date.now()}`,
-    timestamp: new Date().toISOString(),
-    metadata: { synthesized: false, dataClassification: 'operational', environment: 'production-edge' },
-    payload: pick.payload,
-  };
-
-  validationStats.totalReceived++;
-  const val = validateKingdomTelemetry(rawEvent);
-  if (val.success && val.event) {
-    eventHistory.unshift(val.event);
-    if (eventHistory.length > MAX_STORED_EVENTS) {
-      eventHistory.pop();
-    }
-    validationStats.validCount++;
-  } else {
-    validationStats.rejectedCount++;
-  }
-}, 4500);
-
 // Helper router support: supports routes both with and without "/api" prefix (for Vercel rewrites)
 const router = express.Router();
 
@@ -170,7 +90,12 @@ const requireAuthenticatedUser: express.RequestHandler = async (req, res, next) 
   const authUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL;
   const publishableKey = process.env.SUPABASE_PUBLISHABLE_KEY || process.env.VITE_SUPABASE_PUBLISHABLE_KEY;
   if (!authUrl || !publishableKey) {
-    // In local dev or unconfigured environment, permit guest operator access
+    if (process.env.NODE_ENV === 'production') {
+      console.error('Authentication configuration is missing in production.');
+      res.status(503).json({ error: 'Authentication is temporarily unavailable. Please try again later.' });
+      return;
+    }
+    // Guest operator access is limited to local, non-production development.
     const authenticatedRequest = req as AuthenticatedRequest;
     authenticatedRequest.authUser = { id: 'guest-operator', email: 'operator@kingdom.internal' };
     authenticatedRequest.authRole = 'operator';
@@ -359,25 +284,22 @@ router.post('/api/telemetry/inject', requireRole('admin', 'operator'), requireDi
 function generateFallbackDeliberation(agendaTopic: string) {
   return {
     agenda: agendaTopic,
-    consensusScorePct: 94,
-    impactTier: 'High Strategic Horizon',
-    executiveDirective: 'Ratify offline edge node deployment across all 16 rural clinics with automated Tier 3 SQLite local store sync.',
+    consensusScorePct: 0,
+    impactTier: 'Not assessed — illustrative fallback',
+    executiveDirective: 'Fictional demonstration response only. No verified project data or live model response is available; do not use this output to make operational, financial, regulatory, or clinical decisions.',
     coreAnswers: {
-      whatIsHappeningNow: 'Stratum Clinical Edge and Seventeen Pockets are orchestrating 16 autonomous edge nodes across rural community health centers with sub-90ms latency.',
-      whyIsItHappening: 'Satellite disconnects and intermittent Starlink bandwidth require resilient local inference without compromising clinical education or HIPAA privacy invariants.',
-      whatHappensNext: 'Soul Auditor verification will seal the local audit log; batch telemetry bursts will sync to central coordination upon link recovery.',
-      whatShouldIDo: 'Authorize the $850k hardware staging budget and empower Chief Architect ODell Anderson to oversee node deployment.',
+      whatIsHappeningNow: 'Current project status is unknown because no verified source data is connected to this fallback response.',
+      whyIsItHappening: 'The AI provider is not configured. This response is a placeholder, not an analysis of live conditions.',
+      whatHappensNext: 'Connect an approved source and obtain a live, evidence-backed analysis before drawing conclusions.',
+      whatShouldIDo: 'Do not act on this placeholder. Review the agenda against verified records and responsible subject-matter experts.',
     },
     agentDeliberations: [
-      { agentName: 'Sovereign Strategist', role: 'Strategy', verdict: 'Approve', argument: 'Decentralized edge computing establishes defensible moat against cloud-only competitors and solidifies Series A syndicate valuation.', confidence: 0.96 },
-      { agentName: 'Finance Oracle', role: 'Finance', verdict: 'Approve', argument: 'Current $2.85M cash position and 38.5 months runway easily absorbs node deployment with immediate ARR acceleration.', confidence: 0.98 },
-      { agentName: 'Compliance Guardian', role: 'Compliance', verdict: 'Approve', argument: 'Zero PII invariant and RFC4180 audit ledger verification satisfy all 21 CFR Part 11 requirements.', confidence: 0.99 },
-      { agentName: 'Risk Sentinel', role: 'Risk', verdict: 'Monitor', argument: 'Ensure satellite reconnection timeouts do not exceed 72-hour WAL buffer allocation.', confidence: 0.92 },
+      { agentName: 'Sovereign Strategist', role: 'Strategy', verdict: 'Unassessed', argument: 'No verified evidence is available for a recommendation.', confidence: 0 },
+      { agentName: 'Finance Oracle', role: 'Finance', verdict: 'Unassessed', argument: 'No verified financial data is available for analysis.', confidence: 0 },
+      { agentName: 'Compliance Guardian', role: 'Compliance', verdict: 'Unassessed', argument: 'No compliance assessment or certification can be inferred from this fallback.', confidence: 0 },
+      { agentName: 'Risk Sentinel', role: 'Risk', verdict: 'Unassessed', argument: 'Risk cannot be scored without validated source information.', confidence: 0 },
     ],
-    actionableInterventions: [
-      { id: 'ACT-EDGE-01', title: 'Provision Pocket 16 Edge OS onto 5 new satellite appliances', timeframe: '7 Days', projectedGain: '+35% offline availability', riskRating: 'Low' },
-      { id: 'ACT-AUDIT-02', title: 'Execute Soul Auditor automated verification check across all nodes', timeframe: '24 Hours', projectedGain: '100% Invariant Ratification', riskRating: 'Low' },
-    ],
+    actionableInterventions: [],
   };
 }
 
@@ -386,38 +308,22 @@ const handleCouncilDeliberation = async (req: Request, res: Response) => {
   const request = CouncilRequestSchema.safeParse(req.body);
   if (!request.success) return res.status(422).json({ error: 'Invalid council request. Check field types and size limits.' });
   const { agendaTopic, contextData } = request.data;
-  const promptAgenda = agendaTopic || 'Strategic review of decentralized edge node deployment across rural health clinics';
+  const promptAgenda = agendaTopic || 'Review the supplied project agenda';
 
   if (!apiKey) {
     return res.json(generateFallbackDeliberation(promptAgenda));
   }
 
   try {
-    const systemInstruction = `You are the Sovereign AI Council of Project Kingdom and Stratum Clinical Edge — an elite Sovereign Intelligence Operating System founded by O'Dell Anderson (Founder, Stratum Clinical Edge; ODell Anderson, Chief Architect, Seventeen Pockets).
-You embody the 7 permanent Sovereign AI leaders:
-1. Sovereign Strategist: Executive guidance, existential positioning, strategic horizon.
-2. Finance Oracle: Cash flow, capital efficiency, revenue trajectory ($14.2M ARR, 38.5 mo runway), valuation leverage.
-3. Education Steward: Plain-language health education (Grade 6–8 reading level), WCAG 2.2 AA cross-generational accessibility.
-4. Risk Sentinel: Unmitigated exposures, offline resilience, cold-chain integrity, shock tolerance.
-5. Operations Commander: Execution tempo, Pocket 16 Edge OS appliances, workflow friction.
-6. Compliance Guardian: HIPAA & 21 CFR Part 11 validation, Soul Auditor invariants, RFC4180 logs.
-7. Security Sentinel: Cryptographic provenance, zero-trust mTLS mesh, zero-knowledge privacy.
-
-Analyze the strategic agenda with high executive competence, domain precision, and actionable recommendations. Never use defensive or apologetic filler. Formulate a decisive consensus resolution answering the 4 Sovereign Questions:
-- whatIsHappeningNow
-- whyIsItHappening
-- whatHappensNext
-- whatShouldIDo
-
-Return pure JSON.`;
-
+    const systemInstruction = `You are a planning assistant for Project Kingdom and Stratum Clinical Edge.
+Use only facts explicitly present in supplied, verified context. Never invent financial figures, enrollment counts, clinic deployments, operational telemetry, partners, regulatory status, security certifications, or clinical outcomes. Do not claim HIPAA compliance, 21 CFR Part 11 validation, or a live EHR/FHIR connection unless verified context explicitly establishes it.
+When evidence is missing, say the information is unknown and identify the source needed. Clearly distinguish proposals, assumptions, illustrative examples, and verified facts. Do not provide diagnosis or patient-specific clinical advice.
+Provide an evidence-aware draft answering whatIsHappeningNow, whyIsItHappening, whatHappensNext, and whatShouldIDo. Return pure JSON.`;
     const userPrompt = `AGENDA FOR SOVEREIGN COUNCIL:
 ${promptAgenda}
 
-OPERATIONAL CONTEXT:
-Decentralized edge architecture, 16 autonomous edge appliances, 684 active cohort participants, $14.2M ARR.
-Telemetry context: ${JSON.stringify(contextData || {})}`;
-
+SUPPLIED CONTEXT (may be empty; do not infer missing facts):
+${JSON.stringify(contextData || {})}`;
     const apiCall = ai.models.generateContent({
       model: 'gemini-3.8-flash',
       contents: userPrompt,

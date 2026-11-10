@@ -23,12 +23,11 @@ BEGIN
       AND cmd.schema_name NOT LIKE 'pg_toast%'
       AND cmd.schema_name NOT LIKE 'pg_temp%'
     THEN
-      BEGIN
-        SELECT c.relname INTO STRICT tbl
-        FROM pg_catalog.pg_class c
-        WHERE c.oid = cmd.objid;
-        EXECUTE format('ALTER TABLE IF EXISTS %I.%I ENABLE ROW LEVEL SECURITY', cmd.schema_name, tbl);
-        RAISE LOG 'rls_auto_enable: enabled RLS on %', cmd.object_identity;
+      SELECT c.relname INTO STRICT tbl
+      FROM pg_catalog.pg_class c
+      WHERE c.oid = cmd.objid;
+      EXECUTE format('ALTER TABLE IF EXISTS %I.%I ENABLE ROW LEVEL SECURITY', cmd.schema_name, tbl);
+      RAISE LOG 'rls_auto_enable: enabled RLS on %', cmd.object_identity;
     ELSE
       RAISE LOG 'rls_auto_enable: skip % (not in enforced schema)', cmd.object_identity;
     END IF;

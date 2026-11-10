@@ -90,7 +90,7 @@ const requireAuthenticatedUser: express.RequestHandler = async (req, res, next) 
   const authUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL;
   const publishableKey = process.env.SUPABASE_PUBLISHABLE_KEY || process.env.VITE_SUPABASE_PUBLISHABLE_KEY;
   if (!authUrl || !publishableKey) {
-    if (process.env.NODE_ENV === 'production') {
+    if (process.env.NODE_ENV === 'production' || process.env.VERCEL) {
       console.error('Authentication configuration is missing in production.');
       res.status(503).json({ error: 'Authentication is temporarily unavailable. Please try again later.' });
       return;

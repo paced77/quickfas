@@ -61,7 +61,8 @@ test('opt-in telemetry fixtures use generic synthetic workstream data', () => {
   const routes = source('../src/server/routes.ts');
   const feed = source('../src/components/TelemetryFeed.tsx');
   assert.match(routes, /KINGDOM_DEMO_TELEMETRY === 'true'/);
-  assert.match(routes, /dataClassification: 'synthetic'/);
+  assert.match(routes, /if \(demoTelemetryEnabled\) \{[\s\S]*?dataClassification: 'synthetic_demo'/);
+  assert.doesNotMatch(routes, /dataClassification: 'operational'|environment: 'production-edge'/);
   assert.doesNotMatch(routes, /clinical\.enrollment|clinical\.fhir_tx|STUDY-ONC-904|STUDY-CARDIO-402/);
   assert.match(feed, /eventType: 'ops\.capacity_update'/);
   assert.match(feed, /dataClassification: 'synthetic_demo'/);
@@ -73,6 +74,9 @@ test('API router mounts Supabase authentication before protected route registrat
   const routerMount = routes.indexOf('app.use(router)');
   assert.ok(authMount >= 0 && routerMount > authMount, 'API auth guard must precede router mounting');
   assert.match(routes, /return requireAuthenticatedUser\(req, res, next\)/);
+  assert.match(routes, /if \(process\.env\.NODE_ENV === 'production'\) \{[\s\S]*?res\.status\(503\)/);
+  assert.match(routes, /Guest operator access is limited to local, non-production development/);
+  assert.match(routes, /res\.setHeader\('X-Frame-Options', 'DENY'\)/);
 
   const registrations = [...routes.matchAll(/^\s*router\.(?:get|post|put|patch|delete)\(([^\n]+)$/gm)];
   assert.ok(registrations.length > 0);
@@ -97,7 +101,7 @@ test('API router mounts Supabase authentication before protected route registrat
 
 test('AI routes enforce role-specific capabilities and distributed rate limits', () => {
   const routes = source('../src/server/routes.ts');
-  const authMount = routes.indexOf('router.use(requireAuthenticatedUser)');
+  const authMount = routes.indexOf('router.use(apiAuthGuard)');
   const expected = [
     ["router.post('/gemini/council-deliberation'", "requireRole('admin', 'executive', 'analyst')", "ai-council"],
     ["router.post('/gemini/executive-briefing'", "requireRole('admin', 'executive')", "ai-briefing"],
@@ -127,6 +131,8 @@ test('authentication UI uses Google OAuth only and keeps protected access contro
   assert.doesNotMatch(gate, /signInWithPassword|\.auth\.signUp|type="password"|Create account|Password/);
   assert.doesNotMatch(gate, /guestPreview|GUEST PREVIEW/i);
   assert.match(gate, /read-only viewer access/i);
+  assert.match(gate, /if \(import\.meta\.env\.DEV\) return <\{children\}>/);
+  assert.match(gate, /Authentication is not configured for this deployment/);
   assert.match(gate, /Access: \{profileRole/);
   assert.match(gate, /profileError \? 'unavailable' : data\?\.role \?\? 'missing'/);
 });

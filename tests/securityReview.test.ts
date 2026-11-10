@@ -181,5 +181,8 @@ test('RLS event-trigger function execution is restricted in a tracked migration'
   assert.match(migration, /REVOKE ALL ON FUNCTION public\.rls_auto_enable\(\) FROM PUBLIC/i);
   assert.match(migration, /REVOKE ALL ON FUNCTION public\.rls_auto_enable\(\) FROM anon/i);
   assert.match(migration, /REVOKE ALL ON FUNCTION public\.rls_auto_enable\(\) FROM authenticated/i);
+  assert.match(migration, /SECURITY DEFINER/i);
+  assert.match(migration, /SET search_path TO 'pg_catalog'/i);
+  assert.match(migration, /CREATE EVENT TRIGGER ensure_rls/i);
   assert.match(migration, /GRANT EXECUTE ON FUNCTION public\.rls_auto_enable\(\) TO service_role/i);
 });

@@ -87,6 +87,7 @@ test('API router mounts Supabase authentication before protected route registrat
   }
 
   assert.match(routes, /authClient\.auth\.getUser\(token\)/);
+  assert.doesNotMatch(routes, /684 active cohort participants|\$14\.2M ARR|Current \$2\.85M cash position|16 autonomous edge appliances|21 CFR Part 11 validation/);
   assert.match(routes, /\.from\('profiles'\)[\s\S]*?\.select\('role'\)/);
   assert.match(routes, /requireRole\('admin', 'executive'\), handleAnalyticsSummary/);
   assert.match(routes, /requireRole\('admin', 'operator'\), requireDistributedRateLimit\('telemetry-ingest'\), handleTelemetryInject/);
@@ -131,7 +132,7 @@ test('authentication UI uses Google OAuth only and keeps protected access contro
   assert.doesNotMatch(gate, /signInWithPassword|\.auth\.signUp|type="password"|Create account|Password/);
   assert.doesNotMatch(gate, /guestPreview|GUEST PREVIEW/i);
   assert.match(gate, /read-only viewer access/i);
-  assert.match(gate, /if \(import\.meta\.env\.DEV\) return <\{children\}>/);
+  assert.match(gate, /if \(import\.meta\.env\.DEV\) return <>\{children\}<\/>;/);
   assert.match(gate, /Authentication is not configured for this deployment/);
   assert.match(gate, /Access: \{profileRole/);
   assert.match(gate, /profileError \? 'unavailable' : data\?\.role \?\? 'missing'/);

@@ -303,10 +303,10 @@ export const DigitalTwin: React.FC = () => {
             <div className="bg-[#0c102b] border border-indigo-500/30 rounded-xl p-4">
               <div className="flex flex-wrap items-center justify-between gap-2 pb-2 border-b border-indigo-500/20 mb-2">
                 <span className="text-[11px] font-mono text-indigo-300 font-semibold uppercase">
-                  Simulation Outcome // {simulationResult.simulationDurationWeeks} Weeks Horizon
+                  Simulation Outcome // {simulationResult.simulationDurationWeeks === null ? 'Not run' : `${simulationResult.simulationDurationWeeks} Weeks Horizon`}
                 </span>
                 <span className="text-xs font-mono text-cyan-300 font-bold tabular-nums">
-                  System Stability Score: {simulationResult.overallSystemStabilityScore}%
+                  System Stability Score: {simulationResult.overallSystemStabilityScore === null ? 'Not assessed' : `${simulationResult.overallSystemStabilityScore}%`}
                 </span>
               </div>
               <p className="text-xs text-slate-200 leading-relaxed font-medium">

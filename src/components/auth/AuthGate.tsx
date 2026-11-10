@@ -1,6 +1,6 @@
 import { ReactNode, useEffect, useState } from 'react';
 import type { Session } from '@supabase/supabase-js';
-import { isSupabaseConfigured, supabase } from '../../lib/supabase.ts';
+import { configureAuthenticatedFetch, isSupabaseConfigured, supabase } from '../../lib/supabase.ts';
 
 type AuthGateProps = { children: ReactNode };
 
@@ -21,6 +21,7 @@ export function AuthGate({ children }: AuthGateProps) {
   }, []);
 
   useEffect(() => {
+    configureAuthenticatedFetch();
     if (!supabase) {
       setReady(true);
       return;

@@ -66,7 +66,7 @@ The live project currently records these migrations:
 - `20261107194802_quickfas_rate_limit_telemetry_bucket`
 - `20261107195234_quickfas_authenticated_analytics_events`
 
-The rate-limit migration files are tracked in this branch under `supabase/migrations/`. The initial rate-limit function is immediately hardened by the subsequent migration to an invoker function with caller-scoped RLS and a counter-enforcement trigger. The final live schema and grants were verified after application.
+The rate-limit migration files are tracked in this branch under `supabase/migrations/`. The initial rate-limit function is immediately hardened by the subsequent migration to an invoker function with caller-scoped RLS and a counter-enforcement trigger. The repository also now contains `20261110210500_restrict_rls_auto_enable_execute.sql` to preserve the live `rls_auto_enable()` execute grants on fresh/rebuilt environments. It is not yet applied as a new live migration because the production grants already match the intended state; the live database currently records the five migrations listed above.
 
 ## Configuration and deployment
 

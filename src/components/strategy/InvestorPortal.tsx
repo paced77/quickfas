@@ -221,7 +221,7 @@ export const InvestorPortal: React.FC<InvestorPortalProps> = ({ onNotify }) => {
             <div className="border-b border-cyan-500/20 pb-6 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
               <div>
                 <span className="text-xs font-mono uppercase tracking-wider text-cyan-400">
-                  DRAFT MODEL · ILLUSTRATIVE ASSUMPTIONS
+                  DRAFT MODEL · ILLUSTRATIVE ASSUMPTIONS · Illustrative planning model only
                 </span>
                 <h1 className="text-3xl sm:text-4xl font-extrabold text-white mt-1">
                   PROJECT KINGDOM

@@ -63,6 +63,17 @@ export const Header: React.FC<HeaderProps> = ({
             Dashboard
           </button>
           <button
+            onClick={() => onSelectTab('gemini-healthcare')}
+            className={`px-3 py-1.5 rounded transition-colors whitespace-nowrap shrink-0 flex items-center gap-1.5 ${
+              activeTab === 'gemini-healthcare' && !isLandingView
+                ? 'text-[#6ee7ff] bg-[#0f172a] border border-[#6ee7ff]/40 shadow-[0_0_12px_rgba(110,231,255,0.15)] font-bold'
+                : 'text-cyan-400/90 hover:text-cyan-200'
+            }`}
+          >
+            <Sparkles className="w-3 h-3 text-cyan-400" />
+            <span>Gemini Healthcare</span>
+          </button>
+          <button
             onClick={() => onSelectTab('missions')}
             className={`px-3 py-1.5 rounded transition-colors whitespace-nowrap shrink-0 ${
               activeTab === 'missions' && !isLandingView

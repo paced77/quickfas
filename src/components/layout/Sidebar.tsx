@@ -20,6 +20,7 @@ import {
 
 export type KingdomNavTab =
   | 'dashboard'
+  | 'gemini-healthcare'
   | 'missions'
   | 'advisor'
   | 'analytics'
@@ -58,6 +59,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
       id: 'dashboard',
       label: 'Dashboard',
       icon: <LayoutDashboard className="w-4 h-4" />,
+    },
+    {
+      id: 'gemini-healthcare',
+      label: 'Gemini Healthcare',
+      icon: <Sparkles className="w-4 h-4 text-cyan-300 animate-pulse" />,
+      badge: 'Nov 10',
     },
     {
       id: 'missions',

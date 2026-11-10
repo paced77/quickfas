@@ -412,21 +412,16 @@ const handleExecutiveBriefing = async (req: Request, res: Response) => {
   const greeting = timeOfDay || 'Good morning';
 
   const fallbackBriefing = {
-    headline: 'Stratum Clinical Edge · Sovereign Intelligence Briefing',
-    statusSummary: 'Seventeen Pockets decentralized edge fabric running nominal across 16 rural clinics with 99.4% aggregate health.',
-    spokenScript: `${greeting}. Sovereign systems online. Stratum Clinical Edge is operating with 99.4% aggregate health across 16 decentralized nodes. Series A runway extends through 38.5 months, and longitudinal clinical coping telemetry demonstrates a 34.2% mean downregulation in acute distress scores.`,
+    headline: 'Illustrative briefing — no verified source data',
+    statusSummary: 'Live operational sources are not connected. Current status and performance cannot be verified.',
+    spokenScript: `${greeting}. This is an illustrative fallback. No verified project metrics or live operational status are available.`,
     coreAnswers: {
-      whatIsHappeningNow: '16 rural clinic edge nodes are operating autonomously with sub-90ms latency; 684 active cohort participants are enrolled.',
-      whyIsItHappening: 'Tier 3 local SQLite WAL buffering protects offline clinics from intermittent satellite connectivity loss while keeping all patient data local.',
-      whatHappensNext: 'Soul Auditor verification will lock the RFC4180 audit ledger, followed by preliminary efficacy dossier assembly for institutional trial partners.',
-      whatShouldIDo: 'Authorize the deployment of 5 additional Pocket 16 Edge OS units to scale the plain-language health literacy curriculum nationwide.',
+      whatIsHappeningNow: 'Current operating conditions are unknown because no verified source data is connected.',
+      whyIsItHappening: 'This briefing is a placeholder because the application has no verified live metrics for this request.',
+      whatHappensNext: 'Connect approved data sources and confirm their provenance before generating an evidence-based briefing.',
+      whatShouldIDo: 'Do not make operational, financial, regulatory, or clinical decisions from this placeholder.',
     },
-    keySignals: [
-      { metric: 'ACTIVE EDGE NODES', delta: '16', sentiment: 'nominal', context: '100% Autonomous Operation' },
-      { metric: 'ACTIVE COHORT', delta: '684', sentiment: 'nominal', context: '+28.5 enrollments / month' },
-      { metric: 'ARR RUN-RATE', delta: '$14.2M', sentiment: 'nominal', context: '+48.2% YoY growth velocity' },
-      { metric: 'OFFLINE BUFFER', delta: '14,200', sentiment: 'nominal', context: 'Events staged in SQLite WAL' },
-    ],
+    keySignals: [],
   };
 
   if (!apiKey) {
@@ -434,19 +429,13 @@ const handleExecutiveBriefing = async (req: Request, res: Response) => {
   }
 
   try {
-    const systemInstruction = `You are the Sovereign Executive Narrator for Project Kingdom and Stratum Clinical Edge, founded by O'Dell Anderson (ODell Anderson, Chief Architect).
-Generate executive-level briefings for national/global operating officers and clinical leadership.
-Structure evaluation around the 4 Sovereign Questions:
-1. whatIsHappeningNow
-2. whyIsItHappening
-3. whatHappensNext
-4. whatShouldIDo
-
-The spoken narrative must be designed for audio playback: starting with "${greeting}. Sovereign systems online...", concise sentences, no markdown formatting inside the spokenScript text. Speak with authority, precision, and executive competence.`;
+    const systemInstruction = `You are an evidence-aware briefing assistant for Project Kingdom and Stratum Clinical Edge.
+No verified operational, financial, regulatory, or clinical data is connected to this briefing request. Do not invent metrics, deployments, enrollment, financial performance, uptime, compliance status, or outcomes. State that information is unknown when evidence is unavailable. Do not provide diagnosis or patient-specific clinical advice.
+Return a concise illustrative briefing that clearly distinguishes unknown status from verified facts. The spoken narrative should start with "${greeting}." and contain no markdown.`
 
     const apiCall = ai.models.generateContent({
       model: 'gemini-3.8-flash',
-      contents: `Generate an authoritative executive briefing for domain ${focusDomain || 'all'}. Context: 16 edge nodes, 684 cohort patients, $14.2M ARR, Seventeen Pockets decentralized runtime, Soul Auditor verification active.`,
+      contents: `Prepare an illustrative briefing for domain ${focusDomain || 'all'}. No verified live data source is attached to this request.`,
       config: {
         systemInstruction,
         responseMimeType: 'application/json',
@@ -506,18 +495,12 @@ const handleSimulation = async (req: Request, res: Response) => {
   const { scenarioTitle, perturbationType, magnitudePct } = request.data;
 
   const fallbackSimulation = {
-    scenarioTitle: scenarioTitle || 'Offline Satellite Dropout & Buffer Stress Test',
-    simulationDurationWeeks: 4,
-    overallSystemStabilityScore: 94.2,
-    executiveSummary: 'Simulated 48-hour satellite blackout across 5 rural satellite nodes. Local Tier 3 SQLite WAL buffers absorbed 14,200 events with zero packet drops. Upon link re-establishment, batch sync completed in 18 minutes.',
-    nodesImpacted: [
-      { nodeName: 'Operations Commander (Pocket 16 Edge OS)', healthDelta: -2.4, costDeltaUsd: '+$12,000', riskShift: 'Contained', outputForecast: '100% offline continuity maintained throughout perturbation', primaryDependencyConcern: 'Monitor local NVMe storage headroom during prolonged blackouts' },
-      { nodeName: 'Stratum Clinical Edge Engine', healthDelta: -0.8, costDeltaUsd: '$0', riskShift: 'Minimal', outputForecast: 'Patient education pacing tools remained fully responsive locally', primaryDependencyConcern: 'Ensure local audio synthesis models remain resident in RAM' },
-    ],
-    counterMeasures: [
-      { action: 'Expand local SQLite WAL reserve allocation from 500MB to 2GB', targetNode: 'Operations Commander (Pocket 16 Edge OS)', costToDeploy: '$3,500', riskReductionPct: 35 },
-      { action: 'Deploy automated starlink heartbeat failover daemon', targetNode: 'Technology & Zero-Trust Mesh', costToDeploy: '$5,000', riskReductionPct: 40 },
-    ],
+    scenarioTitle: scenarioTitle || 'Illustrative scenario — not executed',
+    simulationDurationWeeks: null,
+    overallSystemStabilityScore: null,
+    executiveSummary: 'Not run. No simulation model or verified system telemetry is connected. This response contains no impact forecast, cost estimate, or deployment recommendation.',
+    nodesImpacted: [],
+    counterMeasures: [],
   };
 
   if (!apiKey) {
@@ -525,10 +508,8 @@ const handleSimulation = async (req: Request, res: Response) => {
   }
 
   try {
-    const systemInstruction = `You are the Digital Twin Simulation Engine of Project Kingdom and Stratum Clinical Edge.
-Model realistic edge dynamics across strategy, finance, operations, technology, and risk for Chief Architect ODell Anderson.
-Analyze realistic perturbation impacts and output decisive countermeasures.
-Return strict JSON.`;
+    const systemInstruction = `You are an illustrative scenario-analysis assistant for Project Kingdom and Stratum Clinical Edge.
+Treat the supplied scenario and magnitude as hypothetical assumptions, not observed events. Do not claim that a simulation was executed against live infrastructure or invent actual node health, costs, deployments, clinical outcomes, or compliance status. Clearly label estimates as hypothetical and state when source data is missing. Do not provide patient-specific clinical advice. Return strict JSON.`;
 
     const userPrompt = `SCENARIO TO SIMULATE:
 Title: ${scenarioTitle || 'Offline Satellite Dropout & Buffer Stress Test'}
@@ -612,28 +593,24 @@ const handleVoiceQuery = async (req: Request, res: Response) => {
   const queryLower = query.toLowerCase();
   let fallbackIntent = 'sovereign_answer';
   let fallbackTarget = 'war-room';
-  let fallbackResponse = `Processing directive "${query}". Sovereign edge intelligence active across all 16 operational nodes (fictional demonstration response).`;
+  let fallbackResponse = 'No verified project data is connected. I cannot confirm live operational status or metrics.';
 
   if (queryLower.includes('risk')) {
     fallbackIntent = 'view_risks';
-    fallbackTarget = 'war-room';
-    fallbackResponse = 'Displaying active risk matrix. Satellite uplink monitoring and RFC4180 audit ledger verification are currently nominal.';
+    fallbackResponse = 'No live risk feed is connected. Current risk status is unknown.';
   } else if (queryLower.includes('clinical') || queryLower.includes('patient') || queryLower.includes('enrollment')) {
     fallbackIntent = 'view_clinical';
-    fallbackTarget = 'war-room';
-    fallbackResponse = 'Opening Stratum Clinical Edge intelligence view. Over 650 active cohort participants enrolled; plain-language health literacy curriculum active.';
+    fallbackResponse = 'No clinical trial or patient data source is connected. No patient records are available in this workspace.';
   } else if (queryLower.includes('finance') || queryLower.includes('revenue') || queryLower.includes('forecast')) {
     fallbackIntent = 'explain_finance';
-    fallbackTarget = 'war-room';
-    fallbackResponse = 'Opening Finance Oracle treasury view. $14.2M ARR run-rate with 38.5 months runway to fund Series A edge appliance scaling.';
+    fallbackResponse = 'No verified financial data source is connected. Revenue and runway are unknown.';
   } else if (queryLower.includes('simulation') || queryLower.includes('twin')) {
     fallbackIntent = 'run_simulation';
     fallbackTarget = 'digital-twin';
-    fallbackResponse = 'Digital Twin simulation environment engaged. Ready to compute ripple projections across enterprise topology.';
+    fallbackResponse = 'No simulation has been run. Connect verified system inputs before interpreting a scenario result.';
   } else if (queryLower.includes('briefing') || queryLower.includes('executive')) {
     fallbackIntent = 'generate_briefing';
-    fallbackTarget = 'war-room';
-    fallbackResponse = 'Good morning. Sovereign systems online. Stratum Clinical Edge is operating with 99.4% aggregate health across all 16 nodes.';
+    fallbackResponse = 'No verified project metrics are available for an executive briefing.';
   }
 
   if (!apiKey) {
@@ -645,9 +622,8 @@ const handleVoiceQuery = async (req: Request, res: Response) => {
   }
 
   try {
-    const systemInstruction = `You are the Sovereign Voice Assistant of Project Kingdom and Stratum Clinical Edge, founded by O'Dell Anderson (ODell Anderson, Chief Architect).
-Deliver authoritative, concise voice responses without apologetic or defensive filler. Speak directly to executive leadership with operational precision.
-Parse the user's voice command. Provide a concise spoken response (1-2 sentences maximum, strictly spoken-friendly, no bullet points or markdown).`;
+    const systemInstruction = `You are an evidence-aware voice assistant for Project Kingdom and Stratum Clinical Edge.
+Use only verified facts supplied in the current request. No live operational, financial, clinical, or risk data is attached. Do not invent metrics, enrollment, deployments, financial performance, compliance status, or patient details. State when information is unknown. Do not provide diagnosis or patient-specific clinical advice. Keep the response to one or two spoken-friendly sentences.`
 
     const apiCall = ai.models.generateContent({
       model: 'gemini-3.8-flash',

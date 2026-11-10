@@ -23,9 +23,9 @@ export const initialTwinNodes: DigitalTwinNode[] = [
     healthPct: 98.4,
     monthlyCostUsd: '$1,280,000',
     riskLevel: 'Low',
-    outputMetric: 'Grade 6–8 Literacy Invariant · 650 Active Patients',
+    outputMetric: 'Grade 6–8 Literacy Invariant · 684 Active Patients',
     dependencies: ['Operations Commander', 'Technology Fabric'],
-    forecastTrend: '+28 New Patient Enrollments / Month',
+    forecastTrend: '+28.5 New Patient Enrollments / Month',
     telemetryStream: [92, 94, 95, 96, 97, 98, 98.4],
   },
   {

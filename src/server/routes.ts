@@ -706,7 +706,7 @@ const handleVoiceQuery = async (req: Request, res: Response) => {
   const queryLower = query.toLowerCase();
   let fallbackIntent = 'sovereign_answer';
   let fallbackTarget = 'war-room';
-  let fallbackResponse = `Processing directive "${query}". Sovereign edge intelligence active across all 16 operational nodes (fictional demonstration response).`;
+  let fallbackResponse = `Processing directive "${query}". Fictional demonstration response: sovereign edge intelligence active across 16 operational nodes.`;
 
   if (queryLower.includes('risk')) {
     fallbackIntent = 'view_risks';
@@ -715,11 +715,11 @@ const handleVoiceQuery = async (req: Request, res: Response) => {
   } else if (queryLower.includes('clinical') || queryLower.includes('patient') || queryLower.includes('enrollment')) {
     fallbackIntent = 'view_clinical';
     fallbackTarget = 'war-room';
-    fallbackResponse = 'Opening Stratum Clinical Edge intelligence view. Over 650 active cohort participants enrolled; plain-language health literacy curriculum active.';
+    fallbackResponse = 'Opening Stratum Clinical Edge intelligence view. Registered cohort participants enrolled; plain-language health literacy curriculum active.';
   } else if (queryLower.includes('finance') || queryLower.includes('revenue') || queryLower.includes('forecast')) {
     fallbackIntent = 'explain_finance';
     fallbackTarget = 'war-room';
-    fallbackResponse = 'Opening Finance Oracle treasury view. $14.2M ARR run-rate with 38.5 months runway to fund Series A edge appliance scaling.';
+    fallbackResponse = 'Opening Finance Oracle treasury view. $14.0M ARR trajectory with 38.5 months runway to fund Series A edge appliance scaling.';
   } else if (queryLower.includes('simulation') || queryLower.includes('twin')) {
     fallbackIntent = 'run_simulation';
     fallbackTarget = 'digital-twin';

@@ -15,7 +15,6 @@ import { LandingPage } from './components/landing/LandingPage.tsx';
 import { VoiceConsole } from './components/VoiceConsole.tsx';
 import { InvestorPortal } from './components/strategy/InvestorPortal.tsx';
 import { QuickfasNexus } from './components/nexus/QuickfasNexus.tsx';
-import { GeminiHealthcareHub } from './components/healthcare/GeminiHealthcareHub.tsx';
 import { ExecutiveBriefingData } from './types/kingdom.ts';
 import { audioEngine } from './services/audioEngine.ts';
 import { CheckCircle2, ShieldAlert } from 'lucide-react';
@@ -24,19 +23,19 @@ import { StorageAuditPanel } from './components/privacy/StorageAuditPanel.tsx';
 import { trackAnalyticsEvent } from './platform/analytics/analyticsEvents.ts';
 
 const INITIAL_BRIEFING: ExecutiveBriefingData = {
-  headline: 'All Clinical Edge Systems Nominal · Strategic Protocol Milestone Accelerated',
-  statusSummary: 'Decentralized clinical edge nodes across the regional network and edge appliances are operating at 99.4% uptime with sub-85ms latency. SUDS distress down-regulation protocol validated across registered cohort participants. Two active regulatory audit invariants verified.',
-  spokenScript: 'Good morning. Clinical Edge systems online. Telemetry ingestion stable across all decentralized nodes. Cohort protocol milestone on track. Two automated invariant checkpoints cleared.',
+  headline: 'All Sovereign Systems Nominal · Stratum Clinical Edge Active',
+  statusSummary: 'Sovereign intelligence command center online. Operational telemetry across 16 decentralized edge nodes is operating at 99.4% uptime with sub-85ms latency. SUDS distress down-regulation protocol verified. Two active regulatory audit invariants verified.',
+  spokenScript: 'Good morning. Clinical Edge systems online. Telemetry ingestion stable across all decentralized nodes. Cohort protocol milestone on track. Illustrative workspace verified.',
   coreAnswers: {
-    whatIsHappeningNow: 'Decentralized clinical edge networks and Seventeen Pockets appliances are actively collecting patient SUDS telemetry across 16 edge sites. Over 650 participants are actively engaged.',
-    whyIsItHappening: 'Offline-first edge runtime (Pockets 1–5) and automated FHIR pipelines eliminated connectivity latency, accelerating daily intake velocity by 28%.',
-    whatHappensNext: 'Pivotal validation protocol milestone will be achieved 14 calendar days ahead of schedule, enabling expedited regulatory submission package generation.',
+    whatIsHappeningNow: 'Stratum Clinical Edge and Seventeen Pockets edge appliances are actively collecting patient SUDS telemetry across 16 edge sites. Cohort intake protocol active.',
+    whyIsItHappening: 'Offline-first edge runtime and automated FHIR protocol pipelines eliminate connectivity latency, keeping daily data intake resilient.',
+    whatHappensNext: 'Pivotal protocol milestone on schedule, enabling expedited regulatory submission package generation.',
     whatShouldIDo: 'Authorize the Sovereign AI Council directive to pre-allocate edge compute capacity to maintain sub-90ms local inference parity.',
   },
   keySignals: [
     {
-      metric: 'REVENUE / RUN-RATE',
-      delta: '$14.2M ARR',
+      metric: 'REVENUE VELOCITY',
+      delta: '$14.0M ARR',
       sentiment: 'positive',
       context: '+24.8% YoY Expansion',
     },
@@ -44,13 +43,13 @@ const INITIAL_BRIEFING: ExecutiveBriefingData = {
       metric: 'CLINICAL VELOCITY',
       delta: '28 / mo',
       sentiment: 'positive',
-      context: '+32% vs Baseline Protocol',
+      context: 'Intake Velocity',
     },
     {
       metric: 'EDGE SYSTEM HEALTH',
       delta: '99.4%',
       sentiment: 'nominal',
-      context: '16 Edge Nodes Autonomous',
+      context: 'Illustrative workspace',
     },
     {
       metric: 'ACTIVE INVARIANTS',
@@ -227,13 +226,6 @@ export default function App() {
                 </div>
               )}
 
-              {/* Tab: Gemini for Healthcare Sovereign Integration */}
-              {activeTab === 'gemini-healthcare' && (
-                <div>
-                  <GeminiHealthcareHub />
-                </div>
-              )}
-
               {/* Tab 2: Mission Control */}
               {activeTab === 'missions' && (
                 <div>
@@ -331,7 +323,7 @@ export default function App() {
         {/* Quiet Sovereign OS Footer */}
         <footer className="border-t border-white/5 py-4 text-center text-xs font-mono text-slate-500 bg-[#070b14]">
           <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
-            <span>PROJECT KINGDOM // IMPERIAL CYBER COMMAND · Illustrative workspace</span>
+            <span>PROJECT KINGDOM // IMPERIAL CYBER COMMAND</span>
             <span>SEE EVERYTHING · DIRECT EVERYTHING · IMPROVE EVERYTHING</span>
           </div>
         </footer>

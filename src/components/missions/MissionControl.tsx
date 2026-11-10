@@ -47,8 +47,8 @@ export const initialMissions: MissionItem[] = [
     deadline: '38.5 mo runway lock',
     impactScore: 95,
     keyOutcomes: [
-      'Lead term sheet active at $22M pre-money valuation ($14.2M ARR run-rate)',
-      'Hardware appliance CAPEX allocation locked at $850k for 50 node rollout',
+      'Lead term sheet active at $22M pre-money valuation ($14.0M ARR run-rate)',
+      'Hardware appliance CAPEX allocation locked at $950,000 for 50 node rollout',
       'Due diligence packet compiled for Chief Architect ODell Anderson',
     ],
   },
@@ -142,9 +142,12 @@ export const MissionControl: React.FC = () => {
       <div className="rounded-lg border border-cyan-400/30 bg-cyan-950/20 px-3 py-2 text-xs text-cyan-200 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-          <span>Active Campaign Tracker: Sovereign missions synchronized with Seventeen Pockets operational roadmap. Sample mission board only.</span>
+          <span>Active Campaign Tracker: Sovereign missions synchronized with Seventeen Pockets operational roadmap.</span>
         </div>
-        <span className="font-mono text-[11px] text-cyan-300">5 Active Campaigns</span>
+        <div className="flex items-center gap-3">
+          <span className="font-mono text-[10px] text-slate-400">Sample mission board only</span>
+          <span className="font-mono text-[11px] text-cyan-300">5 Active Campaigns</span>
+        </div>
       </div>
       {/* Header Banner */}
       <div className="glass-panel rounded-xl p-5">

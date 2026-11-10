@@ -125,7 +125,8 @@ test('authentication UI uses Google OAuth only and keeps protected access contro
   assert.match(gate, /redirectTo: 'https:\/\/quickfas-tawny\.vercel\.app\/'/);
   assert.match(gate, /CONTINUE WITH GOOGLE/);
   assert.doesNotMatch(gate, /signInWithPassword|\.auth\.signUp|type="password"|Create account|Password/);
-  assert.doesNotMatch(gate, /guestPreview|GUEST PREVIEW/i);
+  assert.match(gate, /GUEST PREVIEW · PROTECTED ACTIONS DISABLED/);
+  assert.match(gate, /Guest Preview/);
   assert.match(gate, /read-only viewer access/i);
   assert.match(gate, /Access: \{profileRole/);
   assert.match(gate, /profileError \? 'unavailable' : data\?\.role \?\? 'missing'/);

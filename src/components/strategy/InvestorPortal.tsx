@@ -84,10 +84,13 @@ export const InvestorPortal: React.FC<InvestorPortalProps> = ({ onNotify }) => {
         <div className="flex items-center gap-2">
           <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0" />
           <span>
-            <strong>Sovereign Capital &amp; Architectural Model</strong> · Stratum Clinical Edge ($14.2M ARR) &amp; Seventeen Pockets Decentralized Platform
+            <strong>Sovereign Capital &amp; Architectural Model</strong> · Stratum Clinical Edge &amp; Seventeen Pockets Decentralized Platform
           </span>
         </div>
-        <span className="font-mono text-[11px] text-cyan-300">ODell Anderson, Chief Architect</span>
+        <div className="flex items-center gap-3">
+          <span className="font-mono text-[10px] text-slate-400">Illustrative planning model only</span>
+          <span className="font-mono text-[11px] text-cyan-300">ODell Anderson, Chief Architect</span>
+        </div>
       </div>
       {/* Action Header & View Switcher (Hidden in Print) */}
       <div className="no-print bg-[#0f172a]/90 backdrop-blur-xl border border-[#6ee7ff]/20 rounded-xl p-5 shadow-[0_0_30px_rgba(34,211,238,0.06)] flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -221,7 +224,7 @@ export const InvestorPortal: React.FC<InvestorPortalProps> = ({ onNotify }) => {
             <div className="border-b border-cyan-500/20 pb-6 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
               <div>
                 <span className="text-xs font-mono uppercase tracking-wider text-cyan-400">
-                  DRAFT MODEL · ILLUSTRATIVE ASSUMPTIONS · Illustrative planning model only
+                  DRAFT MODEL · ILLUSTRATIVE ASSUMPTIONS
                 </span>
                 <h1 className="text-3xl sm:text-4xl font-extrabold text-white mt-1">
                   PROJECT KINGDOM

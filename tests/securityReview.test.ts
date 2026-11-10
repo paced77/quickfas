@@ -122,11 +122,10 @@ test('authentication UI uses Google OAuth only and keeps protected access contro
   const gate = source('../src/components/auth/AuthGate.tsx');
   assert.match(gate, /signInWithOAuth/);
   assert.match(gate, /provider: 'google'/);
-  assert.match(gate, /redirectTo: 'https:\/\/quickfas-tawny\.vercel\.app\//);
+  assert.match(gate, /redirectTo: 'https:\/\/quickfas-tawny\.vercel\.app\/'/);
   assert.match(gate, /CONTINUE WITH GOOGLE/);
   assert.doesNotMatch(gate, /signInWithPassword|\.auth\.signUp|type="password"|Create account|Password/);
-  assert.match(gate, /GUEST PREVIEW · PROTECTED ACTIONS DISABLED/);
-  assert.match(gate, /Guest Preview/);
+  assert.doesNotMatch(gate, /guestPreview|GUEST PREVIEW/i);
   assert.match(gate, /read-only viewer access/i);
   assert.match(gate, /Access: \{profileRole/);
   assert.match(gate, /profileError \? 'unavailable' : data\?\.role \?\? 'missing'/);

@@ -17,8 +17,8 @@ export const initialSubsystems: SubsystemTelemetry[] = [
     healthPct: 99.4,
     latencyMs: 78,
     dependencies: ['Pocket 3 Coping Lab', 'HL7/FHIR Protocol Adapter', 'SQLite Edge Store'],
-    output: '684 Active Patients Tracked · 28.5 enrollments/mo',
-    forecast: 'Phase III protocol milestone reached 14 days early',
+    output: '650 Active Patients Tracked · 28 enrollments/mo',
+    forecast: 'Pivotal protocol milestone reached 14 days early',
     confidence: 'Very High',
     velocityMetric: '34.2% Mean Distress Reduction',
     impactSentiment: 'positive',
@@ -132,7 +132,7 @@ export const CommandGrid: React.FC<CommandGridProps> = ({ onSelectSubsystem }) =
             Operational Subsystem Telemetry
           </h3>
           <p className="text-xs text-slate-400 mt-0.5">
-            Real-time edge health, telemetry latency, and cross-system operational indicators.
+            Real-time edge health, telemetry latency, and cross-system operational indicators. Illustrative values only.
           </p>
         </div>
       </div>

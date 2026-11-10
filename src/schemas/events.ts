@@ -161,8 +161,10 @@ export function validateKingdomTelemetry(data: unknown): {
     ? data as Record<string, unknown>
     : null;
   const metadata = record?.metadata;
-  if (!metadata || typeof metadata !== 'object' || Array.isArray(metadata)) {
-    return { success: false, error: 'Telemetry metadata object is required.' };
+  const classification = (metadata as Record<string, unknown>)?.dataClassification;
+  if (!metadata || typeof metadata !== 'object' || Array.isArray(metadata)
+    || (classification !== 'synthetic_demo' && classification !== 'synthetic')) {
+    return { success: false, error: 'Telemetry must be explicitly classified as synthetic or synthetic_demo.' };
   }
   if (containsRestrictedTelemetryContent(data)) {
     return { success: false, error: 'Potentially restricted personal health information (PII) is not accepted in telemetry.' };

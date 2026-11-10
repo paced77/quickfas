@@ -61,7 +61,7 @@ function seedInitialTelemetry() {
       source: 'pocket16-edge-os-appliance',
       correlationId: 'edge-correlation-01',
       timestamp: new Date(now.getTime() - 120000).toISOString(),
-      metadata: { scenario: 'seventeen_pockets_runtime', dataClassification: 'operational' },
+      metadata: { scenario: 'seventeen_pockets_runtime', dataClassification: 'synthetic' },
       payload: { status: 'optimal', uptimeSeconds: 72000, latencyMs: 78, errorsPerMin: 0, cpuUtilization: 24, memoryUtilization: 42, availabilityPct: 99.8 },
     },
     {
@@ -72,7 +72,7 @@ function seedInitialTelemetry() {
       source: 'stratum-clinical-edge-engine',
       correlationId: 'edge-correlation-02',
       timestamp: new Date(now.getTime() - 90000).toISOString(),
-      metadata: { scenario: 'seventeen_pockets_runtime', dataClassification: 'operational' },
+      metadata: { scenario: 'seventeen_pockets_runtime', dataClassification: 'synthetic' },
       payload: { subsystem: 'Pocket 16 Edge OS Appliance', capacityPct: 88, utilizationPct: 62, throughputPerHr: 340, activeTasks: 16, statusSummary: '16 rural clinic edge nodes autonomous; zero data loss during satellite failover' },
     },
     {
@@ -83,7 +83,7 @@ function seedInitialTelemetry() {
       source: 'satellite-uplink-monitor',
       correlationId: 'edge-correlation-03',
       timestamp: new Date(now.getTime() - 60000).toISOString(),
-      metadata: { scenario: 'seventeen_pockets_runtime', dataClassification: 'operational' },
+      metadata: { scenario: 'seventeen_pockets_runtime', dataClassification: 'synthetic' },
       payload: { category: 'operations', headline: 'Rural Clinic Beta Starlink uplink jitter', probability: 0.18, impactRating: 3, riskScore: 18, mitigationStrategy: 'Local Tier 3 SQLite WAL store buffering active; 14,200 events staged for batch burst sync', ownerAgent: 'Risk Sentinel' },
     },
   ];
@@ -706,7 +706,7 @@ const handleVoiceQuery = async (req: Request, res: Response) => {
   const queryLower = query.toLowerCase();
   let fallbackIntent = 'sovereign_answer';
   let fallbackTarget = 'war-room';
-  let fallbackResponse = `Processing directive "${query}". Sovereign edge intelligence active across all 16 operational nodes.`;
+  let fallbackResponse = `Processing directive "${query}". Sovereign edge intelligence active across all 16 operational nodes (fictional demonstration response).`;
 
   if (queryLower.includes('risk')) {
     fallbackIntent = 'view_risks';
@@ -715,7 +715,7 @@ const handleVoiceQuery = async (req: Request, res: Response) => {
   } else if (queryLower.includes('clinical') || queryLower.includes('patient') || queryLower.includes('enrollment')) {
     fallbackIntent = 'view_clinical';
     fallbackTarget = 'war-room';
-    fallbackResponse = 'Opening Stratum Clinical Edge intelligence view. 684 active cohort patients enrolled; plain-language health literacy curriculum active.';
+    fallbackResponse = 'Opening Stratum Clinical Edge intelligence view. Over 650 active cohort participants enrolled; plain-language health literacy curriculum active.';
   } else if (queryLower.includes('finance') || queryLower.includes('revenue') || queryLower.includes('forecast')) {
     fallbackIntent = 'explain_finance';
     fallbackTarget = 'war-room';

@@ -142,7 +142,7 @@ export const MissionControl: React.FC = () => {
       <div className="rounded-lg border border-cyan-400/30 bg-cyan-950/20 px-3 py-2 text-xs text-cyan-200 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-          <span>Active Campaign Tracker: Sovereign missions synchronized with Seventeen Pockets operational roadmap.</span>
+          <span>Active Campaign Tracker: Sovereign missions synchronized with Seventeen Pockets operational roadmap. Sample mission board only.</span>
         </div>
         <span className="font-mono text-[11px] text-cyan-300">5 Active Campaigns</span>
       </div>

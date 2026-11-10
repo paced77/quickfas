@@ -10,33 +10,32 @@ export function AuthGate({ children }: AuthGateProps) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const [profileRole, setProfileRole] = useState<string | null>(null);
-  const [guestPreview, setGuestPreview] = useState(false);
+
+  useEffect(() => {
+    const authParams = new URLSearchParams(window.location.hash.slice(1));
+    const authError = authParams.get('error_description') || authParams.get('error');
+    if (authError) {
+      setError('Google sign-in could not be completed. Please try again.');
+      window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}`);
+    }
+  }, []);
 
   useEffect(() => {
     if (!supabase) {
       setReady(true);
       return;
     }
-
     let active = true;
-    void supabase.auth.getSession().then(({ data: { session: currentSession } }) => {
+    supabase.auth.getSession().then(({ data: { session: currentSession } }) => {
       if (active) {
         setSession(currentSession);
         setReady(true);
       }
-    }).catch(() => {
-      if (active) {
-        setError('Unable to verify your session. Please try again.');
-        setReady(true);
-      }
     });
-
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, nextSession) => {
       setSession(nextSession);
       setReady(true);
-      setError('');
     });
-
     return () => {
       active = false;
       subscription.unsubscribe();
@@ -48,7 +47,6 @@ export function AuthGate({ children }: AuthGateProps) {
       setProfileRole(null);
       return;
     }
-
     let active = true;
     setProfileRole('checking');
     void (async () => {
@@ -63,12 +61,11 @@ export function AuthGate({ children }: AuthGateProps) {
         if (active) setProfileRole('unavailable');
       }
     })();
-
     return () => { active = false; };
   }, [session?.user.id]);
 
   const signInWithGoogle = async () => {
-    if (!supabase) return;
+    if (!supabase || busy) return;
     setBusy(true);
     setError('');
     try {
@@ -78,7 +75,7 @@ export function AuthGate({ children }: AuthGateProps) {
       });
       if (authError) throw authError;
     } catch (authError) {
-      setError(authError instanceof Error ? authError.message : 'Unable to start Google sign-in. Please try again.');
+      setError(authError instanceof Error ? authError.message : 'Google sign-in is unavailable. Please try again.');
       setBusy(false);
     }
   };
@@ -93,46 +90,9 @@ export function AuthGate({ children }: AuthGateProps) {
     return <div className="min-h-screen bg-[#070b14] grid place-items-center text-cyan-200 font-mono text-xs">VERIFYING SECURE SESSION…</div>;
   }
 
-  if (guestPreview) {
-    return (
-      <>
-        {children}
-        <div className="fixed bottom-5 right-5 z-[100] flex max-w-[calc(100vw-2rem)] items-center gap-3 rounded-xl border border-amber-400/30 bg-[#0f172a]/95 px-3 py-2 shadow-xl backdrop-blur">
-          <span className="text-amber-300">GUEST PREVIEW · PROTECTED ACTIONS DISABLED</span>
-          <button
-            type="button"
-            onClick={() => setGuestPreview(false)}
-            className="rounded border border-white/10 px-2 py-1 text-[10px] text-cyan-200 hover:bg-cyan-300/10"
-          >
-            AUTH PANEL
-          </button>
-        </div>
-      </>
-    );
-  }
-
+  // Direct access when standalone / local dev without Supabase
   if (!isSupabaseConfigured || !supabase) {
-    return (
-      <div className="min-h-screen bg-[#070b14] bg-grid-pattern text-slate-100 flex items-center justify-center p-6">
-        <section className="w-full max-w-xl rounded-2xl border border-cyan-300/30 bg-[#0f172a]/95 p-8 shadow-[0_0_60px_rgba(34,211,238,0.12)]">
-          <p className="font-mono text-xs tracking-[0.25em] text-cyan-300">STRATUM CLINICAL EDGE + PROJECT KINGDOM</p>
-          <h1 className="mt-4 text-3xl font-bold tracking-tight">Project Kingdom is Online</h1>
-          <p className="mt-3 text-sm leading-6 text-slate-300">
-            Explore the unified platform in Guest Preview Mode. Configure Supabase to enable secure Google sign-in and protected access.
-          </p>
-          <button
-            type="button"
-            onClick={() => setGuestPreview(true)}
-            className="glow-btn-primary mt-6 w-full rounded-lg py-3 px-4 text-sm font-bold"
-          >
-            LAUNCH PROJECT KINGDOM →
-          </button>
-          <p className="mt-6 border-t border-white/10 pt-5 text-xs leading-5 text-slate-400">
-            To enable authentication, configure <code className="text-cyan-300">VITE_SUPABASE_URL</code> and <code className="text-cyan-300">VITE_SUPABASE_PUBLISHABLE_KEY</code>.
-          </p>
-        </section>
-      </div>
-    );
+    return <>{children}</>;
   }
 
   if (!session) {
@@ -142,25 +102,14 @@ export function AuthGate({ children }: AuthGateProps) {
           <div className="mb-8">
             <p className="font-mono text-[10px] tracking-[0.28em] text-cyan-300">STRATUM + PROJECT KINGDOM // SECURE ACCESS</p>
             <h1 className="mt-3 text-3xl font-semibold tracking-tight">Welcome back.</h1>
-            <p className="mt-2 text-sm text-slate-400">Sign in securely with your Google account to access the unified platform.</p>
+            <p className="mt-2 text-sm text-slate-400">Continue securely with your Google account.</p>
           </div>
           {error && <p role="alert" className="mb-4 rounded-lg border border-red-400/20 bg-red-400/10 p-3 text-xs text-red-200">{error}</p>}
-          <button
-            type="button"
-            onClick={() => void signInWithGoogle()}
-            disabled={busy}
-            className="glow-btn-primary w-full rounded-lg py-3 text-sm font-semibold disabled:cursor-wait disabled:opacity-60"
-          >
-            {busy ? 'CONNECTING…' : 'CONTINUE WITH GOOGLE'}
+          <button type="button" onClick={() => void signInWithGoogle()} disabled={busy} className="flex w-full items-center justify-center gap-3 rounded-lg border border-white/15 bg-white py-3 text-sm font-semibold text-slate-900 hover:bg-slate-100 disabled:cursor-wait disabled:opacity-60 cursor-pointer">
+            <svg aria-hidden="true" viewBox="0 0 48 48" className="h-5 w-5"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.05 13.22l7.98 6.19C11.93 13.72 17.48 9.5 24 9.5Z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.76 7.18l7.73 6C44.42 38.02 46.98 31.8 46.98 24.55Z"/><path fill="#FBBC05" d="M10.03 28.59A14.4 14.4 0 0 1 9.25 24c0-1.59.27-3.13.76-4.59l-7.98-6.19A23.9 23.9 0 0 0 0 24c0 3.87.93 7.53 2.57 10.78l7.46-6.19Z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.91-5.8l-7.73-6c-2.14 1.45-4.88 2.3-8.18 2.3-6.52 0-12.07-4.22-14.03-10.09l-7.98 6.19C6.51 42.62 14.62 48 24 48Z"/></svg>
+            {busy ? 'REDIRECTING TO GOOGLE…' : 'CONTINUE WITH GOOGLE'}
           </button>
-          <button
-            type="button"
-            onClick={() => setGuestPreview(true)}
-            className="mt-4 w-full text-xs text-cyan-300/80 hover:text-cyan-200 underline font-mono tracking-wide"
-          >
-            Or enter as Guest Preview →
-          </button>
-          <p className="mt-6 text-center text-[10px] leading-5 text-slate-500">Protected by Supabase Auth. Access is verified server-side for every API request. New accounts receive read-only viewer access.</p>
+          <p className="mt-6 text-center text-[10px] leading-5 text-slate-500">Protected by Supabase Auth. Access is verified server-side for every API request. New accounts receive read-only viewer access until an administrator changes their role.</p>
         </section>
       </main>
     );
@@ -170,10 +119,7 @@ export function AuthGate({ children }: AuthGateProps) {
     <>
       {children}
       <div className="fixed bottom-5 right-5 z-[100] flex max-w-[calc(100vw-2rem)] items-center gap-3 rounded-xl border border-cyan-300/20 bg-[#0f172a]/95 px-3 py-2 shadow-xl backdrop-blur">
-        <span className="flex max-w-64 flex-col truncate text-[11px] text-slate-300">
-          <span className="truncate">{session.user.email}</span>
-          <span className="font-mono text-[9px] uppercase tracking-wider text-cyan-300">Access: {profileRole === 'checking' ? 'checking' : profileRole === 'unavailable' ? 'unavailable' : profileRole ?? 'missing'}</span>
-        </span>
+        <span className="flex max-w-64 flex-col truncate text-[11px] text-slate-300"><span className="truncate">{session.user.email}</span><span className="font-mono text-[9px] uppercase tracking-wider text-cyan-300">Access: {profileRole ?? 'checking'}</span></span>
         <button type="button" onClick={signOut} className="rounded-md border border-white/10 px-3 py-1.5 text-[10px] font-semibold tracking-wider text-cyan-200 hover:bg-cyan-300/10">SIGN OUT</button>
       </div>
     </>

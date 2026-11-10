@@ -23,9 +23,9 @@ export const initialTwinNodes: DigitalTwinNode[] = [
     healthPct: 98.4,
     monthlyCostUsd: '$1,280,000',
     riskLevel: 'Low',
-    outputMetric: 'Grade 6–8 Literacy Invariant · 684 Active Patients',
+    outputMetric: 'Grade 6–8 Literacy Invariant · 650 Active Patients',
     dependencies: ['Operations Commander', 'Technology Fabric'],
-    forecastTrend: '+28.5 New Patient Enrollments / Month',
+    forecastTrend: '+28 New Patient Enrollments / Month',
     telemetryStream: [92, 94, 95, 96, 97, 98, 98.4],
   },
   {
@@ -134,7 +134,7 @@ export const DigitalTwin: React.FC = () => {
               <span>Enterprise Topology // Subsystem Dependencies</span>
             </h3>
             <p className="text-xs text-slate-400 mt-0.5">
-              Live edge node topology, health ratings, and cross-tier operational dependencies.
+              Live edge node topology, health ratings, and cross-tier operational dependencies. Illustrative topology and sample metrics only.
             </p>
           </div>
           <span className="text-xs font-mono text-emerald-400 bg-emerald-950/40 border border-emerald-800/40 px-2.5 py-1 rounded">

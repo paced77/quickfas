@@ -77,7 +77,8 @@ test('API router mounts Supabase authentication before protected route registrat
   assert.match(routes, /if \(process\.env\.NODE_ENV === 'production' \|\| process\.env\.VERCEL\) \{[\s\S]*?res\.status\(503\)/);
   assert.match(routes, /Guest operator access is limited to local, non-production development/);
   assert.match(routes, /res\.setHeader\('X-Frame-Options', 'DENY'\)/);
-  assert.match(source('../vercel.json'), /\"X-Frame-Options\"\s*:\s*\"DENY\"/);
+  const vercelConfig = JSON.parse(source('../vercel.json')) as { headers?: Array<{ headers?: Array<{ key?: string; value?: string }> }> };
+  assert.ok(vercelConfig.headers?.some((rule) => rule.headers?.some((header) => header.key === 'X-Frame-Options' && header.value === 'DENY')));
 
   const registrations = [...routes.matchAll(/^\s*router\.(?:get|post|put|patch|delete)\(([^\n]+)$/gm)];
   assert.ok(registrations.length > 0);

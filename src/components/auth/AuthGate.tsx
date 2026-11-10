@@ -90,9 +90,18 @@ export function AuthGate({ children }: AuthGateProps) {
     return <div className="min-h-screen bg-[#070b14] grid place-items-center text-cyan-200 font-mono text-xs">VERIFYING SECURE SESSION…</div>;
   }
 
-  // Direct access when standalone / local dev without Supabase
+  // Direct access is permitted only in local development. Production fails closed
+  // when the public Supabase configuration is absent or incomplete.
   if (!isSupabaseConfigured || !supabase) {
-    return <>{children}</>;
+    if (import.meta.env.DEV) return <>{children}</>;
+    return (
+      <main role="alert" className="min-h-screen bg-[#070b14] text-slate-100 flex items-center justify-center p-6">
+        <section className="max-w-md rounded-2xl border border-amber-300/20 bg-[#0f172a]/95 p-8">
+          <h1 className="text-xl font-semibold">Secure sign-in is unavailable</h1>
+          <p className="mt-3 text-sm leading-6 text-slate-300">Authentication is not configured for this deployment. Access is blocked until the service configuration is restored.</p>
+        </section>
+      </main>
+    );
   }
 
   if (!session) {

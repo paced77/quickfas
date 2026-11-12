@@ -132,7 +132,10 @@ test('authentication UI uses Google OAuth only and keeps protected access contro
   const gate = source('../src/components/auth/AuthGate.tsx');
   assert.match(gate, /signInWithOAuth/);
   assert.match(gate, /provider: 'google'/);
-  assert.match(gate, /session\.user\.app_metadata\?\.provider !== 'google'/);
+  assert.match(gate, /identities\?\.some\(\(identity\) => identity\.provider === 'google'\)/);
+  assert.match(gate, /if \(!session \|\| !hasGoogleIdentity\(session\.user\)\)/);
+  assert.match(gate, /if \(session && !hasGoogleIdentity\(session\.user\)\)/);
+  assert.doesNotMatch(gate, /app_metadata\?\.provider !== 'google'/);
   assert.match(gate, /redirectTo: 'https:\/\/quickfas-tawny\.vercel\.app\/'/);
   assert.match(gate, /CONTINUE WITH GOOGLE/);
   assert.doesNotMatch(gate, /signInWithPassword|\.auth\.signUp|type="password"|Create account|Password/);

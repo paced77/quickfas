@@ -61,7 +61,8 @@ test('opt-in telemetry fixtures use generic synthetic workstream data', () => {
   const routes = source('../src/server/routes.ts');
   const feed = source('../src/components/TelemetryFeed.tsx');
   assert.match(routes, /KINGDOM_DEMO_TELEMETRY === 'true'/);
-  assert.match(routes, /dataClassification: 'synthetic'/);
+  assert.match(routes, /if \(demoTelemetryEnabled\) \{[\s\S]*?dataClassification: 'synthetic_demo'/);
+  assert.doesNotMatch(routes, /dataClassification: 'operational'|environment: 'production-edge'/);
   assert.doesNotMatch(routes, /clinical\.enrollment|clinical\.fhir_tx|STUDY-ONC-904|STUDY-CARDIO-402/);
   assert.match(feed, /eventType: 'ops\.capacity_update'/);
   assert.match(feed, /dataClassification: 'synthetic_demo'/);
@@ -73,6 +74,11 @@ test('API router mounts Supabase authentication before protected route registrat
   const routerMount = routes.indexOf('app.use(router)');
   assert.ok(authMount >= 0 && routerMount > authMount, 'API auth guard must precede router mounting');
   assert.match(routes, /return requireAuthenticatedUser\(req, res, next\)/);
+  assert.match(routes, /if \(process\.env\.NODE_ENV === 'production' \|\| process\.env\.VERCEL\) \{[\s\S]*?res\.status\(503\)/);
+  assert.match(routes, /Guest operator access is limited to local, non-production development/);
+  assert.match(routes, /res\.setHeader\('X-Frame-Options', 'DENY'\)/);
+  const vercelConfig = JSON.parse(source('../vercel.json')) as { headers?: Array<{ headers?: Array<{ key?: string; value?: string }> }> };
+  assert.ok(vercelConfig.headers?.some((rule) => rule.headers?.some((header) => header.key === 'X-Frame-Options' && header.value === 'DENY')));
 
   const registrations = [...routes.matchAll(/^\s*router\.(?:get|post|put|patch|delete)\(([^\n]+)$/gm)];
   assert.ok(registrations.length > 0);
@@ -83,6 +89,10 @@ test('API router mounts Supabase authentication before protected route registrat
   }
 
   assert.match(routes, /authClient\.auth\.getUser\(token\)/);
+  assert.match(routes, /user\.app_metadata\?\.provider !== 'google'/);
+  assert.doesNotMatch(routes, /684 active cohort participants|\$14\.2M ARR|Current \$2\.85M cash position|16 autonomous edge appliances|satisfy all 21 CFR Part 11 requirements|over 650 active cohort participants|99\.4% aggregate health|34\.2% mean downregulation|38\.5 months runway/);
+  assert.match(routes, /No verified project metrics or live operational status are available/);
+  assert.match(routes, /No simulation has been run/);
   assert.match(routes, /\.from\('profiles'\)[\s\S]*?\.select\('role'\)/);
   assert.match(routes, /requireRole\('admin', 'executive'\), handleAnalyticsSummary/);
   assert.match(routes, /requireRole\('admin', 'operator'\), requireDistributedRateLimit\('telemetry-ingest'\), handleTelemetryInject/);
@@ -97,7 +107,7 @@ test('API router mounts Supabase authentication before protected route registrat
 
 test('AI routes enforce role-specific capabilities and distributed rate limits', () => {
   const routes = source('../src/server/routes.ts');
-  const authMount = routes.indexOf('router.use(requireAuthenticatedUser)');
+  const authMount = routes.indexOf('router.use(apiAuthGuard)');
   const expected = [
     ["router.post('/gemini/council-deliberation'", "requireRole('admin', 'executive', 'analyst')", "ai-council"],
     ["router.post('/gemini/executive-briefing'", "requireRole('admin', 'executive')", "ai-briefing"],
@@ -122,11 +132,14 @@ test('authentication UI uses Google OAuth only and keeps protected access contro
   const gate = source('../src/components/auth/AuthGate.tsx');
   assert.match(gate, /signInWithOAuth/);
   assert.match(gate, /provider: 'google'/);
+  assert.match(gate, /session\.user\.app_metadata\?\.provider !== 'google'/);
   assert.match(gate, /redirectTo: 'https:\/\/quickfas-tawny\.vercel\.app\/'/);
   assert.match(gate, /CONTINUE WITH GOOGLE/);
   assert.doesNotMatch(gate, /signInWithPassword|\.auth\.signUp|type="password"|Create account|Password/);
   assert.doesNotMatch(gate, /guestPreview|GUEST PREVIEW/i);
   assert.match(gate, /read-only viewer access/i);
+  assert.match(gate, /if \(import\.meta\.env\.DEV\) return <>\{children\}<\/>;/);
+  assert.match(gate, /Authentication is not configured for this deployment/);
   assert.match(gate, /Access: \{profileRole/);
   assert.match(gate, /profileError \? 'unavailable' : data\?\.role \?\? 'missing'/);
 });
@@ -162,4 +175,31 @@ test('rate-limit migration keeps counters private and non-bypassable by callers'
   assert.match(migration, /with check \(\(select auth\.uid\(\)\) = user_id\)/);
   assert.match(migration, /revoke delete, truncate, references, trigger/i);
   assert.doesNotMatch(migration, /security definer/i);
+});
+
+
+test('RLS event-trigger function execution is restricted in a tracked migration', () => {
+  const migration = source('../supabase/migrations/20261110210500_restrict_rls_auto_enable_execute.sql');
+  assert.match(migration, /REVOKE ALL ON FUNCTION public\.rls_auto_enable\(\) FROM PUBLIC/i);
+  assert.match(migration, /REVOKE ALL ON FUNCTION public\.rls_auto_enable\(\) FROM anon/i);
+  assert.match(migration, /REVOKE ALL ON FUNCTION public\.rls_auto_enable\(\) FROM authenticated/i);
+  assert.match(migration, /SECURITY DEFINER/i);
+  assert.match(migration, /SET search_path TO 'pg_catalog'/i);
+  assert.match(migration, /CREATE EVENT TRIGGER ensure_rls/i);
+  assert.match(migration, /INTO STRICT tbl/i);
+  assert.doesNotMatch(migration, /WHEN OTHERS THEN/i);
+  assert.match(migration, /GRANT EXECUTE ON FUNCTION public\.rls_auto_enable\(\) TO service_role/i);
+});
+
+
+test('public landing remains open while the command workspace requires Google-authenticated access', () => {
+  const app = source('../src/App.tsx');
+  const gate = source('../src/components/auth/AuthGate.tsx');
+  assert.match(app, /const \[isLandingView, setIsLandingView\] = useState<boolean>\(true\)/);
+  assert.match(app, /import \{ AuthGate \} from '\.\/components\/auth\/AuthGate\.tsx'/);
+  assert.match(app, /isLandingView \? \([\s\S]*?<LandingPage[\s\S]*?\) : \([\s\S]*?<AuthGate>[\s\S]*?ExecutiveBriefing[\s\S]*?<\/AuthGate>/);
+  assert.match(app, /!isLandingView && \(\s*<Sidebar/);
+  assert.match(app, /!isLandingView && \(\s*<Header/);
+  assert.match(gate, /configureAuthenticatedFetch\(\)/);
+  assert.match(gate, /provider: 'google'/);
 });

@@ -1,6 +1,6 @@
 import { ReactNode, useEffect, useState } from 'react';
 import type { Session } from '@supabase/supabase-js';
-import { isSupabaseConfigured, supabase } from '../../lib/supabase.ts';
+import { configureAuthenticatedFetch, isSupabaseConfigured, supabase } from '../../lib/supabase.ts';
 
 type AuthGateProps = { children: ReactNode };
 
@@ -21,6 +21,7 @@ export function AuthGate({ children }: AuthGateProps) {
   }, []);
 
   useEffect(() => {
+    configureAuthenticatedFetch();
     if (!supabase) {
       setReady(true);
       return;
@@ -69,6 +70,11 @@ export function AuthGate({ children }: AuthGateProps) {
     setBusy(true);
     setError('');
     try {
+      // Do not silently link a pre-existing password session to Google; require a fresh Google sign-in.
+      if (session && session.user.app_metadata?.provider !== 'google') {
+        const { error: signOutError } = await supabase.auth.signOut();
+        if (signOutError) throw signOutError;
+      }
       const { error: authError } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: { redirectTo: 'https://quickfas-tawny.vercel.app/' },
@@ -90,12 +96,21 @@ export function AuthGate({ children }: AuthGateProps) {
     return <div className="min-h-screen bg-[#070b14] grid place-items-center text-cyan-200 font-mono text-xs">VERIFYING SECURE SESSION…</div>;
   }
 
-  // Direct access when standalone / local dev without Supabase
+  // Direct access is permitted only in local development. Production fails closed
+  // when the public Supabase configuration is absent or incomplete.
   if (!isSupabaseConfigured || !supabase) {
-    return <>{children}</>;
+    if (import.meta.env.DEV) return <>{children}</>;
+    return (
+      <main role="alert" className="min-h-screen bg-[#070b14] text-slate-100 flex items-center justify-center p-6">
+        <section className="max-w-md rounded-2xl border border-amber-300/20 bg-[#0f172a]/95 p-8">
+          <h1 className="text-xl font-semibold">Secure sign-in is unavailable</h1>
+          <p className="mt-3 text-sm leading-6 text-slate-300">Authentication is not configured for this deployment. Access is blocked until the service configuration is restored.</p>
+        </section>
+      </main>
+    );
   }
 
-  if (!session) {
+  if (!session || session.user.app_metadata?.provider !== 'google') {
     return (
       <main className="min-h-screen bg-[#070b14] bg-grid-pattern text-slate-100 flex items-center justify-center p-5">
         <section className="w-full max-w-md rounded-2xl border border-cyan-300/20 bg-[#0f172a]/95 p-8 shadow-[0_0_60px_rgba(34,211,238,0.10)]">

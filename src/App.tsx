@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { AuthGate } from './components/auth/AuthGate.tsx';
 import { Sidebar, KingdomNavTab } from './components/layout/Sidebar.tsx';
 import { Header } from './components/Header.tsx';
 import { ExecutiveBriefing } from './components/ExecutiveBriefing.tsx';
@@ -62,7 +63,7 @@ const INITIAL_BRIEFING: ExecutiveBriefingData = {
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<KingdomNavTab>('dashboard');
-  const [isLandingView, setIsLandingView] = useState<boolean>(false);
+  const [isLandingView, setIsLandingView] = useState<boolean>(true);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
   const [briefing, setBriefing] = useState<ExecutiveBriefingData>(INITIAL_BRIEFING);
   const [isLoadingBriefing, setIsLoadingBriefing] = useState<boolean>(false);
@@ -137,6 +138,7 @@ export default function App() {
   return (
     <div className="min-h-screen bg-[#070b14] text-slate-100 flex font-sans selection:bg-cyan-500/20 selection:text-cyan-200">
       {/* Imperial Cyber Command Sidebar */}
+      {!isLandingView && (
       <Sidebar
         activeTab={activeTab}
         onSelectTab={(tab) => {
@@ -152,10 +154,12 @@ export default function App() {
         }}
         isLandingView={isLandingView}
       />
+      )}
 
       {/* Main Workspace Frame */}
       <div className="flex-1 flex flex-col min-w-0 overflow-y-auto h-screen">
         {/* Top Command Bar */}
+        {!isLandingView && (
         <Header
           activeTab={activeTab}
           onSelectTab={(tab) => {
@@ -175,10 +179,11 @@ export default function App() {
           onToggleLandingView={() => setIsLandingView(!isLandingView)}
           isLandingView={isLandingView}
         />
+        )}
 
         {/* Main Content Area */}
         <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <aside
+          {!isLandingView && <aside
             role="note"
             aria-label="Platform operational status"
             className="mb-5 rounded-lg border border-cyan-400/30 bg-cyan-950/30 px-4 py-2.5 text-xs leading-5 text-cyan-100 flex items-center justify-between"
@@ -190,9 +195,9 @@ export default function App() {
               </span>
             </div>
             <span className="font-mono text-[11px] text-cyan-300 hidden md:inline">WCAG 2.2 AA · Grade 6–8 Literacy Invariant</span>
-          </aside>
+          </aside>}
           {/* Toast Notification */}
-          {notification && (
+          {!isLandingView && notification && (
             <div className="fixed bottom-6 right-6 z-50 bg-[#0f172a] border border-[#6ee7ff]/40 text-cyan-200 text-xs px-4 py-2.5 rounded-lg shadow-[0_0_24px_rgba(110,231,255,0.3)] flex items-center gap-2 animate-in slide-in-from-bottom duration-200">
               <CheckCircle2 className="w-4 h-4 text-[#6ee7ff] shrink-0" />
               <span>{notification}</span>
@@ -203,7 +208,8 @@ export default function App() {
           {isLandingView ? (
             <LandingPage onEnterKingdom={() => setIsLandingView(false)} />
           ) : (
-            <>
+            <AuthGate>
+              <>
               {/* Tab 1: Dashboard (Unified Command View) */}
               {activeTab === 'dashboard' && (
                 <div className="space-y-6">
@@ -299,12 +305,13 @@ export default function App() {
                   <QuickfasNexus />
                 </div>
               )}
-            </>
+              </>
+            </AuthGate>
           )}
         </main>
 
         {/* Voice Console Modal */}
-        <VoiceConsole
+        {!isLandingView && <VoiceConsole
           isOpen={isVoiceConsoleOpen}
           onClose={() => setIsVoiceConsoleOpen(false)}
           onNavigateTab={(tab) => {
@@ -319,15 +326,15 @@ export default function App() {
             setIsVoiceConsoleOpen(false);
             fetchLiveBriefing();
           }}
-        />
+        />}
 
         {/* Quiet Sovereign OS Footer */}
-        <footer className="border-t border-white/5 py-4 text-center text-xs font-mono text-slate-500 bg-[#070b14]">
+        {!isLandingView && <footer className="border-t border-white/5 py-4 text-center text-xs font-mono text-slate-500 bg-[#070b14]">
           <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
             <span>PROJECT KINGDOM // IMPERIAL CYBER COMMAND · Illustrative workspace</span>
             <span>SEE EVERYTHING · DIRECT EVERYTHING · IMPROVE EVERYTHING</span>
           </div>
-        </footer>
+        </footer>}
       </div>
       <ConsentBanner />
     </div>

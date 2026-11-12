@@ -4,6 +4,9 @@ import { configureAuthenticatedFetch, isSupabaseConfigured, supabase } from '../
 
 type AuthGateProps = { children: ReactNode };
 
+const hasGoogleIdentity = (user: Session['user'] | null) =>
+  user?.identities?.some((identity) => identity.provider === 'google') ?? false;
+
 export function AuthGate({ children }: AuthGateProps) {
   const [session, setSession] = useState<Session | null>(null);
   const [ready, setReady] = useState(false);
@@ -71,7 +74,7 @@ export function AuthGate({ children }: AuthGateProps) {
     setError('');
     try {
       // Do not silently link a pre-existing password session to Google; require a fresh Google sign-in.
-      if (session && session.user.app_metadata?.provider !== 'google') {
+      if (session && !hasGoogleIdentity(session.user)) {
         const { error: signOutError } = await supabase.auth.signOut();
         if (signOutError) throw signOutError;
       }
@@ -110,7 +113,7 @@ export function AuthGate({ children }: AuthGateProps) {
     );
   }
 
-  if (!session || session.user.app_metadata?.provider !== 'google') {
+  if (!session || !hasGoogleIdentity(session.user)) {
     return (
       <main className="min-h-screen bg-[#070b14] bg-grid-pattern text-slate-100 flex items-center justify-center p-5">
         <section className="w-full max-w-md rounded-2xl border border-cyan-300/20 bg-[#0f172a]/95 p-8 shadow-[0_0_60px_rgba(34,211,238,0.10)]">
